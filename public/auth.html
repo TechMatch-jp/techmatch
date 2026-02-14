@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン - テックマッチ</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container {
+            max-width: 500px;
+            margin: 3rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            color: #7f8c8d;
+            transition: all 0.3s;
+        }
+        
+        .auth-tab.active {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            margin-bottom: -2px;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .error-message {
+            background-color: #fee;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: #efe;
+            color: #3c3;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="stylish-common.css">
+</head>
+<body>
+    <div class="bg-decoration"></div>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">TechMatch</a>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">特許一覧</a>
+                    <a href="column.html" class="nav-link">技術コラム</a>
+                    <a href="interview.html" class="nav-link">研究者インタビュー</a>
+                    <a href="auth.html" class="btn-primary">ログイン</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">ログイン</button>
+                    <button class="auth-tab" data-tab="register">新規登録</button>
+                </div>
+                
+                <div id="errorMessage" class="error-message"></div>
+                <div id="successMessage" class="success-message"></div>
+                
+                <!-- ログインフォーム -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="form-group">
+                        <label for="loginEmail">メールアドレス</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">パスワード</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="submit-btn">ログイン</button>
+                </form>
+                
+                <!-- 登録フォーム -->
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerName">お名前</label>
+                        <input type="text" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">メールアドレス</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">パスワード</label>
+                        <input type="password" id="registerPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerUserType">ユーザータイプ</label>
+                        <select id="registerUserType" required>
+                            <option value="">選択してください</option>
+                            <option value="seller">ライセンサー（売り手）</option>
+                            <option value="buyer">ライセンシー（買い手）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerOrganization">所属組織</label>
+                        <input type="text" id="registerOrganization" placeholder="大学名、企業名など">
+                    </div>
+                    <button type="submit" class="submit-btn">登録</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2026 テックマッチ All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // タブ切り替え
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                
+                this.classList.add('active');
+                const formId = this.dataset.tab + 'Form';
+                document.getElementById(formId).classList.add('active');
+                
+                // エラーメッセージをクリア
+                hideMessages();
+            });
+        });
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+        
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+        
+        // ログイン処理
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hideMessages();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('ログインしました。マイページに移動します...');
+                    setTimeout(() => {
+                        window.location.href = 'mypage.html';
+                    }, 1000);
+                } else {
+                    showError(data.error || 'ログインに失敗しました');
+                }
+            } catch (error) {
+                showError('通信エラーが発生しました');
+            }
+        });
+        
+        // 登録処理
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hideMessages();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const userType = document.getElementById('registerUserType').value;
+            const organization = document.getElementById('registerOrganization').value;
+            
+            if (password.length < 6) {
+                showError('パスワードは6文字以上で入力してください');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, userType, organization })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('登録が完了しました。ログインしてください。');
+                    setTimeout(() => {
+                        // ログインタブに切り替え
+                        document.querySelector('[data-tab="login"]').click();
+                        document.getElementById('loginEmail').value = email;
+                    }, 1500);
+                } else {
+                    showError(data.error || '登録に失敗しました');
+                }
+            } catch (error) {
+                showError('通信エラーが発生しました');
+            }
+        });
+    </script>
+</body>
+</html>

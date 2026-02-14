@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者ダッシュボード - テックマッチ</title>
+    <link rel="stylesheet" href="stylish-common.css">
+    <style>
+        /* 管理者ページ識別バー */
+        .page-identifier {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 0.8rem 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .page-identifier::before {
+            content: '🛡️ ';
+            margin-right: 0.5rem;
+        }
+        
+        .admin-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .admin-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .admin-header h1 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .admin-header p {
+            color: #7f8c8d;
+        }
+        
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            border-bottom: 2px solid #e8ecef;
+        }
+        
+        .admin-tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .admin-tab.active {
+            color: #e67e22;
+            border-bottom-color: #e67e22;
+        }
+        
+        .admin-tab:hover {
+            color: #e67e22;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #e67e22;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .pending-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e8ecef;
+        }
+        
+        .patent-review-card {
+            background: #f8f9fa;
+            border: 2px solid #e8ecef;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .patent-review-card:hover {
+            border-color: #e67e22;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .review-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .review-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .review-description {
+            color: #2c3e50;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .review-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .info-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .review-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .btn-approve {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.5);
+        }
+        
+        .btn-reject {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .btn-reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.5);
+        }
+        
+        .btn-detail {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-detail:hover {
+            background: #2980b9;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #95a5a6;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        /* モーダル */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e8ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="file"],
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e8ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #e67e22;
+        }
+        
+        .content-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .form-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.5);
+        }
+        
+        .content-list {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .content-item {
+            padding: 1.5rem;
+            border: 2px solid #e8ecef;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .content-item:hover {
+            border-color: #e67e22;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .content-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .content-item-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .content-item-meta {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .content-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .btn-edit-small {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-delete-small {
+            background: #e74c3c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- 管理者ページ識別バー -->
+    <div class="page-identifier">管理者ダッシュボード</div>
+    
+    <div class="bg-decoration"></div>
+    
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">TechMatch</a>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">特許一覧</a>
+                    <a href="admin.html" class="nav-link">管理画面</a>
+                    <a href="#" class="btn-primary" id="logoutBtn">ログアウト</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>管理者ダッシュボード</h1>
+            <p>特許の承認・却下を管理します。コラム・インタビューはWordPressで投稿できます。</p>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-tab="patents">特許承認</button>
+                <a href="http://techmatch.jp/blog/wp-admin/edit.php" class="admin-tab" target="_blank">技術コラム（WordPress）</a>
+                <a href="http://techmatch.jp/blog/wp-admin/edit.php" class="admin-tab" target="_blank">研究者インタビュー（WordPress）</a>
+            </div>
+        </div>
+        
+        <!-- 特許承認タブ -->
+        <div class="tab-content active" id="patents-tab">
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-number" id="pendingCount">0</div>
+                    <div class="stat-label">承認待ち</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="approvedCount">0</div>
+                    <div class="stat-label">承認済み</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="rejectedCount">0</div>
+                    <div class="stat-label">却下</div>
+                </div>
+            </div>
+            
+            <div class="pending-section">
+                <h2 class="section-title">承認待ち特許</h2>
+                <div id="pendingList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <p>承認待ちの特許はありません</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- 却下理由入力モーダル -->
+    <div class="modal" id="rejectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>却下理由を入力</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="rejectForm">
+                <input type="hidden" id="rejectPatentId">
+                <div class="form-group">
+                    <label>却下理由 *</label>
+                    <textarea id="rejectReason" required placeholder="却下する理由を入力してください"></textarea>
+                </div>
+                <button type="submit" class="btn btn-reject" style="width: 100%;">却下する</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentRejectId = null;
+        let loadPendingPatents = null; // グローバルに公開用
+        
+        // グローバル関数（onclickから呼び出せるように）
+        window.approvePatent = async function(id) {
+            if (!confirm('この特許を承認しますか？')) return;
+            
+            try {
+                const response = await fetch(`/api/admin/patents/${id}/approve`, {
+                    method: 'PUT'
+                });
+                
+                if (response.ok) {
+                    alert('特許を承認しました');
+                    if (loadPendingPatents) loadPendingPatents();
+                } else {
+                    alert('承認に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('エラーが発生しました');
+            }
+        };
+        
+        window.openRejectModal = function(id) {
+            currentRejectId = id;
+            document.getElementById('rejectModal').classList.add('active');
+        };
+        
+        // DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+        
+        // タブ切り替え（特許承認タブのみ処理）
+        document.querySelectorAll('.admin-tab[data-tab]').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+                
+                // タブのアクティブ状態を切り替え
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // コンテンツの表示を切り替え
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${targetTab}-tab`).classList.add('active');
+            });
+        });
+        
+        
+        // 承認待ち特許を取得
+        loadPendingPatents = async function() {
+            try {
+                console.log('📋 承認待ち特許を読み込み中...');
+                const response = await fetch('/api/admin/patents/pending');
+                console.log('📡 APIレスポンス:', response.status, response.statusText);
+                
+                if (response.ok) {
+                    const patents = await response.json();
+                    console.log('✅ 取得した特許数:', patents.length);
+                    console.log('📊 特許データ:', patents);
+                    displayPendingPatents(patents);
+                    updateStats();
+                } else {
+                    const errorText = await response.text();
+                    console.error('❌ Failed to load pending patents:', response.status, errorText);
+                    alert('承認待ち特許の取得に失敗しました');
+                }
+            } catch (error) {
+                console.error('❌ Error:', error);
+                alert('エラーが発生しました: ' + error.message);
+            }
+        };
+        
+        // 統計を更新
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/patents?owner=all');
+                if (response.ok) {
+                    const allPatents = await response.json();
+                    
+                    const pending = allPatents.filter(p => p.approval_status === 'pending').length;
+                    const approved = allPatents.filter(p => p.approval_status === 'approved').length;
+                    const rejected = allPatents.filter(p => p.approval_status === 'rejected').length;
+                    
+                    document.getElementById('pendingCount').textContent = pending;
+                    document.getElementById('approvedCount').textContent = approved;
+                    document.getElementById('rejectedCount').textContent = rejected;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // 承認待ち特許を表示
+        function displayPendingPatents(patents) {
+            const container = document.getElementById('pendingList');
+            
+            if (patents.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✅</div>
+                        <p>承認待ちの特許はありません</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = patents.map(patent => `
+                <div class="patent-review-card">
+                    <div class="review-header">
+                        <div>
+                            <div class="review-title">${patent.title}</div>
+                            <div class="review-meta">
+                                <span>📅 登録日: ${new Date(patent.created_at).toLocaleDateString('ja-JP')}</span>
+                                <span>👤 出願者: ${patent.owner_name || '不明'}</span>
+                                <span class="badge-pending">審査中</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="review-description">
+                        <strong>概要:</strong><br>
+                        ${patent.description}
+                    </div>
+                    
+                    <div class="review-description">
+                        <strong>🎯 解決できる課題:</strong><br>
+                        ${patent.problem || '未記入'}
+                    </div>
+                    
+                    <div class="review-description">
+                        <strong>💡 何にどう使えるか:</strong><br>
+                        ${patent.usage || '未記入'}
+                    </div>
+                    
+                    <div class="review-description">
+                        <strong>⭐ 他の特許との違い:</strong><br>
+                        ${patent.advantage || '未記入'}
+                    </div>
+                    
+                    <div class="review-info">
+                        <div class="info-item">
+                            <span class="info-label">カテゴリー</span>
+                            <span class="info-value">${getCategoryName(patent.category)}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">特許番号</span>
+                            <span class="info-value">${patent.patent_number || '-'}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">ステータス</span>
+                            <span class="info-value">利用可能</span>
+                        </div>
+                    </div>
+                    
+                    <div class="review-actions">
+                        <button class="btn btn-approve" onclick="approvePatent('${patent.id}')">
+                            ✓ 承認
+                        </button>
+                        <button class="btn btn-reject" onclick="openRejectModal('${patent.id}')">
+                            ✗ 却下
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getCategoryName(category) {
+            const names = {
+                'ai': 'AI・機械学習',
+                'iot': 'IoT',
+                'medical': '医療機器',
+                'manufacturing': '製造技術',
+                'energy': 'エネルギー'
+            };
+            return names[category] || category;
+        }
+        
+        // モーダルを閉じる
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            document.getElementById('rejectModal').classList.remove('active');
+            document.getElementById('rejectReason').value = '';
+        });
+        
+        // 却下フォーム送信
+        document.getElementById('rejectForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const reason = document.getElementById('rejectReason').value;
+            
+            try {
+                const response = await fetch(`/api/admin/patents/${currentRejectId}/reject`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reason })
+                });
+                
+                if (response.ok) {
+                    alert('特許を却下しました');
+                    document.getElementById('rejectModal').classList.remove('active');
+                    document.getElementById('rejectReason').value = '';
+                    loadPendingPatents();
+                } else {
+                    alert('却下に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('エラーが発生しました');
+            }
+        });
+        
+        // ログアウト
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+        
+        // ページ読み込み時
+        loadPendingPatents();
+
+    }); // end DOMContentLoaded
+    </script>
+</body>
+</html>
