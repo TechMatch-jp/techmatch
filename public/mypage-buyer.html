@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-47LCYNSVRP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-47LCYNSVRP');
+</script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マイページ（ライセンシー） - テックマッチ</title>
+    <link rel="stylesheet" href="stylish-common.css">
+    <style>
+        /* 買い手ページ識別バー */
+        .page-identifier {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 0.8rem 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .page-identifier::before {
+            content: '🏢 ';
+            margin-right: 0.5rem;
+        }
+        
+        .mypage-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .mypage-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            height: fit-content;
+        }
+        
+        .user-info {
+            text-align: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e8ecef;
+            margin-bottom: 1.5rem;
+        }
+        
+        .user-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-top: 0.5rem;
+        }
+        
+        .user-type {
+            font-size: 0.9rem;
+            color: #3498db;
+            background: #e3f2fd;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+        
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .content-area {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .welcome-banner {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-banner h1 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #e8ecef;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .table th {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid #e8ecef;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e8ecef;
+        }
+        
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-accepted {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #95a5a6;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 買い手ページ識別バー -->
+    <div class="page-identifier">ライセンシー（買い手） マイページ</div>
+    
+    <div class="bg-decoration"></div>
+    
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">TechMatch</a>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">特許一覧</a>
+                    <a href="column.html" class="nav-link">技術コラム</a>
+                    <a href="interview.html" class="nav-link">研究者インタビュー</a>
+                    <a href="mypage-buyer.html" class="btn-primary">マイページ</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="mypage-container">
+        <div class="mypage-grid">
+            <!-- サイドバー -->
+            <aside class="sidebar">
+                <div class="user-info">
+                    <div class="user-name" id="userName">読み込み中...</div>
+                    <span class="user-type">ライセンシー（買い手）</span>
+                </div>
+                
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="menu-link active" data-section="dashboard">ダッシュボード</a></li>
+                    <li><a href="#" class="menu-link" data-section="interests">興味表明した特許</a></li>
+                    <li><a href="#" class="menu-link" data-section="favorites">お気に入り</a></li>
+                </ul>
+                
+                <button class="logout-btn" id="logoutBtn">ログアウト</button>
+            </aside>
+
+            <!-- メインコンテンツ -->
+            <main class="content-area">
+                <!-- ダッシュボード -->
+                <section class="section active" id="dashboard">
+                    <div class="welcome-banner">
+                        <h1>ようこそ、<span id="welcomeName"></span>さん</h1>
+                        <p>テックマッチへようこそ。特許の検索を始めましょう。</p>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="interestCount">0</div>
+                            <div class="stat-label">興味表明数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="favoriteCount">0</div>
+                            <div class="stat-label">お気に入り数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="viewCount">0</div>
+                            <div class="stat-label">閲覧した特許</div>
+                        </div>
+                    </div>
+                    
+                    <h2>最近の活動</h2>
+                    <div id="recentActivity">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <p>まだ活動履歴がありません</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 興味表明した特許 -->
+                <section class="section" id="interests">
+                    <h2>興味表明した特許</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>特許名</th>
+                                <th>カテゴリー</th>
+                                <th>表明日</th>
+                                <th>ステータス</th>
+                            </tr>
+                        </thead>
+                        <tbody id="interestsTable">
+                            <tr>
+                                <td colspan="4">
+                                    <div class="empty-state">
+                                        <div class="empty-state-icon">💡</div>
+                                        <p>興味表明した特許はまだありません</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- お気に入り -->
+                <section class="section" id="favorites">
+                    <h2>お気に入り特許</h2>
+                    <div id="favoritesList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">⭐</div>
+                            <p>お気に入りに追加した特許はまだありません</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // ユーザー情報取得
+        async function loadUserInfo() {
+            try {
+                const response = await fetch('/api/user');
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('userName').textContent = user.name;
+                    document.getElementById('welcomeName').textContent = user.name;
+                } else {
+                    window.location.href = 'auth.html';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.location.href = 'auth.html';
+            }
+        }
+
+        // 興味表明一覧取得
+        async function loadInterests() {
+            try {
+                const response = await fetch('/api/my-interests');
+                if (response.ok) {
+                    const interests = await response.json();
+                    document.getElementById('interestCount').textContent = interests.length;
+                    
+                    if (interests.length > 0) {
+                        const tbody = document.getElementById('interestsTable');
+                        tbody.innerHTML = interests.map(interest => `
+                            <tr>
+                                <td>${interest.patentTitle || '特許名不明'}</td>
+                                <td>${interest.category || '-'}</td>
+                                <td>${new Date(interest.createdAt).toLocaleDateString('ja-JP')}</td>
+                                <td><span class="status-badge status-${interest.status}">${getStatusLabel(interest.status)}</span></td>
+                            </tr>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading interests:', error);
+            }
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'pending': '確認中',
+                'accepted': '承認済み',
+                'rejected': '却下'
+            };
+            return labels[status] || status;
+        }
+
+        // メニュー切り替え
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = link.dataset.section;
+                
+                // メニューのアクティブ状態切り替え
+                document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                // セクションの表示切り替え
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section).classList.add('active');
+            });
+        });
+
+        // ログアウト
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // ページ読み込み時
+        loadUserInfo();
+        loadInterests();
+    </script>
+</body>
+</html>

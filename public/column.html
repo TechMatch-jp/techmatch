@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-47LCYNSVRP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-47LCYNSVRP');
+</script>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技術コラム - テックマッチ</title>
+    <link rel="stylesheet" href="stylish-common.css">
+</head>
+<body>
+    <div class="bg-decoration"></div>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">TechMatch</a>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">特許一覧</a>
+                    <a href="column.html" class="nav-link">技術コラム</a>
+                    <a href="interview.html" class="nav-link">研究者インタビュー</a>
+                    <a href="auth.html" class="btn-primary">ログイン</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="page-header">
+                <h2>技術コラム</h2>
+                <p>特許活用や技術トレンドに関する専門的な情報をお届けします</p>
+            </section>
+
+            <section class="column-categories">
+                <button class="category-btn active" data-category="all">すべて</button>
+                <button class="category-btn" data-category="patent-basics">特許基礎知識</button>
+                <button class="category-btn" data-category="technology-trend">技術トレンド</button>
+                <button class="category-btn" data-category="case-study">活用事例</button>
+                <button class="category-btn" data-category="legal">法律・制度</button>
+            </section>
+
+            <section class="column-list">
+                <div class="column-grid" id="columnGrid">
+                    <!-- コラムカードはJavaScriptで動的に生成 -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2026 テックマッチ All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="column-script.js"></script>
+    <script src="check-auth.js"></script>
+</body>
+</html>
