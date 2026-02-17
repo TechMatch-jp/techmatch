@@ -26,8 +26,12 @@ function estimateReadTimeMinutes(text) {
 }
 
 // ============ Express設定 ============
-// /blog → さくらWordPressへ転送（最優先）
-app.use(['/blog', '/blog/'], createProxyMiddleware({
+app.use('/blog', createProxyMiddleware({
+  target: 'http://www3050.sakura.ne.jp',
+  changeOrigin: true,
+  headers: { host: 'techmatch.jp' }
+}));
+app.use(express.static('public'));
   target: 'http://www3050.sakura.ne.jp',
   changeOrigin: true,
   xfwd: true,
