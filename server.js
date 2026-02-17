@@ -13,23 +13,7 @@ const app = express();
 const PORT = 3000;
 const SECRET_KEY = process.env.JWT_SECRET || 'techmatch-secret-key-2026';
 
-// ============ Headless WordPress設定 ============
-const WP_BASE_URL = process.env.WP_BASE_URL || 'http://techmatch.jp/blog';
-let wpCategoryCache = { loadedAt: 0, map: new Map() };
-const WP_CATEGORY_CACHE_TTL_MS = 10 * 60 * 1000;
-
-async function fetchJson(url) {
-    const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
-    if (!resp.ok) {
-        const text = await resp.text().catch(() => '');
-        const err = new Error(`WP fetch failed: ${resp.status} ${resp.statusText}`);
-        err.status = resp.status;
-        err.body = text;
-        throw err;
-    }
-    return resp.json();
-}
-
+// ============ ユーティリティ ============
 function stripHtml(html) {
     return String(html || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
 }
@@ -40,85 +24,13 @@ function estimateReadTimeMinutes(text) {
     return `${minutes}分`;
 }
 
-function wpPostToColumn(post) {
-    const embeddedTerms = (post && post._embedded && post._embedded['wp:term']) || [];
-    const categories = (embeddedTerms[0] || []).filter(t => t && t.taxonomy === 'category');
-    const primaryCat = categories[0] || null;
-    const title = stripHtml(post.title && post.title.rendered);
-    const description = stripHtml(post.excerpt && post.excerpt.rendered);
-    const contentHtml = (post.content && post.content.rendered) || '';
-    let featuredImage = null;
-    if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
-        featuredImage = post._embedded['wp:featuredmedia'][0].source_url || null;
-    }
-    return {
-        id: String(post.id),
-        title,
-        description,
-        content: contentHtml,
-        category: primaryCat ? primaryCat.slug : 'all',
-        author: (post._embedded && post._embedded.author && post._embedded.author[0] && post._embedded.author[0].name) || '編集部',
-        createdAt: post.date,
-        readTime: estimateReadTimeMinutes(stripHtml(contentHtml)),
-        featuredImage
-    };
-}
-
-function wpPostToInterview(post) {
-    const embeddedTerms = (post && post._embedded && post._embedded['wp:term']) || [];
-    const categories = (embeddedTerms[0] || []).filter(t => t && t.taxonomy === 'category');
-    const primaryCat = categories[0] || null;
-    const title = stripHtml(post.title && post.title.rendered);
-    const description = stripHtml(post.excerpt && post.excerpt.rendered);
-    const contentHtml = (post.content && post.content.rendered) || '';
-    let featuredImage = null;
-    if (post._embedded && post._embedded['wp:featuredmedia'] && post._embedded['wp:featuredmedia'][0]) {
-        featuredImage = post._embedded['wp:featuredmedia'][0].source_url || null;
-    }
-    return {
-        id: String(post.id),
-        title,
-        description,
-        content: contentHtml,
-        category: primaryCat ? primaryCat.name : '',
-        categorySlug: primaryCat ? primaryCat.slug : '',
-        interviewer: (post._embedded && post._embedded.author && post._embedded.author[0] && post._embedded.author[0].name) || '編集部',
-        createdAt: post.date,
-        readTime: estimateReadTimeMinutes(stripHtml(contentHtml)),
-        featuredImage
-    };
-}
-
-async function getCategoryIdByName(categoryName) {
-    const now = Date.now();
-    if (now - wpCategoryCache.loadedAt > WP_CATEGORY_CACHE_TTL_MS) {
-        wpCategoryCache.map.clear();
-        wpCategoryCache.loadedAt = now;
-    }
-    if (wpCategoryCache.map.has(categoryName)) {
-        return wpCategoryCache.map.get(categoryName);
-    }
-    try {
-        const url = `${WP_BASE_URL}/wp-json/wp/v2/categories?per_page=100`;
-        const cats = await fetchJson(url);
-        for (const c of cats) {
-            wpCategoryCache.map.set(c.name, c.id);
-            wpCategoryCache.map.set(c.slug, c.id);
-        }
-        return wpCategoryCache.map.get(categoryName) || null;
-    } catch (err) {
-        console.error('カテゴリ取得エラー:', err.message);
-        return null;
-    }
-}
-
 // ============ Express設定 ============
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// 動作確認用（ブラウザで http://localhost:3000/api/ping を開く）
+// 動作確認用
 app.get('/api/ping', (req, res) => {
     res.json({ ok: true, time: new Date().toISOString() });
 });
@@ -138,9 +50,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 function authenticateToken(req, res, next) {
-    // 開発用: 環境変数で認証スキップできるようにする
-    // 例) Windows(PowerShell):  $env:SKIP_AUTH='true'; npm start
-    //     Mac/Linux:           SKIP_AUTH=true npm start
     if (String(process.env.SKIP_AUTH || '').toLowerCase() === 'true') {
         req.user = { id: 'dev', email: 'dev@local', name: 'Dev', userType: 'admin' };
         return next();
@@ -163,40 +72,40 @@ app.post('/api/register', async (req, res) => {
     try {
         const { email, password, name, userType, organization } = req.body;
         console.log('1. データ抽出完了:', { email, name, userType, organization });
-        
+
         console.log('2. 既存ユーザーチェック中...');
         const { data: existingUser, error: checkError } = await supabase.from('users').select('id').eq('email', email).single();
         console.log('既存ユーザーチェック結果:', { existingUser, checkError });
-        
+
         if (existingUser) {
             console.log('エラー: メールアドレス重複');
             return res.status(400).json({ error: 'このメールアドレスは既に登録されています' });
         }
-        
+
         console.log('3. パスワードハッシュ化中...');
         const hashedPassword = await bcrypt.hash(password, 10);
         console.log('パスワードハッシュ化完了');
-        
+
         console.log('4. Supabaseに挿入中...');
         const insertData = {
-            email, 
-            password: hashedPassword, 
-            name, 
-            user_type: userType, 
+            email,
+            password: hashedPassword,
+            name,
+            user_type: userType,
             organization
         };
         console.log('挿入データ:', insertData);
-        
+
         const { data: newUser, error } = await supabase.from('users').insert([insertData]).select().single();
-        
+
         console.log('5. 挿入結果:', { newUser, error });
-        
+
         if (error) {
             console.error('❌ Supabase insert error:', error);
             console.error('Error details:', JSON.stringify(error, null, 2));
             return res.status(500).json({ error: '登録に失敗しました: ' + error.message });
         }
-        
+
         console.log('✅ 登録成功:', newUser.id);
         res.json({ message: '登録が完了しました', userId: newUser.id });
     } catch (error) {
@@ -248,7 +157,6 @@ app.get('/api/patents', async (req, res) => {
     try {
         const { category, status, search, owner } = req.query;
 
-        // owner=all の場合は「全件」を返す（管理画面の統計用）
         if (owner === 'all') {
             return authenticateToken(req, res, async () => {
                 let query = supabase
@@ -278,12 +186,8 @@ app.get('/api/patents', async (req, res) => {
             });
         }
 
-        // owner=me の場合は「自分が登録した特許」を返す（審査中/承認済/却下すべて含む）
         if (owner === 'me') {
-            // 認証必須（SKIP_AUTH=true のときは authenticateToken が通す）
             return authenticateToken(req, res, async () => {
-                // NOTE: 既存データが手動投入で owner_id が入っていないケースでも
-                // 開発中に画面確認できるよう、owner_id が NULL のものも拾う（owner=me のみ）。
                 let query = supabase
                     .from('patents')
                     .select('*')
@@ -312,7 +216,6 @@ app.get('/api/patents', async (req, res) => {
             });
         }
 
-        // 公開一覧（承認済みのみ）
         let query = supabase
             .from('patents')
             .select('*')
@@ -343,7 +246,6 @@ app.get('/api/patents', async (req, res) => {
         res.status(500).json({ error: '特許一覧の取得に失敗しました' });
     }
 });
-
 
 app.get('/api/patents/:id', async (req, res) => {
     try {
@@ -440,7 +342,6 @@ app.get('/api/user/patents', authenticateToken, async (req, res) => {
 
 
 // ============ 興味表明 API ============
-// 自分が送った興味表明（購入者側）
 app.get('/api/my-interests', authenticateToken, async (req, res) => {
     try {
         const { data: interests, error } = await supabase
@@ -459,11 +360,8 @@ app.get('/api/my-interests', authenticateToken, async (req, res) => {
     }
 });
 
-// 自分の特許に届いた興味表明（研究機関ユーザー側）
-// 既存UI(mypage-seller.html)が期待する形に整形して返す
 app.get('/api/patent-interests', authenticateToken, async (req, res) => {
     try {
-        // 自分の特許ID一覧
         const { data: myPatents, error: pErr } = await supabase
             .from('patents')
             .select('id,title,owner_id')
@@ -486,7 +384,6 @@ app.get('/api/patent-interests', authenticateToken, async (req, res) => {
             return res.status(500).json({ error: '興味表明の取得に失敗しました' });
         }
 
-        // 整形（UI互換）
         const titleById = new Map((myPatents || []).map(p => [p.id, p.title]));
         const normalized = (interests || []).map(it => ({
             id: it.id,
@@ -615,66 +512,228 @@ app.put('/api/messages/:id/read', authenticateToken, async (req, res) => {
     }
 });
 
-// ============ WordPress連携 API ============
+// ============ 記事 API（コラム・インタビュー / Supabase版） ============
+
+// ---- コラム一覧（公開用） ----
 app.get('/api/columns', async (req, res) => {
+    const { category, per_page = 20, exclude } = req.query;
     try {
-        const catName = '技術コラム';
-        const catId = await getCategoryIdByName(catName);
-        if (!catId) return res.status(404).json({ error: `カテゴリ「${catName}」が見つかりません` });
-        const url = `${WP_BASE_URL}/wp-json/wp/v2/posts?categories=${catId}&per_page=100&_embed`;
-        const posts = await fetchJson(url);
-        const columns = posts.map(wpPostToColumn);
+        let query = supabase
+            .from('articles')
+            .select('id, type, title, excerpt, category, author, featured_image, created_at')
+            .eq('type', 'column')
+            .eq('status', 'published')
+            .order('created_at', { ascending: false });
+
+        if (category && category !== 'all') query = query.eq('category', category);
+        if (exclude) query = query.neq('id', exclude);
+        if (per_page) query = query.limit(Number(per_page));
+
+        const { data, error } = await query;
+        if (error) return res.status(500).json({ error: error.message });
+
+        const columns = (data || []).map(a => ({
+            id: a.id,
+            title: a.title,
+            description: a.excerpt || '',
+            category: a.category,
+            author: a.author || '編集部',
+            featuredImage: a.featured_image || null,
+            createdAt: a.created_at,
+            readTime: estimateReadTimeMinutes(a.excerpt || '')
+        }));
         res.json(columns);
     } catch (err) {
-        console.error('Columns fetch error:', err);
-        res.status(500).json({ error: 'コラムの取得に失敗しました' });
+        res.status(500).json({ error: err.message });
     }
 });
 
+// ---- コラム詳細（公開用） ----
 app.get('/api/columns/:id', async (req, res) => {
     try {
-        const url = `${WP_BASE_URL}/wp-json/wp/v2/posts/${req.params.id}?_embed`;
-        const post = await fetchJson(url);
-        const column = wpPostToColumn(post);
-        res.json(column);
+        const { data, error } = await supabase
+            .from('articles')
+            .select('*')
+            .eq('id', req.params.id)
+            .eq('type', 'column')
+            .single();
+
+        if (error || !data) return res.status(404).json({ error: 'コラムが見つかりません' });
+
+        res.json({
+            id: data.id,
+            title: data.title,
+            description: data.excerpt || '',
+            content: data.content || '',
+            category: data.category,
+            author: data.author || '編集部',
+            featuredImage: data.featured_image || null,
+            createdAt: data.created_at,
+            readTime: estimateReadTimeMinutes(data.content || '')
+        });
     } catch (err) {
-        console.error('Column detail fetch error:', err);
-        res.status(500).json({ error: 'コラム詳細の取得に失敗しました' });
+        res.status(500).json({ error: err.message });
     }
 });
 
+// ---- インタビュー一覧（公開用） ----
 app.get('/api/interviews', async (req, res) => {
+    const { category, per_page = 20 } = req.query;
     try {
-        const catName = '研究者インタビュー';
-        const catId = await getCategoryIdByName(catName);
-        if (!catId) return res.status(404).json({ error: `カテゴリ「${catName}」が見つかりません` });
-        const url = `${WP_BASE_URL}/wp-json/wp/v2/posts?categories=${catId}&per_page=100&_embed`;
-        const posts = await fetchJson(url);
-        const interviews = posts.map(wpPostToInterview);
+        let query = supabase
+            .from('articles')
+            .select('id, type, title, excerpt, category, researcher, affiliation, featured_image, created_at')
+            .eq('type', 'interview')
+            .eq('status', 'published')
+            .order('created_at', { ascending: false });
+
+        if (category && category !== 'all') query = query.eq('category', category);
+        if (per_page) query = query.limit(Number(per_page));
+
+        const { data, error } = await query;
+        if (error) return res.status(500).json({ error: error.message });
+
+        const interviews = (data || []).map(a => ({
+            id: a.id,
+            title: a.title,
+            description: a.excerpt || '',
+            category: a.category,
+            researcher: a.researcher || '',
+            affiliation: a.affiliation || '',
+            featuredImage: a.featured_image || null,
+            createdAt: a.created_at,
+            readTime: estimateReadTimeMinutes(a.excerpt || '')
+        }));
         res.json(interviews);
     } catch (err) {
-        console.error('Interviews fetch error:', err);
-        res.status(500).json({ error: 'インタビューの取得に失敗しました' });
+        res.status(500).json({ error: err.message });
     }
 });
 
+// ---- インタビュー詳細（公開用） ----
 app.get('/api/interviews/:id', async (req, res) => {
     try {
-        const url = `${WP_BASE_URL}/wp-json/wp/v2/posts/${req.params.id}?_embed`;
-        const post = await fetchJson(url);
-        const interview = wpPostToInterview(post);
-        res.json(interview);
+        const { data, error } = await supabase
+            .from('articles')
+            .select('*')
+            .eq('id', req.params.id)
+            .eq('type', 'interview')
+            .single();
+
+        if (error || !data) return res.status(404).json({ error: 'インタビューが見つかりません' });
+
+        res.json({
+            id: data.id,
+            title: data.title,
+            description: data.excerpt || '',
+            content: data.content || '',
+            category: data.category,
+            researcher: data.researcher || '',
+            affiliation: data.affiliation || '',
+            featuredImage: data.featured_image || null,
+            createdAt: data.created_at,
+            readTime: estimateReadTimeMinutes(data.content || '')
+        });
     } catch (err) {
-        console.error('Interview detail fetch error:', err);
-        res.status(500).json({ error: 'インタビュー詳細の取得に失敗しました' });
+        res.status(500).json({ error: err.message });
     }
 });
 
-// ============ 管理者 API ============
-// 承認待ち特許の取得
+// ---- 管理者：記事一覧（下書き含む） ----
+app.get('/api/admin/articles', authenticateToken, async (req, res) => {
+    try {
+        const { type } = req.query;
+        let query = supabase
+            .from('articles')
+            .select('id, type, title, excerpt, category, author, researcher, affiliation, status, created_at, updated_at')
+            .order('created_at', { ascending: false });
+
+        if (type) query = query.eq('type', type);
+
+        const { data, error } = await query;
+        if (error) return res.status(500).json({ error: error.message });
+        res.json(data || []);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ---- 管理者：記事1件取得（編集用） ----
+app.get('/api/admin/articles/:id', authenticateToken, async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('articles')
+            .select('*')
+            .eq('id', req.params.id)
+            .single();
+
+        if (error || !data) return res.status(404).json({ error: '記事が見つかりません' });
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ---- 管理者：記事投稿 ----
+app.post('/api/admin/articles', authenticateToken, async (req, res) => {
+    try {
+        const { type, title, excerpt, content, category, author, researcher, affiliation, featured_image, status } = req.body;
+
+        if (!type || !title || !category) {
+            return res.status(400).json({ error: 'type・title・category は必須です' });
+        }
+
+        const { data, error } = await supabase
+            .from('articles')
+            .insert([{ type, title, excerpt, content, category, author, researcher, affiliation, featured_image, status: status || 'published' }])
+            .select()
+            .single();
+
+        if (error) return res.status(500).json({ error: error.message });
+        res.json({ message: '記事を保存しました', article: data });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ---- 管理者：記事更新 ----
+app.put('/api/admin/articles/:id', authenticateToken, async (req, res) => {
+    try {
+        const { title, excerpt, content, category, author, researcher, affiliation, featured_image, status } = req.body;
+
+        const { data, error } = await supabase
+            .from('articles')
+            .update({ title, excerpt, content, category, author, researcher, affiliation, featured_image, status })
+            .eq('id', req.params.id)
+            .select()
+            .single();
+
+        if (error) return res.status(500).json({ error: error.message });
+        res.json({ message: '記事を更新しました', article: data });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ---- 管理者：記事削除 ----
+app.delete('/api/admin/articles/:id', authenticateToken, async (req, res) => {
+    try {
+        const { error } = await supabase
+            .from('articles')
+            .delete()
+            .eq('id', req.params.id);
+
+        if (error) return res.status(500).json({ error: error.message });
+        res.json({ message: '記事を削除しました' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ============ 管理者：特許 API ============
 app.get('/api/admin/patents/pending', authenticateToken, async (req, res) => {
     try {
-        const { data: patents, error} = await supabase
+        const { data: patents, error } = await supabase
             .from('patents')
             .select(`
                 *,
@@ -686,18 +745,17 @@ app.get('/api/admin/patents/pending', authenticateToken, async (req, res) => {
             `)
             .eq('approval_status', 'pending')
             .order('created_at', { ascending: false });
-        
+
         if (error) {
             console.error('Admin pending patents fetch error:', error);
             return res.status(500).json({ error: '承認待ち特許の取得に失敗しました' });
         }
-        
-        // owner_nameを追加
+
         const patentsWithOwnerName = (patents || []).map(patent => ({
             ...patent,
             owner_name: patent.users ? (patent.users.name || patent.users.email) : '不明'
         }));
-        
+
         res.json(patentsWithOwnerName);
     } catch (error) {
         console.error('Get admin pending patents error:', error);
@@ -751,6 +809,4 @@ app.put('/api/admin/patents/:id/reject', authenticateToken, async (req, res) => 
 app.listen(PORT, () => {
     console.log(`✅ TechMatch server (Supabase版) started on http://localhost:${PORT}`);
     console.log(`📊 Database: Supabase PostgreSQL`);
-    console.log(`📝 WordPress: ${WP_BASE_URL}`);
 });
-
