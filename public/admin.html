@@ -647,20 +647,42 @@
         let columnEditorInstance = null;
         let interviewEditorInstance = null;
 
-        // ============ CKEditor 初期化 ============
-        ClassicEditor.create(document.getElementById('columnEditor'), {
-            toolbar: ['heading','|','bold','italic','underline','strikethrough','|',
-                      'bulletedList','numberedList','|','blockQuote','insertTable','|',
-                      'link','|','undo','redo'],
-            language: 'ja'
-        }).then(editor => { columnEditorInstance = editor; }).catch(console.error);
+        // ============ 画像をBase64で埋め込むアダプター ============
+        class Base64UploadAdapter {
+            constructor(loader) { this.loader = loader; }
+            upload() {
+                return this.loader.file.then(file => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve({ default: reader.result });
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                }));
+            }
+            abort() {}
+        }
+        function Base64UploaderPlugin(editor) {
+            editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                return new Base64UploadAdapter(loader);
+            };
+        }
 
-        ClassicEditor.create(document.getElementById('interviewEditor'), {
+        // ============ CKEditor 初期化 ============
+        const editorConfig = {
             toolbar: ['heading','|','bold','italic','underline','strikethrough','|',
                       'bulletedList','numberedList','|','blockQuote','insertTable','|',
-                      'link','|','undo','redo'],
-            language: 'ja'
-        }).then(editor => { interviewEditorInstance = editor; }).catch(console.error);
+                      'link','uploadImage','|','undo','redo'],
+            extraPlugins: [Base64UploaderPlugin],
+            language: 'ja',
+            image: {
+                toolbar: ['imageTextAlternative','|','imageStyle:inline','imageStyle:block','imageStyle:side']
+            }
+        };
+
+        ClassicEditor.create(document.getElementById('columnEditor'), editorConfig)
+            .then(editor => { columnEditorInstance = editor; }).catch(console.error);
+
+        ClassicEditor.create(document.getElementById('interviewEditor'), editorConfig)
+            .then(editor => { interviewEditorInstance = editor; }).catch(console.error);
 
         // ============ コラム保存 ============
         window.saveColumn = async function() {
