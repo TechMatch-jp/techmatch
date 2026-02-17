@@ -472,12 +472,12 @@
     <div class="admin-container">
         <div class="admin-header">
             <h1>管理者ダッシュボード</h1>
-            <p>特許の承認・却下を管理します。コラム・インタビューはWordPressで投稿できます。</p>
+            <p>特許の承認・却下、コラム・インタビュー記事の管理ができます。</p>
             
             <div class="admin-tabs">
                 <button class="admin-tab active" data-tab="patents">特許承認</button>
-                <a href="http://techmatch.jp/blog/wp-admin/edit.php" class="admin-tab" target="_blank">技術コラム（WordPress）</a>
-                <a href="http://techmatch.jp/blog/wp-admin/edit.php" class="admin-tab" target="_blank">研究者インタビュー（WordPress）</a>
+                <button class="admin-tab" data-tab="columns">技術コラム</button>
+                <button class="admin-tab" data-tab="interviews">研究者インタビュー</button>
             </div>
         </div>
         
@@ -508,6 +508,115 @@
                 </div>
             </div>
         </div>
+
+        <!-- 技術コラムタブ -->
+        <div class="tab-content" id="columns-tab">
+            <div class="content-form">
+                <h2 class="form-title" id="columnFormTitle">📝 新規コラム投稿</h2>
+                <input type="hidden" id="columnEditId">
+                <div class="form-group">
+                    <label>タイトル *</label>
+                    <input type="text" id="columnTitle" placeholder="記事タイトルを入力">
+                </div>
+                <div class="form-group">
+                    <label>カテゴリー *</label>
+                    <select id="columnCategory">
+                        <option value="patent-basics">特許基礎知識</option>
+                        <option value="technology-trend">技術トレンド</option>
+                        <option value="case-study">活用事例</option>
+                        <option value="legal">法律・制度</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>著者名</label>
+                    <input type="text" id="columnAuthor" placeholder="編集部" value="編集部">
+                </div>
+                <div class="form-group">
+                    <label>アイキャッチ画像URL</label>
+                    <input type="text" id="columnImage" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>概要（一覧ページに表示される説明文）</label>
+                    <textarea id="columnExcerpt" rows="3" placeholder="記事の概要を入力（100〜200文字程度）" style="width:100%;padding:0.75rem;border:2px solid #e8ecef;border-radius:8px;font-size:1rem;resize:vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>本文 *</label>
+                    <div id="columnEditor"></div>
+                </div>
+                <div class="form-group">
+                    <label>公開状態</label>
+                    <select id="columnStatus">
+                        <option value="published">公開</option>
+                        <option value="draft">下書き</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+                    <button class="btn-submit" onclick="saveColumn()">💾 保存する</button>
+                    <button class="btn-submit" style="background:linear-gradient(135deg,#95a5a6,#7f8c8d);box-shadow:none;" onclick="resetColumnForm()">✕ キャンセル</button>
+                </div>
+            </div>
+
+            <div class="content-list">
+                <h2 class="section-title">コラム一覧</h2>
+                <div id="columnList"><p style="color:#95a5a6;text-align:center;">読み込み中...</p></div>
+            </div>
+        </div>
+
+        <!-- 研究者インタビュータブ -->
+        <div class="tab-content" id="interviews-tab">
+            <div class="content-form">
+                <h2 class="form-title" id="interviewFormTitle">📝 新規インタビュー投稿</h2>
+                <input type="hidden" id="interviewEditId">
+                <div class="form-group">
+                    <label>タイトル *</label>
+                    <input type="text" id="interviewTitle" placeholder="インタビュータイトルを入力">
+                </div>
+                <div class="form-group">
+                    <label>カテゴリー *</label>
+                    <select id="interviewCategory">
+                        <option value="university-researcher">大学研究者</option>
+                        <option value="corporate-researcher">企業研究者</option>
+                        <option value="startup">スタートアップ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>研究者名</label>
+                    <input type="text" id="interviewResearcher" placeholder="山田 太郎">
+                </div>
+                <div class="form-group">
+                    <label>所属機関</label>
+                    <input type="text" id="interviewAffiliation" placeholder="○○大学 ○○研究室">
+                </div>
+                <div class="form-group">
+                    <label>アイキャッチ画像URL</label>
+                    <input type="text" id="interviewImage" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>概要（一覧ページに表示される説明文）</label>
+                    <textarea id="interviewExcerpt" rows="3" placeholder="インタビューの概要を入力（100〜200文字程度）" style="width:100%;padding:0.75rem;border:2px solid #e8ecef;border-radius:8px;font-size:1rem;resize:vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>本文 *</label>
+                    <div id="interviewEditor"></div>
+                </div>
+                <div class="form-group">
+                    <label>公開状態</label>
+                    <select id="interviewStatus">
+                        <option value="published">公開</option>
+                        <option value="draft">下書き</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+                    <button class="btn-submit" onclick="saveInterview()">💾 保存する</button>
+                    <button class="btn-submit" style="background:linear-gradient(135deg,#95a5a6,#7f8c8d);box-shadow:none;" onclick="resetInterviewForm()">✕ キャンセル</button>
+                </div>
+            </div>
+
+            <div class="content-list">
+                <h2 class="section-title">インタビュー一覧</h2>
+                <div id="interviewList"><p style="color:#95a5a6;text-align:center;">読み込み中...</p></div>
+            </div>
+        </div>
         
     </div>
 
@@ -529,11 +638,222 @@
         </div>
     </div>
 
+    <!-- CKEditor 5 -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
     <script>
         let currentRejectId = null;
-        let loadPendingPatents = null; // グローバルに公開用
-        
-        // グローバル関数（onclickから呼び出せるように）
+        let loadPendingPatents = null;
+        let columnEditorInstance = null;
+        let interviewEditorInstance = null;
+
+        // ============ CKEditor 初期化 ============
+        ClassicEditor.create(document.getElementById('columnEditor'), {
+            toolbar: ['heading','|','bold','italic','underline','strikethrough','|',
+                      'bulletedList','numberedList','|','blockQuote','insertTable','|',
+                      'link','|','undo','redo'],
+            language: 'ja'
+        }).then(editor => { columnEditorInstance = editor; }).catch(console.error);
+
+        ClassicEditor.create(document.getElementById('interviewEditor'), {
+            toolbar: ['heading','|','bold','italic','underline','strikethrough','|',
+                      'bulletedList','numberedList','|','blockQuote','insertTable','|',
+                      'link','|','undo','redo'],
+            language: 'ja'
+        }).then(editor => { interviewEditorInstance = editor; }).catch(console.error);
+
+        // ============ コラム保存 ============
+        window.saveColumn = async function() {
+            const editId = document.getElementById('columnEditId').value;
+            const body = {
+                type: 'column',
+                title:    document.getElementById('columnTitle').value.trim(),
+                excerpt:  document.getElementById('columnExcerpt').value.trim(),
+                content:  columnEditorInstance ? columnEditorInstance.getData() : '',
+                category: document.getElementById('columnCategory').value,
+                author:   document.getElementById('columnAuthor').value.trim() || '編集部',
+                featured_image: document.getElementById('columnImage').value.trim() || null,
+                status:   document.getElementById('columnStatus').value
+            };
+            if (!body.title) return alert('タイトルを入力してください');
+            if (!body.content) return alert('本文を入力してください');
+
+            const url    = editId ? `/api/admin/articles/${editId}` : '/api/admin/articles';
+            const method = editId ? 'PUT' : 'POST';
+
+            const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+            if (res.ok) {
+                alert(editId ? 'コラムを更新しました' : 'コラムを投稿しました');
+                resetColumnForm();
+                loadColumnList();
+            } else {
+                const err = await res.json();
+                alert('エラー: ' + err.error);
+            }
+        };
+
+        window.resetColumnForm = function() {
+            document.getElementById('columnEditId').value = '';
+            document.getElementById('columnFormTitle').textContent = '📝 新規コラム投稿';
+            document.getElementById('columnTitle').value = '';
+            document.getElementById('columnExcerpt').value = '';
+            document.getElementById('columnAuthor').value = '編集部';
+            document.getElementById('columnImage').value = '';
+            document.getElementById('columnStatus').value = 'published';
+            if (columnEditorInstance) columnEditorInstance.setData('');
+        };
+
+        window.editColumn = async function(id) {
+            const res = await fetch(`/api/admin/articles/${id}`);
+            if (!res.ok) return alert('記事の取得に失敗しました');
+            const a = await res.json();
+            document.getElementById('columnEditId').value = a.id;
+            document.getElementById('columnFormTitle').textContent = '✏️ コラム編集';
+            document.getElementById('columnTitle').value = a.title || '';
+            document.getElementById('columnExcerpt').value = a.excerpt || '';
+            document.getElementById('columnAuthor').value = a.author || '編集部';
+            document.getElementById('columnImage').value = a.featured_image || '';
+            document.getElementById('columnCategory').value = a.category || 'patent-basics';
+            document.getElementById('columnStatus').value = a.status || 'published';
+            if (columnEditorInstance) columnEditorInstance.setData(a.content || '');
+            document.getElementById('columns-tab').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.deleteColumn = async function(id) {
+            if (!confirm('このコラムを削除しますか？')) return;
+            const res = await fetch(`/api/admin/articles/${id}`, { method: 'DELETE' });
+            if (res.ok) { alert('削除しました'); loadColumnList(); }
+            else alert('削除に失敗しました');
+        };
+
+        async function loadColumnList() {
+            const res = await fetch('/api/admin/articles?type=column');
+            if (!res.ok) return;
+            const articles = await res.json();
+            const container = document.getElementById('columnList');
+            if (articles.length === 0) {
+                container.innerHTML = '<p style="color:#95a5a6;text-align:center;">コラムはまだありません</p>';
+                return;
+            }
+            const categoryNames = { 'patent-basics':'特許基礎知識','technology-trend':'技術トレンド','case-study':'活用事例','legal':'法律・制度' };
+            container.innerHTML = articles.map(a => `
+                <div class="content-item">
+                    <div class="content-item-header">
+                        <div>
+                            <div class="content-item-title">${a.title}</div>
+                            <div class="content-item-meta">
+                                ${categoryNames[a.category] || a.category} ／
+                                ${a.status === 'published' ? '✅ 公開中' : '📝 下書き'} ／
+                                ${new Date(a.created_at).toLocaleDateString('ja-JP')}
+                            </div>
+                        </div>
+                        <div class="content-actions">
+                            <button class="btn-small btn-edit-small" onclick="editColumn('${a.id}')">編集</button>
+                            <button class="btn-small btn-delete-small" onclick="deleteColumn('${a.id}')">削除</button>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        // ============ インタビュー保存 ============
+        window.saveInterview = async function() {
+            const editId = document.getElementById('interviewEditId').value;
+            const body = {
+                type: 'interview',
+                title:       document.getElementById('interviewTitle').value.trim(),
+                excerpt:     document.getElementById('interviewExcerpt').value.trim(),
+                content:     interviewEditorInstance ? interviewEditorInstance.getData() : '',
+                category:    document.getElementById('interviewCategory').value,
+                researcher:  document.getElementById('interviewResearcher').value.trim(),
+                affiliation: document.getElementById('interviewAffiliation').value.trim(),
+                featured_image: document.getElementById('interviewImage').value.trim() || null,
+                status:      document.getElementById('interviewStatus').value
+            };
+            if (!body.title) return alert('タイトルを入力してください');
+            if (!body.content) return alert('本文を入力してください');
+
+            const url    = editId ? `/api/admin/articles/${editId}` : '/api/admin/articles';
+            const method = editId ? 'PUT' : 'POST';
+
+            const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+            if (res.ok) {
+                alert(editId ? 'インタビューを更新しました' : 'インタビューを投稿しました');
+                resetInterviewForm();
+                loadInterviewList();
+            } else {
+                const err = await res.json();
+                alert('エラー: ' + err.error);
+            }
+        };
+
+        window.resetInterviewForm = function() {
+            document.getElementById('interviewEditId').value = '';
+            document.getElementById('interviewFormTitle').textContent = '📝 新規インタビュー投稿';
+            document.getElementById('interviewTitle').value = '';
+            document.getElementById('interviewExcerpt').value = '';
+            document.getElementById('interviewResearcher').value = '';
+            document.getElementById('interviewAffiliation').value = '';
+            document.getElementById('interviewImage').value = '';
+            document.getElementById('interviewStatus').value = 'published';
+            if (interviewEditorInstance) interviewEditorInstance.setData('');
+        };
+
+        window.editInterview = async function(id) {
+            const res = await fetch(`/api/admin/articles/${id}`);
+            if (!res.ok) return alert('記事の取得に失敗しました');
+            const a = await res.json();
+            document.getElementById('interviewEditId').value = a.id;
+            document.getElementById('interviewFormTitle').textContent = '✏️ インタビュー編集';
+            document.getElementById('interviewTitle').value = a.title || '';
+            document.getElementById('interviewExcerpt').value = a.excerpt || '';
+            document.getElementById('interviewResearcher').value = a.researcher || '';
+            document.getElementById('interviewAffiliation').value = a.affiliation || '';
+            document.getElementById('interviewImage').value = a.featured_image || '';
+            document.getElementById('interviewCategory').value = a.category || 'university-researcher';
+            document.getElementById('interviewStatus').value = a.status || 'published';
+            if (interviewEditorInstance) interviewEditorInstance.setData(a.content || '');
+            document.getElementById('interviews-tab').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window.deleteInterview = async function(id) {
+            if (!confirm('このインタビューを削除しますか？')) return;
+            const res = await fetch(`/api/admin/articles/${id}`, { method: 'DELETE' });
+            if (res.ok) { alert('削除しました'); loadInterviewList(); }
+            else alert('削除に失敗しました');
+        };
+
+        async function loadInterviewList() {
+            const res = await fetch('/api/admin/articles?type=interview');
+            if (!res.ok) return;
+            const articles = await res.json();
+            const container = document.getElementById('interviewList');
+            if (articles.length === 0) {
+                container.innerHTML = '<p style="color:#95a5a6;text-align:center;">インタビューはまだありません</p>';
+                return;
+            }
+            const categoryNames = { 'university-researcher':'大学研究者','corporate-researcher':'企業研究者','startup':'スタートアップ' };
+            container.innerHTML = articles.map(a => `
+                <div class="content-item">
+                    <div class="content-item-header">
+                        <div>
+                            <div class="content-item-title">${a.title}</div>
+                            <div class="content-item-meta">
+                                ${a.researcher ? a.researcher + ' ／ ' : ''}
+                                ${a.affiliation || ''} ／
+                                ${categoryNames[a.category] || a.category} ／
+                                ${a.status === 'published' ? '✅ 公開中' : '📝 下書き'} ／
+                                ${new Date(a.created_at).toLocaleDateString('ja-JP')}
+                            </div>
+                        </div>
+                        <div class="content-actions">
+                            <button class="btn-small btn-edit-small" onclick="editInterview('${a.id}')">編集</button>
+                            <button class="btn-small btn-delete-small" onclick="deleteInterview('${a.id}')">削除</button>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+
+        // ============ グローバル：特許関連 ============
         window.approvePatent = async function(id) {
             if (!confirm('この特許を承認しますか？')) return;
             
@@ -562,20 +882,22 @@
         // DOMContentLoaded
         document.addEventListener('DOMContentLoaded', function() {
         
-        // タブ切り替え（特許承認タブのみ処理）
+        // タブ切り替え
         document.querySelectorAll('.admin-tab[data-tab]').forEach(tab => {
             tab.addEventListener('click', () => {
                 const targetTab = tab.dataset.tab;
-                
-                // タブのアクティブ状態を切り替え
+
                 document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                
-                // コンテンツの表示を切り替え
+
                 document.querySelectorAll('.tab-content').forEach(content => {
                     content.classList.remove('active');
                 });
                 document.getElementById(`${targetTab}-tab`).classList.add('active');
+
+                // タブ切り替え時に一覧を更新
+                if (targetTab === 'columns')    loadColumnList();
+                if (targetTab === 'interviews') loadInterviewList();
             });
         });
         
