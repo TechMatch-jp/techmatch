@@ -8,9 +8,10 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 const { supabase } = require('./supabase');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const SECRET_KEY = process.env.JWT_SECRET || 'techmatch-secret-key-2026';
 
 // ============ ユーティリティ ============
@@ -25,6 +26,15 @@ function estimateReadTimeMinutes(text) {
 }
 
 // ============ Express設定 ============
+// /blog → さくらWordPressへ転送（最優先）
+app.use(['/blog', '/blog/'], createProxyMiddleware({
+  target: 'http://www3050.sakura.ne.jp',
+  changeOrigin: true,
+  xfwd: true,
+  ws: true,
+  logLevel: 'warn',
+}));
+
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
