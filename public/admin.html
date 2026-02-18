@@ -642,6 +642,20 @@
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 
     <script>
+        // 認証チェック
+        (async function checkAdminAuth() {
+            const res = await fetch('/api/user');
+            if (!res.ok) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            const user = await res.json();
+            if (user.userType !== 'admin') {
+                alert('管理者権限が必要です');
+                window.location.href = 'auth.html';
+            }
+        })();
+
         let currentRejectId = null;
         let loadPendingPatents = null;
         let columnEditorInstance = null;
@@ -703,7 +717,7 @@
             const url    = editId ? `/api/admin/articles/${editId}` : '/api/admin/articles';
             const method = editId ? 'PUT' : 'POST';
 
-            const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+            const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, credentials: 'include', body: JSON.stringify(body) });
             if (res.ok) {
                 alert(editId ? 'コラムを更新しました' : 'コラムを投稿しました');
                 resetColumnForm();
@@ -726,7 +740,7 @@
         };
 
         window.editColumn = async function(id) {
-            const res = await fetch(`/api/admin/articles/${id}`);
+            const res = await fetch(`/api/admin/articles/${id}`, { credentials: 'include' });
             if (!res.ok) return alert('記事の取得に失敗しました');
             const a = await res.json();
             document.getElementById('columnEditId').value = a.id;
@@ -743,13 +757,13 @@
 
         window.deleteColumn = async function(id) {
             if (!confirm('このコラムを削除しますか？')) return;
-            const res = await fetch(`/api/admin/articles/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/admin/articles/${id}`, { method: 'DELETE', credentials: 'include' });
             if (res.ok) { alert('削除しました'); loadColumnList(); }
             else alert('削除に失敗しました');
         };
 
         async function loadColumnList() {
-            const res = await fetch('/api/admin/articles?type=column');
+            const res = await fetch('/api/admin/articles?type=column', { credentials: 'include' });
             if (!res.ok) return;
             const articles = await res.json();
             const container = document.getElementById('columnList');
@@ -797,7 +811,7 @@
             const url    = editId ? `/api/admin/articles/${editId}` : '/api/admin/articles';
             const method = editId ? 'PUT' : 'POST';
 
-            const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+            const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, credentials: 'include', body: JSON.stringify(body) });
             if (res.ok) {
                 alert(editId ? 'インタビューを更新しました' : 'インタビューを投稿しました');
                 resetInterviewForm();
@@ -821,7 +835,7 @@
         };
 
         window.editInterview = async function(id) {
-            const res = await fetch(`/api/admin/articles/${id}`);
+            const res = await fetch(`/api/admin/articles/${id}`, { credentials: 'include' });
             if (!res.ok) return alert('記事の取得に失敗しました');
             const a = await res.json();
             document.getElementById('interviewEditId').value = a.id;
@@ -839,13 +853,13 @@
 
         window.deleteInterview = async function(id) {
             if (!confirm('このインタビューを削除しますか？')) return;
-            const res = await fetch(`/api/admin/articles/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/admin/articles/${id}`, { method: 'DELETE', credentials: 'include' });
             if (res.ok) { alert('削除しました'); loadInterviewList(); }
             else alert('削除に失敗しました');
         };
 
         async function loadInterviewList() {
-            const res = await fetch('/api/admin/articles?type=interview');
+            const res = await fetch('/api/admin/articles?type=interview', { credentials: 'include' });
             if (!res.ok) return;
             const articles = await res.json();
             const container = document.getElementById('interviewList');
@@ -928,7 +942,7 @@
         loadPendingPatents = async function() {
             try {
                 console.log('📋 承認待ち特許を読み込み中...');
-                const response = await fetch('/api/admin/patents/pending');
+                const response = await fetch('/api/admin/patents/pending', { credentials: 'include' });
                 console.log('📡 APIレスポンス:', response.status, response.statusText);
                 
                 if (response.ok) {
@@ -951,7 +965,7 @@
         // 統計を更新
         async function updateStats() {
             try {
-                const response = await fetch('/api/patents?owner=all');
+                const response = await fetch('/api/patents?owner=all', { credentials: 'include' });
                 if (response.ok) {
                     const allPatents = await response.json();
                     

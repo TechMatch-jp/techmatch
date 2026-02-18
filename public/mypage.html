@@ -29,7 +29,10 @@
                     console.log('3. ユーザー情報取得:', user);
                     console.log('4. userType:', user.userType);
                     
-                    if (user.userType === 'buyer') {
+                    if (user.userType === 'admin') {
+                        console.log('5. 管理者ページへ移動');
+                        window.location.href = 'admin.html';
+                    } else if (user.userType === 'buyer') {
                         console.log('5. 買い手ページへ移動');
                         window.location.href = 'mypage-buyer.html';
                     } else {

@@ -180,6 +180,7 @@
                             <option value="">選択してください</option>
                             <option value="seller">ライセンサー（売り手）</option>
                             <option value="buyer">ライセンシー（買い手）</option>
+                            <option value="admin">管理者</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -251,9 +252,14 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    showSuccess('ログインしました。マイページに移動します...');
+                    const user = data.user;
+                    showSuccess('ログインしました。移動します...');
                     setTimeout(() => {
-                        window.location.href = 'mypage.html';
+                        if (user && user.userType === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'mypage.html';
+                        }
                     }, 1000);
                 } else {
                     showError(data.error || 'ログインに失敗しました');
