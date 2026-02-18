@@ -2,9 +2,9 @@
 -- TechMatch データベーススキーマ
 -- ========================================
 
--- 既存のテーブルを削除（クリーンインストール用）
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS interests CASCADE;
+DROP TABLE IF EXISTS articles CASCADE;
 DROP TABLE IF EXISTS patents CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
@@ -37,6 +37,7 @@ CREATE TABLE patents (
     status TEXT DEFAULT 'available' CHECK (status IN ('available', 'sold', 'reserved')),
     approval_status TEXT DEFAULT 'pending' CHECK (approval_status IN ('pending', 'approved', 'rejected')),
     owner_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    owner_name TEXT,
     image TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -48,6 +49,8 @@ CREATE TABLE interests (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     patent_id UUID REFERENCES patents(id) ON DELETE CASCADE,
     buyer_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    buyer_name TEXT,
+    buyer_email TEXT,
     message TEXT,
     status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
     created_at TIMESTAMPTZ DEFAULT NOW()
@@ -68,35 +71,9 @@ CREATE TABLE messages (
 );
 
 -- ========================================
--- インデックス作成（パフォーマンス最適化）
--- ========================================
-CREATE INDEX idx_patents_owner_id ON patents(owner_id);
-CREATE INDEX idx_patents_approval_status ON patents(approval_status);
-CREATE INDEX idx_patents_category ON patents(category);
-CREATE INDEX idx_interests_patent_id ON interests(patent_id);
-CREATE INDEX idx_interests_buyer_id ON interests(buyer_id);
-CREATE INDEX idx_messages_sender_id ON messages(sender_id);
-CREATE INDEX idx_messages_receiver_id ON messages(receiver_id);
-CREATE INDEX idx_messages_patent_id ON messages(patent_id);
-
--- ========================================
--- Row Level Security (RLS) 設定
--- ========================================
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE patents ENABLE ROW LEVEL SECURITY;
-ALTER TABLE interests ENABLE ROW LEVEL SECURITY;
-ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
-
--- service_roleキー使用時は全アクセス可能
-CREATE POLICY "Service role has full access to users" ON users FOR ALL USING (true);
-CREATE POLICY "Service role has full access to patents" ON patents FOR ALL USING (true);
-CREATE POLICY "Service role has full access to interests" ON interests FOR ALL USING (true);
-CREATE POLICY "Service role has full access to messages" ON messages FOR ALL USING (true);
-
--- ========================================
 -- 5. 記事テーブル（コラム / インタビュー）
 -- ========================================
-CREATE TABLE IF NOT EXISTS articles (
+CREATE TABLE articles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     type TEXT NOT NULL CHECK (type IN ('column', 'interview')),
     title TEXT NOT NULL,
@@ -112,11 +89,31 @@ CREATE TABLE IF NOT EXISTS articles (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 更新日時の自動更新（Supabase側でtriggerを用意する場合もあるが、ここではアプリ側更新でもOK）
+-- ========================================
+-- インデックス
+-- ========================================
+CREATE INDEX idx_patents_owner_id ON patents(owner_id);
+CREATE INDEX idx_patents_approval_status ON patents(approval_status);
+CREATE INDEX idx_patents_category ON patents(category);
+CREATE INDEX idx_interests_patent_id ON interests(patent_id);
+CREATE INDEX idx_interests_buyer_id ON interests(buyer_id);
+CREATE INDEX idx_messages_sender_id ON messages(sender_id);
+CREATE INDEX idx_messages_receiver_id ON messages(receiver_id);
+CREATE INDEX idx_articles_type ON articles(type);
+CREATE INDEX idx_articles_status ON articles(status);
+CREATE INDEX idx_articles_created_at ON articles(created_at);
 
-CREATE INDEX IF NOT EXISTS idx_articles_type ON articles(type);
-CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status);
-CREATE INDEX IF NOT EXISTS idx_articles_created_at ON articles(created_at);
-
+-- ========================================
+-- Row Level Security (RLS)
+-- ========================================
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE patents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE interests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Service role has full access to articles" ON articles FOR ALL USING (true);
+
+CREATE POLICY "Service role full access users" ON users FOR ALL USING (true);
+CREATE POLICY "Service role full access patents" ON patents FOR ALL USING (true);
+CREATE POLICY "Service role full access interests" ON interests FOR ALL USING (true);
+CREATE POLICY "Service role full access messages" ON messages FOR ALL USING (true);
+CREATE POLICY "Service role full access articles" ON articles FOR ALL USING (true);
