@@ -239,7 +239,7 @@ function authenticateToken(req, res, next) {
     // 例) Windows(PowerShell):  $env:SKIP_AUTH='true'; npm start
     //     Mac/Linux:           SKIP_AUTH=true npm start
     if (String(process.env.SKIP_AUTH || '').toLowerCase() === 'true') {
-        req.user = { id: 'dev', email: 'dev@local', name: 'Dev', userType: 'admin' };
+        req.user = { id: 'dev', email: 'dev@local', name: 'Dev User', userType: process.env.SKIP_AUTH_TYPE || 'seller' };
         return next();
     }
     const token = req.cookies.token;
@@ -315,7 +315,13 @@ app.post('/api/login', async (req, res) => {
             SECRET_KEY,
             { expiresIn: '7d' }
         );
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', maxAge: 7 * 24 * 60 * 60 * 1000 });
+        const isProduction = process.env.NODE_ENV === 'production';
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
         res.json({ message: 'ログインに成功しました', user: { id: user.id, email: user.email, name: user.name, userType: user.user_type } });
     } catch (error) {
         console.error('Login error:', error);
@@ -330,6 +336,17 @@ app.post('/api/logout', (req, res) => {
 
 app.get('/api/user', authenticateToken, async (req, res) => {
     try {
+        // SKIP_AUTH=true の場合はDBを参照せず直接返す
+        if (String(process.env.SKIP_AUTH || '').toLowerCase() === 'true') {
+            return res.json({
+                id: req.user.id,
+                email: req.user.email,
+                name: req.user.name,
+                userType: req.user.userType,
+                organization: '',
+                createdAt: new Date().toISOString()
+            });
+        }
         const { data: user, error } = await supabase.from('users').select('id, email, name, user_type, organization, created_at').eq('id', req.user.id).single();
         if (error || !user) return res.status(404).json({ error: 'ユーザーが見つかりません' });
         res.json({ id: user.id, email: user.email, name: user.name, userType: user.user_type, organization: user.organization, createdAt: user.created_at });

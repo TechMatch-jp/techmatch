@@ -92,3 +92,31 @@ CREATE POLICY "Service role has full access to users" ON users FOR ALL USING (tr
 CREATE POLICY "Service role has full access to patents" ON patents FOR ALL USING (true);
 CREATE POLICY "Service role has full access to interests" ON interests FOR ALL USING (true);
 CREATE POLICY "Service role has full access to messages" ON messages FOR ALL USING (true);
+
+-- ========================================
+-- 5. 記事テーブル（コラム / インタビュー）
+-- ========================================
+CREATE TABLE IF NOT EXISTS articles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    type TEXT NOT NULL CHECK (type IN ('column', 'interview')),
+    title TEXT NOT NULL,
+    excerpt TEXT,
+    content TEXT,
+    category TEXT,
+    author TEXT,
+    researcher TEXT,
+    affiliation TEXT,
+    featured_image TEXT,
+    status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 更新日時の自動更新（Supabase側でtriggerを用意する場合もあるが、ここではアプリ側更新でもOK）
+
+CREATE INDEX IF NOT EXISTS idx_articles_type ON articles(type);
+CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status);
+CREATE INDEX IF NOT EXISTS idx_articles_created_at ON articles(created_at);
+
+ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service role has full access to articles" ON articles FOR ALL USING (true);
