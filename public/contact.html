@@ -138,10 +138,7 @@
                     ご質問・掲載のご相談など、お気軽にお問い合わせください。
                 </p>
 
-                <div id="msgSuccess" class="msg msg-success"></div>
-                <div id="msgError" class="msg msg-error"></div>
-
-                <form id="contactForm">
+<form id="contactForm">
                     <div class="form-group">
                         <label for="name">お名前<span class="req">*</span></label>
                         <input type="text" id="name" placeholder="山田 太郎" required>
@@ -174,6 +171,8 @@
                     </div>
 
                     <button type="submit" class="submit-btn" id="submitBtn">送信する</button>
+                    <div id="msgSuccess" class="msg msg-success" style="margin-top:1rem"></div>
+                    <div id="msgError" class="msg msg-error" style="margin-top:1rem"></div>
                 </form>
             </div>
         </div>
@@ -230,7 +229,6 @@
                 successEl.textContent = 'お問い合わせを受け付けました。確認メールをお送りしましたのでご確認ください。';
                 successEl.style.display = 'block';
                 document.getElementById('contactForm').reset();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (err) {
                 errorEl.textContent = err.message || '送信に失敗しました。しばらく時間をおいてお試しください。';
                 errorEl.style.display = 'block';
