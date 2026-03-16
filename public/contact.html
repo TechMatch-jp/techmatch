@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-47LCYNSVRP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -9,96 +8,110 @@
   gtag('js', new Date());
   gtag('config', 'G-47LCYNSVRP');
 </script>
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>お問い合わせ - テックマッチ</title>
+    <title>お問い合わせ - TechMatch</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stylish-common.css">
     <style>
-        .contact-container {
-            max-width: 700px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        .contact-wrap {
+            max-width: 680px;
+            margin: 3rem auto;
+            padding: 0 1rem;
         }
-        
-        .contact-intro {
-            margin-bottom: 2rem;
+        .contact-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 2.5rem 2rem;
+        }
+        .contact-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 0.5rem;
+        }
+        .contact-lead {
+            color: #555;
             line-height: 1.8;
-            color: #2c3e50;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
         }
-        
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.4rem;
         }
-        
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             color: #2c3e50;
             font-weight: 500;
+            font-size: 0.9rem;
         }
-        
-        .form-group label .required {
+        .form-group label .req {
             color: #e74c3c;
-            margin-left: 0.25rem;
+            margin-left: 4px;
+            font-size: 0.8rem;
         }
-        
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 1rem;
+            padding: 0.7rem 0.9rem;
+            border: 1.5px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: #fafafa;
+            transition: border-color 0.2s, background 0.2s;
+            box-sizing: border-box;
         }
-        
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
             border-color: #3498db;
+            background: #fff;
         }
-        
+        .form-group textarea {
+            resize: vertical;
+        }
         .submit-btn {
             width: 100%;
-            padding: 1rem;
-            background-color: #3498db;
-            color: white;
+            padding: 0.9rem;
+            background: #1a1a2e;
+            color: #fff;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background 0.2s, opacity 0.2s;
+            margin-top: 0.5rem;
         }
-        
-        .submit-btn:hover {
-            background-color: #2980b9;
+        .submit-btn:hover:not(:disabled) {
+            background: #2c2c4e;
         }
-        
-        .success-message {
-            background-color: #d4edda;
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .msg {
+            padding: 0.9rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .msg-success {
+            background: #d4edda;
             color: #155724;
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            display: none;
+            border: 1px solid #c3e6cb;
         }
-        
-        .error-message {
-            background-color: #f8d7da;
+        .msg-error {
+            background: #f8d7da;
             color: #721c24;
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            display: none;
+            border: 1px solid #f5c6cb;
         }
     </style>
-    <link rel="stylesheet" href="stylish-common.css">
 </head>
 <body>
     <div class="bg-decoration"></div>
@@ -110,6 +123,7 @@
                     <a href="index.html" class="nav-link">特許一覧</a>
                     <a href="column.html" class="nav-link">技術コラム</a>
                     <a href="interview.html" class="nav-link">研究者インタビュー</a>
+                    <a href="contact.html" class="nav-link">お問い合わせ</a>
                     <a href="auth.html" class="btn-primary">ログイン</a>
                 </nav>
             </div>
@@ -117,69 +131,50 @@
     </header>
 
     <main class="main-content">
-        <div class="container">
-            <div class="contact-container">
-                <h1 style="text-align: center; margin-bottom: 2rem; color: #2c3e50;">お問い合わせ</h1>
-                
-                <div class="contact-intro">
-                    <p>
-                        テックマッチに関するご質問、ご意見、サービスのご利用に関するお問い合わせは、
-                        下記フォームよりお気軽にお寄せください。<br>
-                        通常、2営業日以内にご返信いたします。
-                    </p>
-                </div>
-                
-                <div id="successMessage" class="success-message"></div>
-                <div id="errorMessage" class="error-message"></div>
-                
+        <div class="contact-wrap">
+            <div class="contact-card">
+                <h1 class="contact-title">お問い合わせ</h1>
+                <p class="contact-lead">
+                    ご質問・掲載のご相談など、お気軽にお問い合わせください。
+                </p>
+
+                <div id="msgSuccess" class="msg msg-success"></div>
+                <div id="msgError" class="msg msg-error"></div>
+
                 <form id="contactForm">
                     <div class="form-group">
-                        <label for="name">お名前<span class="required">*</span></label>
-                        <input type="text" id="name" required>
+                        <label for="name">お名前<span class="req">*</span></label>
+                        <input type="text" id="name" placeholder="山田 太郎" required>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="email">メールアドレス<span class="required">*</span></label>
-                        <input type="email" id="email" required>
+                        <label for="company">会社名・所属</label>
+                        <input type="text" id="company" placeholder="株式会社〇〇 / 〇〇大学">
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="organization">所属組織</label>
-                        <input type="text" id="organization" placeholder="大学名、企業名など">
+                        <label for="email">メールアドレス<span class="req">*</span></label>
+                        <input type="email" id="email" placeholder="example@company.com" required>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="category">お問い合わせ種別<span class="required">*</span></label>
-                        <select id="category" required>
+                        <label for="subject">件名<span class="req">*</span></label>
+                        <select id="subject" required>
                             <option value="">選択してください</option>
-                            <option value="service">サービスに関するお問い合わせ</option>
-                            <option value="technical">技術的なお問い合わせ</option>
-                            <option value="patent">特許掲載に関するお問い合わせ</option>
-                            <option value="partnership">提携・協業のご相談</option>
+                            <option value="listing">掲載申請</option>
+                            <option value="patent">特許への問い合わせ</option>
                             <option value="other">その他</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="subject">件名<span class="required">*</span></label>
-                        <input type="text" id="subject" required>
+                        <label for="message">お問い合わせ内容<span class="req">*</span></label>
+                        <textarea id="message" rows="7" placeholder="お問い合わせ内容をご記入ください" maxlength="3000" required oninput="updateCount(this)"></textarea>
+                        <div class="hint"><span id="msgCount">0</span> / 3000文字</div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="message">お問い合わせ内容<span class="required">*</span></label>
-                        <textarea id="message" rows="8" required placeholder="お問い合わせ内容を詳しくご記入ください"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">送信する</button>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">送信する</button>
                 </form>
-                
-                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e0e0e0;">
-                    <h3 style="color: #2c3e50; margin-bottom: 1rem;">その他のお問い合わせ方法</h3>
-                    <p style="line-height: 1.8; color: #2c3e50;">
-                        <strong>メール：</strong> info@techmatch.co.jp<br>
-                        <strong>電話：</strong> 078-XXX-XXXX（平日 10:00-18:00）
-                    </p>
-                </div>
             </div>
         </div>
     </main>
@@ -199,31 +194,50 @@
     </footer>
 
     <script>
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        function updateCount(el) {
+            document.getElementById('msgCount').textContent = el.value.length;
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                organization: document.getElementById('organization').value,
-                category: document.getElementById('category').value,
+
+            const btn = document.getElementById('submitBtn');
+            const successEl = document.getElementById('msgSuccess');
+            const errorEl = document.getElementById('msgError');
+
+            successEl.style.display = 'none';
+            errorEl.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = '送信中...';
+
+            const body = {
+                name:    document.getElementById('name').value.trim(),
+                company: document.getElementById('company').value.trim(),
+                email:   document.getElementById('email').value.trim(),
                 subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value
+                message: document.getElementById('message').value.trim()
             };
-            
-            // 実際の送信処理（現状はダミー）
-            console.log('お問い合わせ内容:', formData);
-            
-            // 成功メッセージを表示
-            document.getElementById('successMessage').textContent = 'お問い合わせを受け付けました。ご連絡いただきありがとうございます。';
-            document.getElementById('successMessage').style.display = 'block';
-            document.getElementById('errorMessage').style.display = 'none';
-            
-            // フォームをリセット
-            document.getElementById('contactForm').reset();
-            
-            // 上部にスクロール
-            window.scrollTo(0, 0);
+
+            try {
+                const res = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || '送信に失敗しました');
+
+                successEl.textContent = 'お問い合わせを受け付けました。確認メールをお送りしましたのでご確認ください。';
+                successEl.style.display = 'block';
+                document.getElementById('contactForm').reset();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                errorEl.textContent = err.message || '送信に失敗しました。しばらく時間をおいてお試しください。';
+                errorEl.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '送信する';
+            }
         });
     </script>
 </body>
