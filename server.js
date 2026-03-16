@@ -399,12 +399,12 @@ app.delete('/api/admin/articles/:id', authenticateToken, async (req, res) => {
 // ============ お問い合わせ ============
 app.post('/api/contact', async (req, res) => {
     try {
-        const { name, company, email, subject, message } = req.body;
-        if (!name || !email || !subject || !message) {
+        const { name, company, email, phone, subject, message } = req.body;
+        if (!name || !email || !phone || !subject || !message) {
             return res.status(400).json({ error: '必須項目を入力してください' });
         }
         const { error: dbError } = await supabase.from('contacts').insert([{
-            name, company: company || null, email, subject, message
+            name, company: company || null, email, phone, subject, message
         }]);
         if (dbError) return res.status(500).json({ error: 'データの保存に失敗しました: ' + dbError.message });
         const labelMap = { listing: '掲載申請', patent: '特許への問い合わせ', other: 'その他' };
@@ -413,13 +413,13 @@ app.post('/api/contact', async (req, res) => {
             from: 'TechMatch <noreply@techmatch.jp>',
             to: 'info@techmatch.jp',
             subject: `【お問い合わせ】${subjectLabel}`,
-            html: `<p><strong>お問い合わせが届きました。</strong></p><table style="font-size:14px;border-collapse:collapse"><tr><td style="padding:6px 16px 6px 0;color:#666">お名前</td><td>${name}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">会社名</td><td>${company || '―'}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">メール</td><td><a href="mailto:${email}">${email}</a></td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">件名</td><td>${subjectLabel}</td></tr></table><hr style="margin:16px 0;border:none;border-top:1px solid #eee"><p style="white-space:pre-wrap;font-size:14px">${message}</p>`
+            html: `<p><strong>お問い合わせが届きました。</strong></p><table style="font-size:14px;border-collapse:collapse"><tr><td style="padding:6px 16px 6px 0;color:#666">お名前</td><td>${name}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">会社名</td><td>${company || '―'}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">メール</td><td><a href="mailto:${email}">${email}</a></td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">電話</td><td>${phone}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">件名</td><td>${subjectLabel}</td></tr></table><hr style="margin:16px 0;border:none;border-top:1px solid #eee"><p style="white-space:pre-wrap;font-size:14px">${message}</p>`
         });
         await resend.emails.send({
             from: 'TechMatch <noreply@techmatch.jp>',
             to: email,
             subject: 'お問い合わせを受け付けました - TechMatch',
-            html: `<p>${name} 様</p><p>この度はTechMatchへお問い合わせいただき、誠にありがとうございます。以下の内容で受け付けました。</p><table style="font-size:14px;border-collapse:collapse"><tr><td style="padding:6px 16px 6px 0;color:#666">お名前</td><td>${name}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">会社名</td><td>${company || '―'}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">件名</td><td>${subjectLabel}</td></tr></table><hr style="margin:16px 0;border:none;border-top:1px solid #eee"><p style="white-space:pre-wrap;font-size:14px">${message}</p><hr style="margin:16px 0;border:none;border-top:1px solid #eee"><p style="font-size:13px;color:#666">通常、2営業日以内に担当者よりご返信いたします。お急ぎの場合は <a href="mailto:info@techmatch.jp">info@techmatch.jp</a> まで直接ご連絡ください。</p><p style="font-size:13px;color:#999">─<br>TechMatch 運営事務局<br>https://techmatch.jp</p>`
+            html: `<p>${name} 様</p><p>この度はTechMatchへお問い合わせいただき、誠にありがとうございます。以下の内容で受け付けました。</p><table style="font-size:14px;border-collapse:collapse"><tr><td style="padding:6px 16px 6px 0;color:#666">お名前</td><td>${name}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">会社名</td><td>${company || '―'}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">電話</td><td>${phone}</td></tr><tr><td style="padding:6px 16px 6px 0;color:#666">件名</td><td>${subjectLabel}</td></tr></table><hr style="margin:16px 0;border:none;border-top:1px solid #eee"><p style="white-space:pre-wrap;font-size:14px">${message}</p><hr style="margin:16px 0;border:none;border-top:1px solid #eee"><p style="font-size:13px;color:#666">通常、2営業日以内に担当者よりご返信いたします。お急ぎの場合は <a href="mailto:info@techmatch.jp">info@techmatch.jp</a> まで直接ご連絡ください。</p><p style="font-size:13px;color:#999">─<br>TechMatch 運営事務局<br>https://techmatch.jp</p>`
         });
         res.json({ message: '送信が完了しました' });
     } catch (e) {

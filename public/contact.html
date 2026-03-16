@@ -155,6 +155,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="phone">電話番号<span class="req">*</span></label>
+                        <input type="tel" id="phone" placeholder="090-1234-5678" required>
+                    </div>
+
+                    <div class="form-group">
                         <label for="subject">件名<span class="req">*</span></label>
                         <select id="subject" required>
                             <option value="">選択してください</option>
@@ -213,6 +218,7 @@
                 name:    document.getElementById('name').value.trim(),
                 company: document.getElementById('company').value.trim(),
                 email:   document.getElementById('email').value.trim(),
+                phone:   document.getElementById('phone').value.trim(),
                 subject: document.getElementById('subject').value,
                 message: document.getElementById('message').value.trim()
             };
