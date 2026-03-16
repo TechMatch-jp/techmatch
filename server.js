@@ -428,6 +428,31 @@ app.post('/api/contact', async (req, res) => {
     }
 });
 
+// ============ サイトマップ ============
+app.get('/sitemap.xml', (req, res) => {
+    const baseUrl = 'https://techmatch.jp';
+    const pages = [
+        { url: '/', priority: '1.0', changefreq: 'weekly' },
+        { url: '/patents.html', priority: '0.9', changefreq: 'daily' },
+        { url: '/column.html', priority: '0.7', changefreq: 'weekly' },
+        { url: '/interview.html', priority: '0.7', changefreq: 'weekly' },
+        { url: '/contact.html', priority: '0.5', changefreq: 'monthly' },
+        { url: '/auth.html', priority: '0.5', changefreq: 'monthly' },
+    ];
+    const today = new Date().toISOString().split('T')[0];
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages.map(p => `  <url>
+    <loc>${baseUrl}${p.url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+    res.header('Content-Type', 'application/xml');
+    res.send(xml);
+});
+
 // ============ サーバー起動 ============
 app.listen(PORT, () => {
     console.log(`✅ TechMatch server started on http://localhost:${PORT}`);
