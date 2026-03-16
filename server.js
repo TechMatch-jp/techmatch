@@ -453,6 +453,12 @@ ${pages.map(p => `  <url>
     res.send(xml);
 });
 
+// ============ robots.txt ============
+app.get('/robots.txt', (req, res) => {
+    res.header('Content-Type', 'text/plain');
+    res.send(`User-agent: *\nAllow: /\nSitemap: https://techmatch.jp/sitemap.xml`);
+});
+
 // ============ サーバー起動 ============
 app.listen(PORT, () => {
     console.log(`✅ TechMatch server started on http://localhost:${PORT}`);
