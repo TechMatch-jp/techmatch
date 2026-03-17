@@ -198,106 +198,95 @@
         
         // 特許詳細を表示
         function displayPatentDetail(patent) {
-            const categoryNames = {
-                ai: 'AI・機械学習',
-                iot: 'IoT',
-                medical: '医療機器',
-                manufacturing: '製造技術',
-                energy: 'エネルギー'
-            };
-            
-            const statusNames = {
-                available: '利用可能',
-                negotiation: '交渉中'
-            };
-            
             const container = document.getElementById('patentDetail');
-            
-            let interestFormHTML = '';
-            if (currentUser && currentUser.id !== patent.ownerId) {
-                interestFormHTML = `
-                    <div class="interest-form">
-                        <h3>この特許に興味がありますか?</h3>
-                        <p style="color: #7f8c8d; margin-bottom: 1rem;">興味表明を送信すると、特許の出願者に通知されます。</p>
-                        <form id="interestForm">
-                            <textarea id="interestMessage" placeholder="興味を持った理由やご質問などを記入してください..." required></textarea>
-                            <button type="submit" class="action-btn">興味を表明する</button>
-                        </form>
+
+            // 出願日のフォーマット
+            const filingDate = patent.filing_date
+                ? new Date(patent.filing_date).toLocaleDateString('ja-JP')
+                : '不明';
+
+            // 会員限定ブロック（ログイン促進）
+            const lockedHTML = `
+                <div style="position: relative; margin-top: 2rem;">
+                    <div style="filter: blur(4px); pointer-events: none; user-select: none; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                        <p>この特許のAI活用案・詳細情報・出願人への問い合わせ機能は会員限定です。</p>
+                        <p>無料登録で、特許の活用提案をすべて閲覧できます。</p>
+                        <p>サンプルテキストサンプルテキストサンプルテキストサンプルテキスト</p>
                     </div>
-                `;
-            } else if (!currentUser) {
-                interestFormHTML = `
-                    <div class="interest-form">
-                        <h3>この特許に興味がありますか?</h3>
-                        <p style="color: #7f8c8d; margin-bottom: 1rem;">興味表明を行うには<a href="auth.html" style="color: #3498db;">ログイン</a>が必要です。</p>
+                    <div style="
+                        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+                        display: flex; flex-direction: column;
+                        align-items: center; justify-content: center;
+                        background: rgba(255,255,255,0.7);
+                        border-radius: 8px;
+                        text-align: center;
+                        padding: 2rem;
+                    ">
+                        <p style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">この先のAI活用案は会員限定です</p>
+                        <p style="color: #7f8c8d; margin-bottom: 1.5rem;">無料登録で、特許の活用提案をすべて閲覧できます</p>
+                        <a href="auth.html" style="
+                            display: inline-block;
+                            background: #00bcd4;
+                            color: white;
+                            padding: 0.9rem 2.5rem;
+                            border-radius: 50px;
+                            text-decoration: none;
+                            font-weight: bold;
+                            font-size: 1rem;
+                            margin-bottom: 1rem;
+                        ">無料登録して続きを見る</a>
+                        <p style="font-size: 0.9rem; color: #7f8c8d;">既に会員の方は<a href="auth.html" style="color: #3498db;">ログイン</a></p>
                     </div>
-                `;
-            }
-            
+                </div>
+            `;
+
             container.innerHTML = `
                 <div class="detail-header">
                     <h1 class="detail-title">${patent.title}</h1>
                     <div class="detail-meta">
-                        <span class="card-category">${categoryNames[patent.category]}</span>
-                        <span class="card-status ${patent.status}">${statusNames[patent.status]}</span>
-                        <span>${new Date(patent.createdAt).toLocaleDateString()}</span>
+                        <span>${patent.category || ''}</span>
+                        <span>出願日: ${filingDate}</span>
                     </div>
                 </div>
-                
+
                 <div class="detail-section">
                     <h3>特許情報</h3>
                     <div class="detail-info-grid">
                         <div class="detail-label">特許番号:</div>
-                        <div>${patent.patentNumber}</div>
-                        
-                        <div class="detail-label">出願者:</div>
-                        <div>${patent.ownerName}</div>
-                        
+                        <div>${patent.publication_number || '不明'}</div>
+
+                        <div class="detail-label">出願人:</div>
+                        <div>${patent.assignee || '不明'}</div>
+
                         <div class="detail-label">カテゴリー:</div>
-                        <div>${categoryNames[patent.category]}</div>
-                    </div>
-                    
-                    <div class="price-tag">
-                        希望価格: ¥${patent.price.toLocaleString()}
+                        <div>${patent.category || '不明'}</div>
+
+                        <div class="detail-label">出願日:</div>
+                        <div>${filingDate}</div>
                     </div>
                 </div>
-                
+
                 <div class="detail-section">
                     <h3>特許の説明</h3>
-                    <p style="line-height: 1.8; color: #2c3e50;">${patent.description}</p>
+                    <p style="line-height: 1.8; color: #2c3e50;">${patent.description || '説明なし'}</p>
                 </div>
-                
+
                 ${patent.problem ? `
                 <div class="detail-section">
                     <h3>🎯 解決できる課題</h3>
                     <p style="line-height: 1.8; color: #2c3e50;">${patent.problem}</p>
                 </div>
                 ` : ''}
-                
+
                 ${patent.usage ? `
                 <div class="detail-section">
                     <h3>💡 何にどう使えるか</h3>
                     <p style="line-height: 1.8; color: #2c3e50;">${patent.usage}</p>
                 </div>
                 ` : ''}
-                
-                ${patent.advantage ? `
-                <div class="detail-section">
-                    <h3>⭐ 他の特許との違い</h3>
-                    <p style="line-height: 1.8; color: #2c3e50;">${patent.advantage}</p>
-                </div>
-                ` : ''}
-                
-                ${interestFormHTML}
+
+                ${lockedHTML}
             `;
-            
-            // 興味表明フォームのイベントリスナー
-            if (currentUser && currentUser.id !== patent.ownerId) {
-                document.getElementById('interestForm').addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    await submitInterest(patent.id);
-                });
-            }
         }
         
         // 興味表明を送信
