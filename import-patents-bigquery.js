@@ -181,7 +181,7 @@ async function saveToSupabase(patents) {
 async function main() {
   console.log('╔══════════════════════════════════════════╗');
   console.log('║  TechMatch 特許インポート（BigQuery版）  ║');
-  console.log('║  15カテゴリ × 20キーワード × 20件        ║');
+  console.log(`║  15カテゴリ × 20キーワード × ${LIMIT_PER_KEYWORD}件/キーワード`);
   console.log('╚══════════════════════════════════════════╝\n');
 
   let totalSaved = 0;
