@@ -172,7 +172,7 @@ function createPatentCard(patent) {
     };
     
     card.innerHTML = `
-        <div class="card-image">🔬</div>
+        <div class="card-image"></div>
         <div class="card-content">
             <h4 class="card-title">${patent.title}</h4>
             <p class="card-description">${patent.description}</p>
@@ -304,7 +304,7 @@ function createColumnCard(column) {
     };
     
     card.innerHTML = `
-        <div class="card-image">📝</div>
+        <div class="card-image"></div>
         <div class="card-content">
             <h4 class="card-title">${column.title}</h4>
             <p class="card-description">${column.description}</p>

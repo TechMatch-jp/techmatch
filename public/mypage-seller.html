@@ -31,7 +31,7 @@
         }
         
         .page-identifier::before {
-            content: '🔬 ';
+            content: ' ';
             margin-right: 0.5rem;
         }
         
@@ -456,7 +456,7 @@
                     <h3 class="subheading">審査中（ペンディング）</h3>
                     <div id="pendingPatentsList">
                         <div class="empty-state">
-                            <div class="empty-state-icon">📋</div>
+                            <div class="empty-state-icon"></div>
                             <p>審査中の特許はありません</p>
                         </div>
                     </div>
@@ -464,7 +464,7 @@
                     <h3 class="subheading" style="margin-top: 2rem;">承認済み・却下</h3>
                     <div id="patentsList">
                         <div class="empty-state">
-                            <div class="empty-state-icon">📄</div>
+                            <div class="empty-state-icon"></div>
                             <p>登録した特許はまだありません</p>
                         </div>
                     </div>
@@ -486,7 +486,7 @@
                             <tr>
                                 <td colspan="4">
                                     <div class="empty-state">
-                                        <div class="empty-state-icon">💬</div>
+                                        <div class="empty-state-icon"></div>
                                         <p>興味表明はまだありません</p>
                                     </div>
                                 </td>
@@ -605,7 +605,7 @@
             if (!patents || patents.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📄</div>
+                        <div class="empty-state-icon"></div>
                         <p>${emptyMessage}</p>
                     </div>
                 `;

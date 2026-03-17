@@ -31,7 +31,7 @@
         }
         
         .page-identifier::before {
-            content: '🛡️ ';
+            content: '️ ';
             margin-right: 0.5rem;
         }
         
@@ -502,7 +502,7 @@
                 <h2 class="section-title">承認待ち特許</h2>
                 <div id="pendingList">
                     <div class="empty-state">
-                        <div class="empty-state-icon">📋</div>
+                        <div class="empty-state-icon"></div>
                         <p>承認待ちの特許はありません</p>
                     </div>
                 </div>
@@ -512,7 +512,7 @@
         <!-- 技術コラムタブ -->
         <div class="tab-content" id="columns-tab">
             <div class="content-form">
-                <h2 class="form-title" id="columnFormTitle">📝 新規コラム投稿</h2>
+                <h2 class="form-title" id="columnFormTitle"> 新規コラム投稿</h2>
                 <input type="hidden" id="columnEditId">
                 <div class="form-group">
                     <label>タイトル *</label>
@@ -551,8 +551,8 @@
                     </select>
                 </div>
                 <div style="display:flex;gap:1rem;margin-top:1.5rem;">
-                    <button class="btn-submit" onclick="saveColumn()">💾 保存する</button>
-                    <button class="btn-submit" style="background:linear-gradient(135deg,#95a5a6,#7f8c8d);box-shadow:none;" onclick="resetColumnForm()">✕ キャンセル</button>
+                    <button class="btn-submit" onclick="saveColumn()"> 保存する</button>
+                    <button class="btn-submit" style="background:linear-gradient(135deg,#95a5a6,#7f8c8d);box-shadow:none;" onclick="resetColumnForm()"> キャンセル</button>
                 </div>
             </div>
 
@@ -565,7 +565,7 @@
         <!-- 研究者インタビュータブ -->
         <div class="tab-content" id="interviews-tab">
             <div class="content-form">
-                <h2 class="form-title" id="interviewFormTitle">📝 新規インタビュー投稿</h2>
+                <h2 class="form-title" id="interviewFormTitle"> 新規インタビュー投稿</h2>
                 <input type="hidden" id="interviewEditId">
                 <div class="form-group">
                     <label>タイトル *</label>
@@ -607,8 +607,8 @@
                     </select>
                 </div>
                 <div style="display:flex;gap:1rem;margin-top:1.5rem;">
-                    <button class="btn-submit" onclick="saveInterview()">💾 保存する</button>
-                    <button class="btn-submit" style="background:linear-gradient(135deg,#95a5a6,#7f8c8d);box-shadow:none;" onclick="resetInterviewForm()">✕ キャンセル</button>
+                    <button class="btn-submit" onclick="saveInterview()"> 保存する</button>
+                    <button class="btn-submit" style="background:linear-gradient(135deg,#95a5a6,#7f8c8d);box-shadow:none;" onclick="resetInterviewForm()"> キャンセル</button>
                 </div>
             </div>
 
@@ -730,7 +730,7 @@
 
         window.resetColumnForm = function() {
             document.getElementById('columnEditId').value = '';
-            document.getElementById('columnFormTitle').textContent = '📝 新規コラム投稿';
+            document.getElementById('columnFormTitle').textContent = ' 新規コラム投稿';
             document.getElementById('columnTitle').value = '';
             document.getElementById('columnExcerpt').value = '';
             document.getElementById('columnAuthor').value = '編集部';
@@ -744,7 +744,7 @@
             if (!res.ok) return alert('記事の取得に失敗しました');
             const a = await res.json();
             document.getElementById('columnEditId').value = a.id;
-            document.getElementById('columnFormTitle').textContent = '✏️ コラム編集';
+            document.getElementById('columnFormTitle').textContent = '️ コラム編集';
             document.getElementById('columnTitle').value = a.title || '';
             document.getElementById('columnExcerpt').value = a.excerpt || '';
             document.getElementById('columnAuthor').value = a.author || '編集部';
@@ -779,7 +779,7 @@
                             <div class="content-item-title">${a.title}</div>
                             <div class="content-item-meta">
                                 ${categoryNames[a.category] || a.category} ／
-                                ${a.status === 'published' ? '✅ 公開中' : '📝 下書き'} ／
+                                ${a.status === 'published' ? ' 公開中' : ' 下書き'} ／
                                 ${new Date(a.created_at).toLocaleDateString('ja-JP')}
                             </div>
                         </div>
@@ -824,7 +824,7 @@
 
         window.resetInterviewForm = function() {
             document.getElementById('interviewEditId').value = '';
-            document.getElementById('interviewFormTitle').textContent = '📝 新規インタビュー投稿';
+            document.getElementById('interviewFormTitle').textContent = ' 新規インタビュー投稿';
             document.getElementById('interviewTitle').value = '';
             document.getElementById('interviewExcerpt').value = '';
             document.getElementById('interviewResearcher').value = '';
@@ -839,7 +839,7 @@
             if (!res.ok) return alert('記事の取得に失敗しました');
             const a = await res.json();
             document.getElementById('interviewEditId').value = a.id;
-            document.getElementById('interviewFormTitle').textContent = '✏️ インタビュー編集';
+            document.getElementById('interviewFormTitle').textContent = '️ インタビュー編集';
             document.getElementById('interviewTitle').value = a.title || '';
             document.getElementById('interviewExcerpt').value = a.excerpt || '';
             document.getElementById('interviewResearcher').value = a.researcher || '';
@@ -877,7 +877,7 @@
                                 ${a.researcher ? a.researcher + ' ／ ' : ''}
                                 ${a.affiliation || ''} ／
                                 ${categoryNames[a.category] || a.category} ／
-                                ${a.status === 'published' ? '✅ 公開中' : '📝 下書き'} ／
+                                ${a.status === 'published' ? ' 公開中' : ' 下書き'} ／
                                 ${new Date(a.created_at).toLocaleDateString('ja-JP')}
                             </div>
                         </div>
@@ -941,23 +941,23 @@
         // 承認待ち特許を取得
         loadPendingPatents = async function() {
             try {
-                console.log('📋 承認待ち特許を読み込み中...');
+                console.log(' 承認待ち特許を読み込み中...');
                 const response = await fetch('/api/admin/patents/pending', { credentials: 'include' });
-                console.log('📡 APIレスポンス:', response.status, response.statusText);
+                console.log(' APIレスポンス:', response.status, response.statusText);
                 
                 if (response.ok) {
                     const patents = await response.json();
-                    console.log('✅ 取得した特許数:', patents.length);
-                    console.log('📊 特許データ:', patents);
+                    console.log(' 取得した特許数:', patents.length);
+                    console.log(' 特許データ:', patents);
                     displayPendingPatents(patents);
                     updateStats();
                 } else {
                     const errorText = await response.text();
-                    console.error('❌ Failed to load pending patents:', response.status, errorText);
+                    console.error(' Failed to load pending patents:', response.status, errorText);
                     alert('承認待ち特許の取得に失敗しました');
                 }
             } catch (error) {
-                console.error('❌ Error:', error);
+                console.error(' Error:', error);
                 alert('エラーが発生しました: ' + error.message);
             }
         };
@@ -989,7 +989,7 @@
             if (patents.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">✅</div>
+                        <div class="empty-state-icon"></div>
                         <p>承認待ちの特許はありません</p>
                     </div>
                 `;
@@ -1002,8 +1002,8 @@
                         <div>
                             <div class="review-title">${patent.title}</div>
                             <div class="review-meta">
-                                <span>📅 登録日: ${new Date(patent.created_at).toLocaleDateString('ja-JP')}</span>
-                                <span>👤 出願者: ${patent.owner_name || '不明'}</span>
+                                <span> 登録日: ${new Date(patent.created_at).toLocaleDateString('ja-JP')}</span>
+                                <span> 出願者: ${patent.owner_name || '不明'}</span>
                                 <span class="badge-pending">審査中</span>
                             </div>
                         </div>
@@ -1015,17 +1015,17 @@
                     </div>
                     
                     <div class="review-description">
-                        <strong>🎯 解決できる課題:</strong><br>
+                        <strong> 解決できる課題:</strong><br>
                         ${patent.problem || '未記入'}
                     </div>
                     
                     <div class="review-description">
-                        <strong>💡 何にどう使えるか:</strong><br>
+                        <strong> 何にどう使えるか:</strong><br>
                         ${patent.usage || '未記入'}
                     </div>
                     
                     <div class="review-description">
-                        <strong>⭐ 他の特許との違い:</strong><br>
+                        <strong> 他の特許との違い:</strong><br>
                         ${patent.advantage || '未記入'}
                     </div>
                     
@@ -1046,10 +1046,10 @@
                     
                     <div class="review-actions">
                         <button class="btn btn-approve" onclick="approvePatent('${patent.id}')">
-                            ✓ 承認
+                             承認
                         </button>
                         <button class="btn btn-reject" onclick="openRejectModal('${patent.id}')">
-                            ✗ 却下
+                             却下
                         </button>
                     </div>
                 </div>
