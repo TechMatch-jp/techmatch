@@ -138,7 +138,8 @@ async function fetchPatentsByKeyword(keyword, category) {
       publication_number,
       (SELECT tl.text FROM UNNEST(title_localized) tl WHERE tl.language = 'ja' LIMIT 1) AS title_ja,
       (SELECT al.text FROM UNNEST(abstract_localized) al WHERE al.language = 'ja' LIMIT 1) AS abstract_ja,
-      (SELECT a.name FROM UNNEST(assignee_harmonized) a LIMIT 1) AS assignee_name,
+      (SELECT a.name FROM UNNEST(assignee_harmonized) a LIMIT 1) AS assignee_harmonized_name,
+      assignee AS assignee_raw,
       filing_date,
       publication_date
     FROM \`patents-public-data.patents.publications\`
@@ -170,7 +171,16 @@ async function fetchPatentsByKeyword(keyword, category) {
     publication_number: row.publication_number,
     title: row.title_ja || '（タイトル不明）',
     description: row.abstract_ja || null,
-    assignee: row.assignee_name || null,
+    assignee: (() => {
+      // assignee_rawから日本語の出願人名を優先して取得
+      if (row.assignee_raw) {
+        const lines = row.assignee_raw.split('\n').map(l => l.trim()).filter(Boolean);
+        const jaLine = lines.find(l => /[\u3000-\u9fff\uac00-\ud7af]/.test(l));
+        if (jaLine) return jaLine;
+        if (lines[0]) return lines[0];
+      }
+      return row.assignee_harmonized_name || null;
+    })(),
     filing_date: toDateStr(row.filing_date),
     publication_date: toDateStr(row.publication_date),
     category: category,
