@@ -230,10 +230,9 @@
     document.getElementById('meta-applicant').textContent = `出願人：${owner}`;
     document.getElementById('meta-date').textContent = date;
 
-    const desc = patent.description || '', prob = patent.problem || '';
-    document.getElementById('summary-text').textContent =
-      desc && prob && desc !== prob ? desc + '\n\n' + prob : desc || prob || '（説明なし）';
+    document.getElementById('summary-text').textContent = '現在準備中です。近日中に追加予定です。';
 
+    // 活用場面・類似特許・要約はAI生成予定のため準備中
     document.getElementById('use-cases').innerHTML = PREPARING_HTML;
     document.getElementById('similar-patents').innerHTML = PREPARING_HTML;
 
