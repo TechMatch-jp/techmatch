@@ -174,8 +174,9 @@ async function fetchPatentsByKeyword(keyword, category) {
     assignee: (() => {
       // assignee_rawから日本語の出願人名を優先して取得
       if (row.assignee_raw) {
-        const lines = row.assignee_raw.split('\n').map(l => l.trim()).filter(Boolean);
-        const jaLine = lines.find(l => /[\u3000-\u9fff\uac00-\ud7af]/.test(l));
+        const raw = String(row.assignee_raw);
+        const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+        const jaLine = lines.find(l => /[\u3000-\u9fff]/.test(l));
         if (jaLine) return jaLine;
         if (lines[0]) return lines[0];
       }
