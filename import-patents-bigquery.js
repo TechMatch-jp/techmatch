@@ -116,6 +116,22 @@ const LIMIT_PER_KEYWORD = limitArg
   ? parseInt(limitArg.startsWith("--limit=") ? limitArg.split("=")[1] : args[args.indexOf("--limit") + 1]) || 5
   : 5;
 
+// --category 1 で1カテゴリ目だけ、--category 1-3 で1〜3カテゴリ
+const categoryArg = args.find(a => a.startsWith("--category=") || a === "--category");
+let TARGET_CATEGORIES = CATEGORIES;
+if (categoryArg) {
+  const val = categoryArg.startsWith("--category=")
+    ? categoryArg.split("=")[1]
+    : args[args.indexOf("--category") + 1];
+  if (val && val.includes("-")) {
+    const [start, end] = val.split("-").map(Number);
+    TARGET_CATEGORIES = CATEGORIES.slice(start - 1, end);
+  } else if (val) {
+    const n = parseInt(val);
+    TARGET_CATEGORIES = CATEGORIES.slice(n - 1, n);
+  }
+}
+
 async function fetchPatentsByKeyword(keyword, category) {
   const query = `
     SELECT
@@ -127,10 +143,16 @@ async function fetchPatentsByKeyword(keyword, category) {
       publication_date
     FROM \`patents-public-data.patents.publications\`
     WHERE country_code = 'JP'
-      AND filing_date >= '2015-01-01'
-      AND EXISTS (
-        SELECT 1 FROM UNNEST(title_localized) tl
-        WHERE tl.language = 'ja' AND tl.text LIKE '%${keyword}%'
+      AND filing_date >= 20150101
+      AND (
+        EXISTS (
+          SELECT 1 FROM UNNEST(title_localized) tl
+          WHERE tl.language = 'ja' AND tl.text LIKE '%${keyword}%'
+        )
+        OR EXISTS (
+          SELECT 1 FROM UNNEST(abstract_localized) al
+          WHERE al.language = 'ja' AND al.text LIKE '%${keyword}%'
+        )
       )
     LIMIT ${LIMIT_PER_KEYWORD}
   `;
@@ -189,14 +211,14 @@ async function saveToSupabase(patents) {
 async function main() {
   console.log('╔══════════════════════════════════════════╗');
   console.log('║  TechMatch 特許インポート（BigQuery版）  ║');
-  console.log('║  15カテゴリ × 20キーワード × 20件        ║');
+  console.log(`║  対象: ${TARGET_CATEGORIES.length}カテゴリ × 20キーワード × ${LIMIT_PER_KEYWORD}件/キーワード`);
   console.log('╚══════════════════════════════════════════╝\n');
 
   let totalSaved = 0;
   let totalSkipped = 0;
   let totalErrors = 0;
 
-  for (const category of CATEGORIES) {
+  for (const category of TARGET_CATEGORIES) {
     console.log(`\n📂 カテゴリ: ${category.name}`);
 
     for (const keyword of category.keywords) {
