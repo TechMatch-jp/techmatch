@@ -1,332 +1,561 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-47LCYNSVRP"></script>
-<script>
- window.dataLayer = window.dataLayer || [];
- function gtag(){dataLayer.push(arguments);}
- gtag('js', new Date());
- gtag('config', 'G-47LCYNSVRP');
-</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>特許詳細 | TechMatch</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-mid: #5DCAA5;
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-tertiary: #888780;
+    --bg: #f8f7f4;
+    --bg-card: #ffffff;
+    --bg-surface: #f1efe8;
+    --border: rgba(0,0,0,0.1);
+    --border-light: rgba(0,0,0,0.07);
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
 
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>特許詳細 - テックマッチ</title>
- <link rel="stylesheet" href="style.css">
- <style>
- .detail-container {
- max-width: 900px;
- margin: 2rem auto;
- background: white;
- padding: 2rem;
- border-radius: 8px;
- box-shadow: 0 2px 8px rgba(0,0,0,0.1);
- }
- 
- .detail-header {
- border-bottom: 2px solid #e0e0e0;
- padding-bottom: 1.5rem;
- margin-bottom: 1.5rem;
- }
- 
- .detail-title {
- font-size: 1.8rem;
- color: #2c3e50;
- margin-bottom: 1rem;
- }
- 
- .detail-meta {
- display: flex;
- gap: 2rem;
- flex-wrap: wrap;
- color: #7f8c8d;
- }
- 
- .detail-section {
- margin-bottom: 2rem;
- }
- 
- .detail-section h3 {
- color: #2c3e50;
- margin-bottom: 1rem;
- font-size: 1.3rem;
- }
- 
- .detail-info-grid {
- display: grid;
- grid-template-columns: 150px 1fr;
- gap: 1rem;
- margin-bottom: 1rem;
- }
- 
- .detail-label {
- font-weight: bold;
- color: #2c3e50;
- }
- 
- .interest-form {
- background: #f8f9fa;
- padding: 2rem;
- border-radius: 8px;
- margin-top: 2rem;
- }
- 
- .interest-form h3 {
- color: #2c3e50;
- margin-bottom: 1rem;
- }
- 
- .interest-form textarea {
- width: 100%;
- padding: 1rem;
- border: 2px solid #e0e0e0;
- border-radius: 4px;
- font-size: 1rem;
- min-height: 120px;
- margin-bottom: 1rem;
- }
- 
- .price-tag {
- display: inline-block;
- background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
- color: white;
- padding: 1rem 2rem;
- border-radius: 8px;
- font-size: 1.5rem;
- font-weight: bold;
- margin: 1rem 0;
- }
- 
- .back-btn {
- display: inline-block;
- padding: 0.75rem 1.5rem;
- background-color: #95a5a6;
- color: white;
- text-decoration: none;
- border-radius: 4px;
- margin-right: 1rem;
- }
- 
- .back-btn:hover {
- background-color: #7f8c8d;
- }
- </style>
- <link rel="stylesheet" href="stylish-common.css">
+  body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--bg-card);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--green);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  nav a {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-left: 1.5rem;
+  }
+  nav a:hover { color: var(--text-primary); }
+
+  /* ── Layout ── */
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .breadcrumb {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .breadcrumb a { color: var(--text-tertiary); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--green); }
+  .breadcrumb span { font-size: 10px; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 288px;
+    gap: 2rem;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { order: -1; }
+  }
+
+  /* ── Main ── */
+  .patent-number {
+    font-size: 11px;
+    font-family: 'Menlo', 'Courier New', monospace;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+  .meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+  .meta-line span {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  /* ── Summary ── */
+  .summary {
+    border-left: 2px solid var(--green);
+    padding: 12px 16px;
+    background: var(--green-light);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: 1.75rem;
+  }
+  .summary p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-primary);
+  }
+
+  /* ── Section ── */
+  .section { margin-bottom: 2rem; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* ── Use cards ── */
+  .use-card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .use-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+  }
+  .use-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* ── Similar patents ── */
+  .similar-list {
+    background: var(--bg-surface);
+    border-radius: var(--radius-sm);
+    padding: 0 16px;
+  }
+  .similar-item {
+    padding: 14px 0;
+    border-bottom: 0.5px solid var(--border-light);
+  }
+  .similar-item:last-child { border-bottom: none; }
+  .similar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 3px;
+  }
+  .similar-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .similar-type {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .similar-applicant {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+  }
+  .diff-block {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 7px 11px;
+    background: var(--bg-card);
+    border-left: 2px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .diff-block .diff-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 2px;
+  }
+
+  /* ── Sidebar ── */
+  .card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 7px 0;
+    border-bottom: 0.5px solid var(--border-light);
+    font-size: 13px;
+  }
+  .meta-row:last-of-type { border-bottom: none; }
+  .meta-key { color: var(--text-secondary); }
+  .meta-val { font-weight: 500; color: var(--text-primary); font-family: inherit; }
+  .meta-val.mono { font-family: 'Menlo', 'Courier New', monospace; font-size: 11px; }
+
+  .year-bar-wrap { margin-top: 12px; }
+  .year-bar-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+  }
+  .year-bar-header .years-left { color: var(--green); font-weight: 600; }
+  .year-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .year-bar-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+  .year-ends {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* ── Tags ── */
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 4px 11px;
+    border-radius: 20px;
+    font-weight: 500;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    border: 0.5px solid var(--border);
+  }
+
+  /* ── Loading / Error ── */
+  .state {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--text-tertiary);
+    font-size: 14px;
+  }
+  .spinner {
+    width: 28px; height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  hr.divider {
+    border: none;
+    border-top: 0.5px solid var(--border-light);
+    margin: 1.75rem 0;
+  }
+</style>
 </head>
 <body>
- <div class="bg-decoration"></div>
- <header class="header">
- <div class="container">
- <div class="header-content">
- <a href="index.html" class="logo">TechMatch</a>
- <nav class="nav">
- <a href="index.html" class="nav-link">特許一覧</a>
- <a href="column.html" class="nav-link">技術コラム</a>
- <a href="interview.html" class="nav-link">研究者インタビュー</a>
- <a href="contact.html" class="nav-link">お問い合わせ</a>
- <a href="auth.html" class="btn-primary">ログイン</a>
- </nav>
- </div>
- </div>
- </header>
 
- <main class="main-content">
- <div class="container">
- <a href="index.html" class="back-btn">← 一覧に戻る</a>
- 
- <div class="detail-container" id="patentDetail">
- <p style="text-align: center; color: #7f8c8d;">読み込み中...</p>
- </div>
- </div>
- </main>
+<header>
+  <a href="/index.html" class="logo">TechMatch</a>
+  <nav>
+    <a href="/index.html">特許を探す</a>
+    <a href="/column.html">コラム</a>
+    <a href="/auth.html" id="nav-auth">ログイン</a>
+  </nav>
+</header>
 
- <footer class="main-footer">
- <div class="container">
- <p>&copy; 2026 テックマッチ All Rights Reserved.</p>
- </div>
- </footer>
+<div class="container">
+  <div class="breadcrumb">
+    <a href="/index.html">ホーム</a>
+    <span>›</span>
+    <a href="/index.html">特許データベース</a>
+    <span>›</span>
+    <span id="breadcrumb-title">特許詳細</span>
+  </div>
 
- <script>
- let currentUser = null;
- 
- // ログイン状態チェック
- async function checkAuth() {
- try {
- const response = await fetch('/api/user');
- if (response.ok) {
- const data = await response.json();
- currentUser = data.user;
- document.getElementById('authLink').textContent = 'マイページ';
- document.getElementById('authLink').href = 'mypage.html';
- }
- } catch (error) {
- // ログインしていない状態
- }
- }
- 
- // URLパラメータから特許IDを取得
- function getPatentId() {
- const params = new URLSearchParams(window.location.search);
- return params.get('id');
- }
- 
- // 特許詳細を読み込み
- async function loadPatentDetail() {
- const patentId = getPatentId();
- 
- if (!patentId) {
- document.getElementById('patentDetail').innerHTML = '<p style="text-align: center; color: #e74c3c;">特許IDが指定されていません。</p>';
- return;
- }
- 
- try {
- const response = await fetch(`/api/patents/${patentId}`);
- 
- if (!response.ok) {
- document.getElementById('patentDetail').innerHTML = '<p style="text-align: center; color: #e74c3c;">特許が見つかりません。</p>';
- return;
- }
- 
- const patent = await response.json();
- displayPatentDetail(patent);
- } catch (error) {
- document.getElementById('patentDetail').innerHTML = '<p style="text-align: center; color: #e74c3c;">読み込みエラーが発生しました。</p>';
- }
- }
- 
- // 特許詳細を表示
- function displayPatentDetail(patent) {
- const container = document.getElementById('patentDetail');
+  <div id="loading" class="state">
+    <div class="spinner"></div>
+    データを読み込んでいます…
+  </div>
 
- // 出願日のフォーマット
- const filingDate = patent.filing_date
- ? new Date(patent.filing_date).toLocaleDateString('ja-JP')
- : '不明';
+  <div id="error" class="state" style="display:none;">
+    特許情報の取得に失敗しました。
+  </div>
 
- // Google Patents URL
- const pubNumber = (patent.publication_number || '').replace(/-/g, '');
- const googlePatentsUrl = `https://patents.google.com/patent/${pubNumber}/ja`;
+  <div id="content" style="display:none;">
+    <div class="layout">
 
- // 説明文（長い場合は改行を維持）
- const description = (patent.description || '説明なし')
- .replace(/【/g, '<br><strong>【')
- .replace(/】/g, '】</strong>');
+      <!-- ── 左カラム ── -->
+      <main>
+        <div class="patent-number" id="patent-number"></div>
+        <h1 id="patent-title"></h1>
+        <div class="meta-line">
+          <span id="meta-applicant"></span>
+          <span id="meta-date"></span>
+        </div>
 
- // 会員限定ブロック（活用提案UI）
- const lockedHTML = `
- <div style="position: relative; margin-top: 2rem;">
- <div style="filter: blur(4px); pointer-events: none; user-select: none; padding: 1.5rem; background: #f8f9fa; border-radius: 8px; line-height: 2;">
- <p>・製造業向けの品質管理システムへの応用</p>
- <p>・医療機器との組み合わせによる新製品開発</p>
- <p>・既存サービスへのライセンス活用</p>
- </div>
- <div style="
- position: absolute; top: 0; left: 0; right: 0; bottom: 0;
- display: flex; flex-direction: column;
- align-items: center; justify-content: center;
- background: rgba(255,255,255,0.75);
- border-radius: 8px;
- text-align: center;
- padding: 2rem;
- ">
- <p style="font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem;">この先のAI活用提案は会員限定です</p>
- <p style="color: #7f8c8d; margin-bottom: 1.5rem;">無料登録で、特許の活用提案をすべて閲覧できます</p>
- <a href="auth.html" style="
- display: inline-block;
- background: #00bcd4;
- color: white;
- padding: 0.9rem 2.5rem;
- border-radius: 50px;
- text-decoration: none;
- font-weight: bold;
- font-size: 1rem;
- margin-bottom: 1rem;
- ">無料登録して続きを見る</a>
- <p style="font-size: 0.9rem; color: #7f8c8d;">既に会員の方は<a href="auth.html" style="color: #3498db;">ログイン</a></p>
- </div>
- </div>
- `;
+        <div class="summary">
+          <p id="summary-text"></p>
+        </div>
 
- container.innerHTML = `
- <div class="detail-header">
- <h1 class="detail-title">${patent.title}</h1>
- <div class="detail-meta">
- <span>${patent.category || ''}</span>
- <span>出願日: ${filingDate}</span>
- </div>
- </div>
+        <hr class="divider">
 
- <div class="detail-section">
- <h3>特許情報</h3>
- <div class="detail-info-grid">
- <div class="detail-label">特許番号:</div>
- <div>${patent.publication_number || '不明'}</div>
+        <!-- 活用が考えられる場面 -->
+        <section class="section">
+          <div class="section-label">活用が考えられる場面</div>
+          <div id="use-cases"></div>
+        </section>
 
- <div class="detail-label">出願人:</div>
- <div>${patent.assignee || '不明'}</div>
+        <hr class="divider">
 
- <div class="detail-label">カテゴリー:</div>
- <div>${patent.category || '不明'}</div>
+        <!-- 類似特許との関係 -->
+        <section class="section">
+          <div class="section-label">類似特許との関係</div>
+          <div class="similar-list" id="similar-patents"></div>
+        </section>
+      </main>
 
- <div class="detail-label">出願日:</div>
- <div>${filingDate}</div>
- </div>
- <a href="${googlePatentsUrl}" target="_blank" style="
- display: inline-block;
- background: #4285F4;
- color: white;
- padding: 0.6rem 1.4rem;
- border-radius: 6px;
- text-decoration: none;
- font-size: 0.9rem;
- font-weight: bold;
- margin-top: 1rem;
- "> Google Patents で原文を確認</a>
- </div>
+      <!-- ── 右サイドバー ── -->
+      <aside class="sidebar">
+        <div class="card" id="rights-card">
+          <div class="section-label">権利情報</div>
+          <div id="rights-rows"></div>
+          <div class="year-bar-wrap">
+            <div class="year-bar-header">
+              <span>残存期間</span>
+              <span class="years-left" id="years-left-label"></span>
+            </div>
+            <div class="year-bar">
+              <div class="year-bar-fill" id="year-bar-fill"></div>
+            </div>
+            <div class="year-ends">
+              <span id="year-start"></span>
+              <span id="year-end"></span>
+            </div>
+          </div>
+        </div>
 
- <div class="detail-section">
- <h3>特許の要約</h3>
- <p style="line-height: 2; color: #2c3e50;">${description}</p>
- </div>
+        <div class="card">
+          <div class="section-label">技術分野</div>
+          <div class="tag-list" id="tag-list"></div>
+        </div>
+      </aside>
 
- <div class="detail-section">
- <h3> AI活用提案</h3>
- ${lockedHTML}
- </div>
- `;
- }
- 
- // 興味表明を送信
- async function submitInterest(patentId) {
- const message = document.getElementById('interestMessage').value;
- 
- try {
- const response = await fetch('/api/interests', {
- method: 'POST',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ patentId, message })
- });
- 
- if (response.ok) {
- alert('興味を表明しました！出願者に通知が送信されました。');
- document.getElementById('interestMessage').value = '';
- } else {
- const data = await response.json();
- alert(data.error || '興味表明に失敗しました');
- }
- } catch (error) {
- alert('通信エラーが発生しました');
- }
- }
- 
- // ページ読み込み時
- document.addEventListener('DOMContentLoaded', async function() {
- await checkAuth();
- await loadPatentDetail();
- });
- </script>
- <script src="check-auth.js"></script>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── URLからIDを取得 ──────────────────────────────
+  function getPatentId() {
+    const params = new URLSearchParams(location.search);
+    return params.get('id');
+  }
+
+  // ── 活用案のフォールバックデータ ─────────────────
+  // 実際の運用ではAPIから取得 or CMS管理を検討
+  const USE_CASE_FALLBACK = [
+    { title: '製造業・生産ラインへの応用', body: 'この技術を製造プロセスに組み込むことで、コスト削減や品質向上につながる可能性があります。' },
+    { title: '新製品・サービスへの活用', body: '既存製品への差別化要素として、または新規ビジネスの核心技術として活用できます。' },
+    { title: '研究開発・ライセンス活用', body: '自社の研究開発テーマとの掛け合わせや、OEM・ライセンス活用が考えられます。' },
+  ];
+
+  // ── 類似特許フォールバック ────────────────────────
+  const SIMILAR_FALLBACK = [
+    {
+      number: '—',
+      title: '類似特許情報は準備中です',
+      applicant: '',
+      type: '',
+      diff: 'この特許と関連する類似・周辺特許の分析を順次追加予定です。'
+    }
+  ];
+
+  // ── 残存期間計算 ──────────────────────────────────
+  function calcYearsLeft(expiryYear) {
+    const now = new Date().getFullYear();
+    return Math.max(0, expiryYear - now);
+  }
+  function calcBarWidth(registYear, expiryYear) {
+    const now = new Date().getFullYear();
+    const total = expiryYear - registYear;
+    const elapsed = now - registYear;
+    if (total <= 0) return 0;
+    return Math.max(0, Math.min(100, Math.round((elapsed / total) * 100)));
+  }
+
+  // ── レンダリング ──────────────────────────────────
+  function render(patent) {
+    // ヘッダー
+    const num = patent.patent_number || '番号未登録';
+    document.getElementById('patent-number').textContent = num;
+    document.getElementById('patent-title').textContent = patent.title || '（タイトルなし）';
+    document.getElementById('breadcrumb-title').textContent = patent.title || '特許詳細';
+    document.title = `${patent.title || '特許詳細'} | TechMatch`;
+
+    const owner = patent.owner_name || patent.organization || '権利者情報なし';
+    const date = patent.created_at
+      ? new Date(patent.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' }) + '登録'
+      : '';
+    document.getElementById('meta-applicant').textContent = `出願人：${owner}`;
+    document.getElementById('meta-date').textContent = date;
+
+    // サマリー
+    const summary = patent.description || patent.problem || '（説明なし）';
+    document.getElementById('summary-text').textContent = summary;
+
+    // 活用案
+    const usages = patent.usage
+      ? [{ title: '主な活用方法', body: patent.usage },
+         { title: '技術の優位性', body: patent.advantage || '' },
+         USE_CASE_FALLBACK[2]]
+      : USE_CASE_FALLBACK;
+
+    const ucEl = document.getElementById('use-cases');
+    usages.forEach(u => {
+      if (!u.body) return;
+      const div = document.createElement('div');
+      div.className = 'use-card';
+      div.innerHTML = `<h3>${escHtml(u.title)}</h3><p>${escHtml(u.body)}</p>`;
+      ucEl.appendChild(div);
+    });
+
+    // 類似特許（現時点はフォールバック）
+    const simEl = document.getElementById('similar-patents');
+    SIMILAR_FALLBACK.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'similar-item';
+      div.innerHTML = `
+        <div class="similar-header">
+          <span class="similar-title">${escHtml(s.number !== '—' ? s.number + ' — ' : '') + escHtml(s.title)}</span>
+          <span class="similar-type">${escHtml(s.type)}</span>
+        </div>
+        ${s.applicant ? `<div class="similar-applicant">出願人：${escHtml(s.applicant)}</div>` : ''}
+        <div class="diff-block">
+          <span class="diff-label">この特許との違い</span>
+          ${escHtml(s.diff)}
+        </div>`;
+      simEl.appendChild(div);
+    });
+
+    // 権利情報
+    const registYear = patent.created_at ? new Date(patent.created_at).getFullYear() : new Date().getFullYear();
+    const expiryYear = registYear + 20; // 特許権は出願から20年が基本
+    const yearsLeft = calcYearsLeft(expiryYear);
+    const barPct = calcBarWidth(registYear, expiryYear);
+
+    const rows = [
+      ['出願番号', num, 'mono'],
+      ['権利者', owner, ''],
+      ['分類', patent.category || '—', ''],
+      ['存続期間満了', `${expiryYear}年頃`, ''],
+    ];
+    const rowsEl = document.getElementById('rights-rows');
+    rows.forEach(([k, v, cls]) => {
+      const d = document.createElement('div');
+      d.className = 'meta-row';
+      d.innerHTML = `<span class="meta-key">${escHtml(k)}</span><span class="meta-val ${cls}">${escHtml(v)}</span>`;
+      rowsEl.appendChild(d);
+    });
+
+    document.getElementById('years-left-label').textContent = `約${yearsLeft}年`;
+    document.getElementById('year-bar-fill').style.width = barPct + '%';
+    document.getElementById('year-start').textContent = registYear + '年';
+    document.getElementById('year-end').textContent = expiryYear + '年';
+
+    // タグ
+    const tagEl = document.getElementById('tag-list');
+    const tags = patent.category ? [patent.category] : [];
+    if (patent.title) {
+      // タイトルから簡易キーワード抽出（実運用はDB管理を推奨）
+      ['製造', '情報', '医療', '農業', '環境', '素材', 'AI', 'IoT', 'バイオ'].forEach(kw => {
+        if (patent.title.includes(kw) || (patent.description || '').includes(kw)) tags.push(kw);
+      });
+    }
+    if (tags.length === 0) tags.push('技術特許');
+    [...new Set(tags)].slice(0, 6).forEach(t => {
+      const span = document.createElement('span');
+      span.className = 'tag';
+      span.textContent = t;
+      tagEl.appendChild(span);
+    });
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = '';
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── データ取得 ─────────────────────────────────────
+  async function load() {
+    const id = getPatentId();
+    if (!id) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').style.display = '';
+      document.getElementById('error').textContent = 'URLに特許IDが指定されていません。';
+      return;
+    }
+    try {
+      const res = await fetch(`/api/patents/${id}`);
+      if (!res.ok) throw new Error('not found');
+      const data = await res.json();
+      render(data);
+    } catch (e) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').style.display = '';
+    }
+  }
+
+  load();
+</script>
 </body>
 </html>
