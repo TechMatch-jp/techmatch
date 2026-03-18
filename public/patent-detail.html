@@ -10,7 +10,6 @@
   :root {
     --green: #1D9E75;
     --green-light: #E1F5EE;
-    --green-mid: #5DCAA5;
     --text-primary: #1a1a18;
     --text-secondary: #5f5e5a;
     --text-tertiary: #888780;
@@ -43,75 +42,23 @@
     top: 0;
     z-index: 100;
   }
-  .logo {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--green);
-    text-decoration: none;
-    letter-spacing: 0.02em;
-  }
-  nav a {
-    font-size: 13px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    margin-left: 1.5rem;
-  }
+  .logo { font-size: 17px; font-weight: 600; color: var(--green); text-decoration: none; letter-spacing: 0.02em; }
+  nav a { font-size: 13px; color: var(--text-secondary); text-decoration: none; margin-left: 1.5rem; }
   nav a:hover { color: var(--text-primary); }
 
-  .container {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 
-  .breadcrumb {
-    font-size: 12px;
-    color: var(--text-tertiary);
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .breadcrumb { font-size: 12px; color: var(--text-tertiary); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 6px; }
   .breadcrumb a { color: var(--text-tertiary); text-decoration: none; }
   .breadcrumb a:hover { color: var(--green); }
-  .breadcrumb span { font-size: 10px; }
 
-  .layout {
-    display: grid;
-    grid-template-columns: 1fr 288px;
-    gap: 2rem;
-    align-items: start;
-  }
-  @media (max-width: 768px) {
-    .layout { grid-template-columns: 1fr; }
-    .sidebar { order: -1; }
-  }
+  .layout { display: grid; grid-template-columns: 1fr 288px; gap: 2rem; align-items: start; }
+  @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar { order: -1; } }
 
-  .patent-number {
-    font-size: 11px;
-    font-family: 'Menlo', 'Courier New', monospace;
-    color: var(--text-tertiary);
-    margin-bottom: 6px;
-    letter-spacing: 0.05em;
-  }
-  h1 {
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.45;
-    color: var(--text-primary);
-    margin-bottom: 12px;
-  }
-  .meta-line {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 1.25rem;
-  }
-  .meta-line span {
-    font-size: 12px;
-    color: var(--text-tertiary);
-  }
+  .patent-number { font-size: 11px; font-family: 'Menlo', 'Courier New', monospace; color: var(--text-tertiary); margin-bottom: 6px; letter-spacing: 0.05em; }
+  h1 { font-size: 22px; font-weight: 600; line-height: 1.45; color: var(--text-primary); margin-bottom: 12px; }
+  .meta-line { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 1.25rem; }
+  .meta-line span { font-size: 12px; color: var(--text-tertiary); }
 
   .summary {
     border-left: 2px solid var(--green);
@@ -120,86 +67,29 @@
     border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     margin-bottom: 1.75rem;
   }
-  .summary p {
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--text-primary);
-    white-space: pre-line;
-  }
+  .summary p { font-size: 14px; line-height: 1.8; color: var(--text-primary); white-space: pre-line; }
 
   .section { margin-bottom: 2rem; }
-  .section-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 12px; }
 
-  .use-card {
-    background: var(--bg-surface);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    margin-bottom: 10px;
-  }
+  .use-card { background: var(--bg-surface); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; }
   .use-card h3 { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 5px; }
   .use-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
 
-  .similar-list {
-    background: var(--bg-surface);
-    border-radius: var(--radius-sm);
-    padding: 0 16px;
-  }
-  .similar-item {
-    padding: 14px 0;
-    border-bottom: 0.5px solid var(--border-light);
-  }
+  .similar-list { background: var(--bg-surface); border-radius: var(--radius-sm); padding: 0 16px; }
+  .similar-item { padding: 14px 0; border-bottom: 0.5px solid var(--border-light); }
   .similar-item:last-child { border-bottom: none; }
-  .similar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 3px;
-  }
+  .similar-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 3px; }
   .similar-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
   .similar-type { font-size: 10px; color: var(--text-tertiary); white-space: nowrap; flex-shrink: 0; }
   .similar-applicant { font-size: 11px; color: var(--text-tertiary); margin-bottom: 8px; }
-  .diff-block {
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    padding: 7px 11px;
-    background: var(--bg-card);
-    border-left: 2px solid var(--border);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  }
-  .diff-block .diff-label {
-    display: block;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--text-tertiary);
-    margin-bottom: 2px;
-  }
+  .diff-block { font-size: 12px; color: var(--text-secondary); line-height: 1.6; padding: 7px 11px; background: var(--bg-card); border-left: 2px solid var(--border); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+  .diff-block .diff-label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 2px; }
 
-  .card {
-    background: var(--bg-card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.1rem 1.25rem;
-    margin-bottom: 1rem;
-  }
-  .meta-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 7px 0;
-    border-bottom: 0.5px solid var(--border-light);
-    font-size: 13px;
-  }
+  hr.divider { border: none; border-top: 0.5px solid var(--border-light); margin: 1.75rem 0; }
+
+  .card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 1rem; }
+  .meta-row { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; border-bottom: 0.5px solid var(--border-light); font-size: 13px; }
   .meta-row:last-of-type { border-bottom: none; }
   .meta-key { color: var(--text-secondary); }
   .meta-val { font-weight: 500; color: var(--text-primary); }
@@ -213,37 +103,10 @@
   .year-ends { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-tertiary); margin-top: 4px; }
 
   .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
-  .tag {
-    display: inline-block;
-    font-size: 11px;
-    padding: 4px 11px;
-    border-radius: 20px;
-    font-weight: 500;
-    background: var(--bg-surface);
-    color: var(--text-secondary);
-    border: 0.5px solid var(--border);
-  }
-  .tag.active {
-    background: var(--green-light);
-    color: #0F6E56;
-    border-color: var(--green-mid);
-  }
-
-  hr.divider {
-    border: none;
-    border-top: 0.5px solid var(--border-light);
-    margin: 1.75rem 0;
-  }
+  .tag { display: inline-block; font-size: 11px; padding: 4px 11px; border-radius: 20px; font-weight: 500; background: var(--bg-surface); color: var(--text-secondary); border: 0.5px solid var(--border); }
 
   .state { text-align: center; padding: 4rem 1rem; color: var(--text-tertiary); font-size: 14px; }
-  .spinner {
-    width: 28px; height: 28px;
-    border: 2px solid var(--border);
-    border-top-color: var(--green);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin: 0 auto 12px;
-  }
+  .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
@@ -254,7 +117,8 @@
   <nav>
     <a href="/index.html">特許を探す</a>
     <a href="/column.html">コラム</a>
-    <a href="/auth.html" id="nav-auth">ログイン</a>
+    <a href="/auth.html" class="btn-nav-login" id="nav-auth">ログイン</a>
+    <a href="/auth.html#register" class="btn-nav-register">特許を登録</a>
   </nav>
 </header>
 
@@ -342,13 +206,23 @@
   ];
 
   const SIMILAR_FALLBACK = [
-    { number: '', title: '類似特許の分析を準備中です', applicant: '', type: '', diff: 'この特許と技術的に近い特許・周辺特許の調査・分析を順次追加していきます。類似特許との違いを把握することで、権利範囲の理解やビジネス判断に役立ててください。' }
+    {
+      number: '',
+      title: '類似特許の分析を準備中です',
+      applicant: '',
+      type: '',
+      diff: 'この特許と技術的に近い特許・周辺特許の調査・分析を順次追加していきます。類似特許との違いを把握することで、権利範囲の理解やビジネス判断に役立ててください。'
+    }
   ];
 
-  function calcYearsLeft(expiryYear) { return Math.max(0, expiryYear - new Date().getFullYear()); }
+  function calcYearsLeft(expiryYear) {
+    return Math.max(0, expiryYear - new Date().getFullYear());
+  }
+
   function calcBarWidth(registYear, expiryYear) {
+    const now = new Date().getFullYear();
     const total = expiryYear - registYear;
-    const remaining = expiryYear - new Date().getFullYear();
+    const remaining = expiryYear - now;
     if (total <= 0) return 0;
     return Math.max(0, Math.min(100, Math.round((remaining / total) * 100)));
   }
@@ -367,18 +241,21 @@
     document.getElementById('meta-applicant').textContent = `出願人：${owner}`;
     document.getElementById('meta-date').textContent = date;
 
-    const desc = patent.description || '', prob = patent.problem || '';
-    document.getElementById('summary-text').textContent = desc && prob && desc !== prob ? desc + '\n\n' + prob : desc || prob || '（説明なし）';
+    const desc = patent.description || '';
+    const prob = patent.problem || '';
+    const summary = desc && prob && desc !== prob ? desc + '\n\n' + prob : desc || prob || '（説明なし）';
+    document.getElementById('summary-text').textContent = summary;
 
     const usages = patent.usage
       ? [{ title: '主な活用方法', body: patent.usage }, { title: '技術の優位性', body: patent.advantage || '' }, USE_CASE_FALLBACK[2]]
       : USE_CASE_FALLBACK;
+
     const ucEl = document.getElementById('use-cases');
     usages.forEach(u => {
       if (!u.body) return;
       const div = document.createElement('div');
       div.className = 'use-card';
-      div.innerHTML = `<h3>${esc(u.title)}</h3><p>${esc(u.body)}</p>`;
+      div.innerHTML = `<h3>${escHtml(u.title)}</h3><p>${escHtml(u.body)}</p>`;
       ucEl.appendChild(div);
     });
 
@@ -388,49 +265,63 @@
       div.className = 'similar-item';
       div.innerHTML = `
         <div class="similar-header">
-          <span class="similar-title">${s.number ? esc(s.number) + ' — ' + esc(s.title) : esc(s.title)}</span>
-          <span class="similar-type">${esc(s.type)}</span>
+          <span class="similar-title">${s.number ? escHtml(s.number) + ' — ' + escHtml(s.title) : escHtml(s.title)}</span>
+          <span class="similar-type">${escHtml(s.type)}</span>
         </div>
-        ${s.applicant ? `<div class="similar-applicant">出願人：${esc(s.applicant)}</div>` : ''}
+        ${s.applicant ? `<div class="similar-applicant">出願人：${escHtml(s.applicant)}</div>` : ''}
         <div class="diff-block">
           <span class="diff-label">この特許との違い</span>
-          ${esc(s.diff)}
+          ${escHtml(s.diff)}
         </div>`;
       simEl.appendChild(div);
     });
 
     const registYear = patent.created_at ? new Date(patent.created_at).getFullYear() : new Date().getFullYear();
     const expiryYear = registYear + 20;
+    const yearsLeft = calcYearsLeft(expiryYear);
+    const barPct = calcBarWidth(registYear, expiryYear);
+
+    const rows = [
+      ['出願番号', num, 'mono'],
+      ['権利者', owner, ''],
+      ['分類', patent.category || '—', ''],
+      ['存続期間満了', `${expiryYear}年頃`, ''],
+    ];
     const rowsEl = document.getElementById('rights-rows');
-    [['出願番号', num, 'mono'], ['権利者', owner, ''], ['分類', patent.category || '—', ''], ['存続期間満了', `${expiryYear}年頃`, '']].forEach(([k, v, c]) => {
+    rows.forEach(([k, v, cls]) => {
       const d = document.createElement('div');
       d.className = 'meta-row';
-      d.innerHTML = `<span class="meta-key">${esc(k)}</span><span class="meta-val ${c}">${esc(v)}</span>`;
+      d.innerHTML = `<span class="meta-key">${escHtml(k)}</span><span class="meta-val ${cls}">${escHtml(v)}</span>`;
       rowsEl.appendChild(d);
     });
-    document.getElementById('years-left-label').textContent = `約${calcYearsLeft(expiryYear)}年`;
-    document.getElementById('year-bar-fill').style.width = calcBarWidth(registYear, expiryYear) + '%';
+
+    document.getElementById('years-left-label').textContent = `約${yearsLeft}年`;
+    document.getElementById('year-bar-fill').style.width = barPct + '%';
     document.getElementById('year-start').textContent = registYear + '年';
     document.getElementById('year-end').textContent = expiryYear + '年';
 
     const tagEl = document.getElementById('tag-list');
     const tags = patent.category ? [patent.category] : [];
-    if (patent.title) ['製造','情報','医療','農業','環境','素材','AI','IoT','バイオ'].forEach(kw => {
-      if (patent.title.includes(kw) || (patent.description||'').includes(kw)) tags.push(kw);
-    });
-    if (!tags.length) tags.push('技術特許');
+    if (patent.title) {
+      ['製造', '情報', '医療', '農業', '環境', '素材', 'AI', 'IoT', 'バイオ'].forEach(kw => {
+        if (patent.title.includes(kw) || (patent.description || '').includes(kw)) tags.push(kw);
+      });
+    }
+    if (tags.length === 0) tags.push('技術特許');
     [...new Set(tags)].slice(0, 6).forEach(t => {
-      const s = document.createElement('span');
-      s.className = 'tag';
-      s.textContent = t;
-      tagEl.appendChild(s);
+      const span = document.createElement('span');
+      span.className = 'tag';
+      span.textContent = t;
+      tagEl.appendChild(span);
     });
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = '';
   }
 
-  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 
   async function load() {
     const id = getPatentId();
@@ -442,13 +333,15 @@
     }
     try {
       const res = await fetch(`/api/patents/${id}`);
-      if (!res.ok) throw new Error();
-      render(await res.json());
-    } catch {
+      if (!res.ok) throw new Error('not found');
+      const data = await res.json();
+      render(data);
+    } catch (e) {
       document.getElementById('loading').style.display = 'none';
       document.getElementById('error').style.display = '';
     }
   }
+
   load();
 </script>
 </body>
