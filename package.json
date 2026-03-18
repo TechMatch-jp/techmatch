@@ -15,6 +15,7 @@
   "author": "GOTO",
   "license": "ISC",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.79.0",
     "@google-cloud/bigquery": "^8.1.1",
     "@supabase/supabase-js": "^2.99.1",
     "bcryptjs": "^2.4.3",
