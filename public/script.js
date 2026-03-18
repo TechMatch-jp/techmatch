@@ -52,20 +52,15 @@ function createPatentCard(patent) {
  };
  
  card.innerHTML = `
- <div class="card-header">${categoryEmoji[patent.category] || ''}</div>
- <div class="card-body">
- <h3 class="card-title">${patent.title}</h3>
- <p class="card-description">
- ${patent.description}
- </p>
- <div class="card-tags">
- <span class="tag">${categoryNames[patent.category] || patent.category}</span>
- </div>
- <div class="card-footer">
- <span class="status-badge status-${patent.status}">${statusNames[patent.status] || patent.status}</span>
- </div>
- </div>
- `;
+    <div class="card-header">${categoryEmoji[patent.category] || ''}</div>
+    <div class="card-body">
+      <h3 class="card-title">${patent.title}</h3>
+      <p class="card-description">${patent.description}</p>
+      <div class="card-tags">
+        <span class="tag">${categoryNames[patent.category] || patent.category}</span>
+      </div>
+    </div>
+  `;
  
  // クリックで詳細ページに遷移
  card.addEventListener('click', () => {
