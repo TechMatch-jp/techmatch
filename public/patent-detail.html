@@ -10,7 +10,6 @@
   :root {
     --green: #1D9E75;
     --green-light: #E1F5EE;
-    --green-mid: #5DCAA5;
     --text-primary: #1a1a18;
     --text-secondary: #5f5e5a;
     --text-tertiary: #888780;
@@ -31,7 +30,6 @@
     line-height: 1.7;
   }
 
-  /* ── Header ── */
   header {
     background: var(--bg-card);
     border-bottom: 0.5px solid var(--border);
@@ -44,79 +42,24 @@
     top: 0;
     z-index: 100;
   }
-  .logo {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--green);
-    text-decoration: none;
-    letter-spacing: 0.02em;
-  }
-  nav a {
-    font-size: 13px;
-    color: var(--text-secondary);
-    text-decoration: none;
-    margin-left: 1.5rem;
-  }
+  .logo { font-size: 17px; font-weight: 600; color: var(--green); text-decoration: none; letter-spacing: 0.02em; }
+  nav a { font-size: 13px; color: var(--text-secondary); text-decoration: none; margin-left: 1.5rem; }
   nav a:hover { color: var(--text-primary); }
 
-  /* ── Layout ── */
-  .container {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem 4rem;
-  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
 
-  .breadcrumb {
-    font-size: 12px;
-    color: var(--text-tertiary);
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .breadcrumb { font-size: 12px; color: var(--text-tertiary); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 6px; }
   .breadcrumb a { color: var(--text-tertiary); text-decoration: none; }
   .breadcrumb a:hover { color: var(--green); }
-  .breadcrumb span { font-size: 10px; }
 
-  .layout {
-    display: grid;
-    grid-template-columns: 1fr 288px;
-    gap: 2rem;
-    align-items: start;
-  }
-  @media (max-width: 768px) {
-    .layout { grid-template-columns: 1fr; }
-    .sidebar { order: -1; }
-  }
+  .layout { display: grid; grid-template-columns: 1fr 288px; gap: 2rem; align-items: start; }
+  @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar { order: -1; } }
 
-  /* ── Main ── */
-  .patent-number {
-    font-size: 11px;
-    font-family: 'Menlo', 'Courier New', monospace;
-    color: var(--text-tertiary);
-    margin-bottom: 6px;
-    letter-spacing: 0.05em;
-  }
-  h1 {
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.45;
-    color: var(--text-primary);
-    margin-bottom: 12px;
-  }
-  .meta-line {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 1.25rem;
-  }
-  .meta-line span {
-    font-size: 12px;
-    color: var(--text-tertiary);
-  }
+  .patent-number { font-size: 11px; font-family: 'Menlo', 'Courier New', monospace; color: var(--text-tertiary); margin-bottom: 6px; letter-spacing: 0.05em; }
+  h1 { font-size: 22px; font-weight: 600; line-height: 1.45; color: var(--text-primary); margin-bottom: 12px; }
+  .meta-line { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 1.25rem; }
+  .meta-line span { font-size: 12px; color: var(--text-tertiary); }
 
-  /* ── Summary ── */
   .summary {
     border-left: 2px solid var(--green);
     padding: 12px 16px;
@@ -124,180 +67,47 @@
     border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     margin-bottom: 1.75rem;
   }
-  .summary p {
-    font-size: 14px;
-    line-height: 1.8;
-    color: var(--text-primary);
-  }
+  .summary p { font-size: 14px; line-height: 1.8; color: var(--text-primary); white-space: pre-line; }
 
-  /* ── Section ── */
   .section { margin-bottom: 2rem; }
-  .section-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 12px; }
 
-  /* ── Use cards ── */
-  .use-card {
-    background: var(--bg-surface);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    margin-bottom: 10px;
-  }
-  .use-card h3 {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 5px;
-  }
-  .use-card p {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-  }
+  .use-card { background: var(--bg-surface); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; }
+  .use-card h3 { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 5px; }
+  .use-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
 
-  /* ── Similar patents ── */
-  .similar-list {
-    background: var(--bg-surface);
-    border-radius: var(--radius-sm);
-    padding: 0 16px;
-  }
-  .similar-item {
-    padding: 14px 0;
-    border-bottom: 0.5px solid var(--border-light);
-  }
+  .similar-list { background: var(--bg-surface); border-radius: var(--radius-sm); padding: 0 16px; }
+  .similar-item { padding: 14px 0; border-bottom: 0.5px solid var(--border-light); }
   .similar-item:last-child { border-bottom: none; }
-  .similar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 3px;
-  }
-  .similar-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-  .similar-type {
-    font-size: 10px;
-    color: var(--text-tertiary);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .similar-applicant {
-    font-size: 11px;
-    color: var(--text-tertiary);
-    margin-bottom: 8px;
-  }
-  .diff-block {
-    font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    padding: 7px 11px;
-    background: var(--bg-card);
-    border-left: 2px solid var(--border);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  }
-  .diff-block .diff-label {
-    display: block;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--text-tertiary);
-    margin-bottom: 2px;
-  }
+  .similar-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 3px; }
+  .similar-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .similar-type { font-size: 10px; color: var(--text-tertiary); white-space: nowrap; flex-shrink: 0; }
+  .similar-applicant { font-size: 11px; color: var(--text-tertiary); margin-bottom: 8px; }
+  .diff-block { font-size: 12px; color: var(--text-secondary); line-height: 1.6; padding: 7px 11px; background: var(--bg-card); border-left: 2px solid var(--border); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+  .diff-block .diff-label { display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 2px; }
 
-  /* ── Sidebar ── */
-  .card {
-    background: var(--bg-card);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.1rem 1.25rem;
-    margin-bottom: 1rem;
-  }
-  .meta-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 7px 0;
-    border-bottom: 0.5px solid var(--border-light);
-    font-size: 13px;
-  }
+  hr.divider { border: none; border-top: 0.5px solid var(--border-light); margin: 1.75rem 0; }
+
+  .card { background: var(--bg-card); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.1rem 1.25rem; margin-bottom: 1rem; }
+  .meta-row { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; border-bottom: 0.5px solid var(--border-light); font-size: 13px; }
   .meta-row:last-of-type { border-bottom: none; }
   .meta-key { color: var(--text-secondary); }
-  .meta-val { font-weight: 500; color: var(--text-primary); font-family: inherit; }
+  .meta-val { font-weight: 500; color: var(--text-primary); }
   .meta-val.mono { font-family: 'Menlo', 'Courier New', monospace; font-size: 11px; }
 
   .year-bar-wrap { margin-top: 12px; }
-  .year-bar-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-  }
+  .year-bar-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 5px; }
   .year-bar-header .years-left { color: var(--green); font-weight: 600; }
-  .year-bar {
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .year-bar-fill {
-    height: 100%;
-    background: var(--green);
-    border-radius: 2px;
-    transition: width 0.6s ease;
-  }
-  .year-ends {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: var(--text-tertiary);
-    margin-top: 4px;
-  }
+  .year-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .year-bar-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.6s ease; }
+  .year-ends { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-tertiary); margin-top: 4px; }
 
-  /* ── Tags ── */
   .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
-  .tag {
-    display: inline-block;
-    font-size: 11px;
-    padding: 4px 11px;
-    border-radius: 20px;
-    font-weight: 500;
-    background: var(--bg-surface);
-    color: var(--text-secondary);
-    border: 0.5px solid var(--border);
-  }
+  .tag { display: inline-block; font-size: 11px; padding: 4px 11px; border-radius: 20px; font-weight: 500; background: var(--bg-surface); color: var(--text-secondary); border: 0.5px solid var(--border); }
 
-  /* ── Loading / Error ── */
-  .state {
-    text-align: center;
-    padding: 4rem 1rem;
-    color: var(--text-tertiary);
-    font-size: 14px;
-  }
-  .spinner {
-    width: 28px; height: 28px;
-    border: 2px solid var(--border);
-    border-top-color: var(--green);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin: 0 auto 12px;
-  }
+  .state { text-align: center; padding: 4rem 1rem; color: var(--text-tertiary); font-size: 14px; }
+  .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  hr.divider {
-    border: none;
-    border-top: 0.5px solid var(--border-light);
-    margin: 1.75rem 0;
-  }
 </style>
 </head>
 <body>
@@ -324,15 +134,11 @@
     <div class="spinner"></div>
     データを読み込んでいます…
   </div>
-
-  <div id="error" class="state" style="display:none;">
-    特許情報の取得に失敗しました。
-  </div>
+  <div id="error" class="state" style="display:none;">特許情報の取得に失敗しました。</div>
 
   <div id="content" style="display:none;">
     <div class="layout">
 
-      <!-- ── 左カラム ── -->
       <main>
         <div class="patent-number" id="patent-number"></div>
         <h1 id="patent-title"></h1>
@@ -347,7 +153,6 @@
 
         <hr class="divider">
 
-        <!-- 活用が考えられる場面 -->
         <section class="section">
           <div class="section-label">活用が考えられる場面</div>
           <div id="use-cases"></div>
@@ -355,16 +160,14 @@
 
         <hr class="divider">
 
-        <!-- 類似特許との関係 -->
         <section class="section">
           <div class="section-label">類似特許との関係</div>
           <div class="similar-list" id="similar-patents"></div>
         </section>
       </main>
 
-      <!-- ── 右サイドバー ── -->
       <aside class="sidebar">
-        <div class="card" id="rights-card">
+        <div class="card">
           <div class="section-label">権利情報</div>
           <div id="rights-rows"></div>
           <div class="year-bar-wrap">
@@ -372,9 +175,7 @@
               <span>残存期間</span>
               <span class="years-left" id="years-left-label"></span>
             </div>
-            <div class="year-bar">
-              <div class="year-bar-fill" id="year-bar-fill"></div>
-            </div>
+            <div class="year-bar"><div class="year-bar-fill" id="year-bar-fill"></div></div>
             <div class="year-ends">
               <span id="year-start"></span>
               <span id="year-end"></span>
@@ -393,47 +194,39 @@
 </div>
 
 <script>
-  // ── URLからIDを取得 ──────────────────────────────
   function getPatentId() {
-    const params = new URLSearchParams(location.search);
-    return params.get('id');
+    return new URLSearchParams(location.search).get('id');
   }
 
-  // ── 活用案のフォールバックデータ ─────────────────
-  // 実際の運用ではAPIから取得 or CMS管理を検討
   const USE_CASE_FALLBACK = [
-    { title: '製造業・生産ラインへの応用', body: 'この技術を製造プロセスに組み込むことで、コスト削減や品質向上につながる可能性があります。' },
-    { title: '新製品・サービスへの活用', body: '既存製品への差別化要素として、または新規ビジネスの核心技術として活用できます。' },
-    { title: '研究開発・ライセンス活用', body: '自社の研究開発テーマとの掛け合わせや、OEM・ライセンス活用が考えられます。' },
+    { title: '既存事業への差別化要素として', body: '自社製品・サービスにこの技術を組み込むことで、競合との差別化ポイントになる可能性があります。コスト・品質・スピードのいずれかで優位性を生み出せるか検討してみてください。' },
+    { title: '新規事業・新製品の核心技術として', body: '社内にない技術領域へ参入する際、一から研究開発するよりもライセンス取得で素早く立ち上げられる場合があります。この特許が新規事業の核心技術になりうるか確認を。' },
+    { title: 'OEM・パートナーシップへの活用', body: '自社では事業化が難しくとも、製造パートナーや販売パートナーと組み合わせることでビジネス化できるケースがあります。' },
   ];
 
-  // ── 類似特許フォールバック ────────────────────────
   const SIMILAR_FALLBACK = [
     {
-      number: '—',
-      title: '類似特許情報は準備中です',
+      number: '',
+      title: '類似特許の分析を準備中です',
       applicant: '',
       type: '',
-      diff: 'この特許と関連する類似・周辺特許の分析を順次追加予定です。'
+      diff: 'この特許と技術的に近い特許・周辺特許の調査・分析を順次追加していきます。類似特許との違いを把握することで、権利範囲の理解やビジネス判断に役立ててください。'
     }
   ];
 
-  // ── 残存期間計算 ──────────────────────────────────
   function calcYearsLeft(expiryYear) {
-    const now = new Date().getFullYear();
-    return Math.max(0, expiryYear - now);
+    return Math.max(0, expiryYear - new Date().getFullYear());
   }
+
   function calcBarWidth(registYear, expiryYear) {
     const now = new Date().getFullYear();
     const total = expiryYear - registYear;
-    const elapsed = now - registYear;
+    const remaining = expiryYear - now;
     if (total <= 0) return 0;
-    return Math.max(0, Math.min(100, Math.round((elapsed / total) * 100)));
+    return Math.max(0, Math.min(100, Math.round((remaining / total) * 100)));
   }
 
-  // ── レンダリング ──────────────────────────────────
   function render(patent) {
-    // ヘッダー
     const num = patent.patent_number || '番号未登録';
     document.getElementById('patent-number').textContent = num;
     document.getElementById('patent-title').textContent = patent.title || '（タイトルなし）';
@@ -447,15 +240,13 @@
     document.getElementById('meta-applicant').textContent = `出願人：${owner}`;
     document.getElementById('meta-date').textContent = date;
 
-    // サマリー
-    const summary = patent.description || patent.problem || '（説明なし）';
+    const desc = patent.description || '';
+    const prob = patent.problem || '';
+    const summary = desc && prob && desc !== prob ? desc + '\n\n' + prob : desc || prob || '（説明なし）';
     document.getElementById('summary-text').textContent = summary;
 
-    // 活用案
     const usages = patent.usage
-      ? [{ title: '主な活用方法', body: patent.usage },
-         { title: '技術の優位性', body: patent.advantage || '' },
-         USE_CASE_FALLBACK[2]]
+      ? [{ title: '主な活用方法', body: patent.usage }, { title: '技術の優位性', body: patent.advantage || '' }, USE_CASE_FALLBACK[2]]
       : USE_CASE_FALLBACK;
 
     const ucEl = document.getElementById('use-cases');
@@ -467,14 +258,13 @@
       ucEl.appendChild(div);
     });
 
-    // 類似特許（現時点はフォールバック）
     const simEl = document.getElementById('similar-patents');
     SIMILAR_FALLBACK.forEach(s => {
       const div = document.createElement('div');
       div.className = 'similar-item';
       div.innerHTML = `
         <div class="similar-header">
-          <span class="similar-title">${escHtml(s.number !== '—' ? s.number + ' — ' : '') + escHtml(s.title)}</span>
+          <span class="similar-title">${s.number ? escHtml(s.number) + ' — ' + escHtml(s.title) : escHtml(s.title)}</span>
           <span class="similar-type">${escHtml(s.type)}</span>
         </div>
         ${s.applicant ? `<div class="similar-applicant">出願人：${escHtml(s.applicant)}</div>` : ''}
@@ -485,9 +275,8 @@
       simEl.appendChild(div);
     });
 
-    // 権利情報
     const registYear = patent.created_at ? new Date(patent.created_at).getFullYear() : new Date().getFullYear();
-    const expiryYear = registYear + 20; // 特許権は出願から20年が基本
+    const expiryYear = registYear + 20;
     const yearsLeft = calcYearsLeft(expiryYear);
     const barPct = calcBarWidth(registYear, expiryYear);
 
@@ -510,11 +299,9 @@
     document.getElementById('year-start').textContent = registYear + '年';
     document.getElementById('year-end').textContent = expiryYear + '年';
 
-    // タグ
     const tagEl = document.getElementById('tag-list');
     const tags = patent.category ? [patent.category] : [];
     if (patent.title) {
-      // タイトルから簡易キーワード抽出（実運用はDB管理を推奨）
       ['製造', '情報', '医療', '農業', '環境', '素材', 'AI', 'IoT', 'バイオ'].forEach(kw => {
         if (patent.title.includes(kw) || (patent.description || '').includes(kw)) tags.push(kw);
       });
@@ -535,7 +322,6 @@
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ── データ取得 ─────────────────────────────────────
   async function load() {
     const id = getPatentId();
     if (!id) {
