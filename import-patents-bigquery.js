@@ -128,27 +128,29 @@ async function fetchPatentsByKeyword(keyword, category) {
     FROM \`patents-public-data.patents.publications\`
     WHERE country_code = 'JP'
       AND filing_date >= '2015-01-01'
-      AND (
-        EXISTS (
-          SELECT 1 FROM UNNEST(title_localized) tl
-          WHERE tl.language = 'ja' AND tl.text LIKE '%${keyword}%'
-        )
-        OR EXISTS (
-          SELECT 1 FROM UNNEST(abstract_localized) al
-          WHERE al.language = 'ja' AND al.text LIKE '%${keyword}%'
-        )
+      AND EXISTS (
+        SELECT 1 FROM UNNEST(title_localized) tl
+        WHERE tl.language = 'ja' AND tl.text LIKE '%${keyword}%'
       )
     LIMIT ${LIMIT_PER_KEYWORD}
   `;
 
   const [rows] = await bigquery.query({ query });
+  // 整数日付（20240101）を文字列（'2024-01-01'）に変換
+  function toDateStr(d) {
+    if (!d) return null;
+    const s = String(d.value ?? d);
+    if (s.length === 8) return `${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`;
+    return null;
+  }
+
   return rows.map(row => ({
     publication_number: row.publication_number,
     title: row.title_ja || '（タイトル不明）',
-    description: row.abstract_ja || '',
-    assignee: row.assignee_name || '（出願人不明）',
-    filing_date: row.filing_date?.value || null,
-    publication_date: row.publication_date?.value || null,
+    description: row.abstract_ja || null,
+    assignee: row.assignee_name || null,
+    filing_date: toDateStr(row.filing_date),
+    publication_date: toDateStr(row.publication_date),
     category: category,
     source: 'google_patents',
     status: 'available',
