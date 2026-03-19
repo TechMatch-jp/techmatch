@@ -269,7 +269,7 @@
 
   async function loadAISummary(id) {
     try {
-      const res = await fetch(`/api/patents/${id}/ai-summary`);
+      const res = await fetch(`/api/patents/${id}/ai`);
       if (!res.ok) throw new Error();
       const ai = await res.json();
       // 要約テキスト
