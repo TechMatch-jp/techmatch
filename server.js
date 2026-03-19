@@ -10,6 +10,8 @@ require('dotenv').config();
 const { supabase } = require('./supabase');
 const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY);
+const Anthropic = require('@anthropic-ai/sdk');
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -425,6 +427,72 @@ app.post('/api/contact', async (req, res) => {
     } catch (e) {
         console.error('Contact error:', e);
         res.status(500).json({ error: '送信に失敗しました: ' + e.message });
+    }
+});
+
+// ============ AI 要約・活用提案 ============
+app.get('/api/patents/:id/ai', async (req, res) => {
+    try {
+        const { data: patent, error } = await supabase
+            .from('patents')
+            .select('id, title, description, problem, usage, advantage, category, ai_summary, ai_use_cases, ai_generated_at')
+            .eq('id', req.params.id)
+            .single();
+
+        if (error || !patent) return res.status(404).json({ error: '特許が見つかりません' });
+
+        // キャッシュがあればそのまま返す
+        if (patent.ai_summary && patent.ai_use_cases) {
+            return res.json({ summary: patent.ai_summary, use_cases: patent.ai_use_cases, cached: true });
+        }
+
+        // Anthropic API で生成
+        const prompt = `以下は日本の特許情報です。この特許について、企業の事業開発担当者が読んでわかりやすい形で2点を生成してください。
+
+【特許タイトル】${patent.title || '不明'}
+【技術分野】${patent.category || '不明'}
+【課題】${patent.problem || ''}
+【説明】${patent.description || ''}
+【活用方法】${patent.usage || ''}
+【効果・利点】${patent.advantage || ''}
+
+以下のJSON形式のみで返答してください（マークダウン不要）:
+{
+  "summary": "この特許の技術内容と価値を3〜4文で説明した平易な日本語の要約",
+  "use_cases": [
+    { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字）" },
+    { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字）" },
+    { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字）" }
+  ]
+}`;
+
+        const message = await anthropic.messages.create({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 1024,
+            messages: [{ role: 'user', content: prompt }],
+        });
+
+        const rawText = message.content[0]?.text || '';
+        let parsed;
+        try {
+            parsed = JSON.parse(rawText.replace(/```json|```/g, '').trim());
+        } catch {
+            console.error('AI parse error:', rawText);
+            return res.status(500).json({ error: 'AI応答の解析に失敗しました' });
+        }
+
+        // Supabase にキャッシュ保存
+        await supabase.from('patents').update({
+            ai_summary: parsed.summary,
+            ai_use_cases: parsed.use_cases,
+            ai_generated_at: new Date().toISOString(),
+        }).eq('id', req.params.id);
+
+        res.json({ summary: parsed.summary, use_cases: parsed.use_cases, cached: false });
+
+    } catch (e) {
+        console.error('AI endpoint error:', e);
+        res.status(500).json({ error: 'AI生成に失敗しました: ' + e.message });
     }
 });
 

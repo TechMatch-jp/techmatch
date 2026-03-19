@@ -98,6 +98,8 @@
   .meta-val { font-weight: 600; color: #2c3e50; }
   .meta-val.mono { font-family: 'Menlo','Courier New',monospace; font-size: 11px; }
   .year-bar-wrap { margin-top: 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ai-summary-text { font-size: 14px; line-height: 1.8; color: #2c3e50; white-space: pre-line; }
   .year-bar-header { display: flex; justify-content: space-between; font-size: 12px; color: #1f2937; margin-bottom: 5px; }
   .year-bar-header .years-left { color: #667eea; font-weight: 700; }
   .year-bar { height: 5px; background: rgba(102,126,234,0.1); border-radius: 3px; overflow: hidden; }
@@ -206,8 +208,7 @@
 <script>
   function getPatentId() { return new URLSearchParams(location.search).get('id'); }
 
-  // AI生成コンテンツは準備中
-  const PREPARING_HTML = `<div style="font-size:13px;color:#374151;padding:14px 16px;background:#f8f9fa;border-radius:12px;border:1px solid rgba(102,126,234,0.08);">現在準備中です。近日中に追加予定です。</div>`;
+  const LOADING_HTML = `<div style="font-size:13px;color:#374151;padding:14px 16px;background:#f8f9fa;border-radius:12px;border:1px solid rgba(102,126,234,0.08);display:flex;align-items:center;gap:8px;"><span style="display:inline-block;width:14px;height:14px;border:2px solid #667eea;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;"></span>AI生成中...</div>`;
 
   function calcYearsLeft(y) { return Math.max(0, y - new Date().getFullYear()); }
   function calcBarWidth(r, e) {
@@ -230,11 +231,9 @@
     document.getElementById('meta-applicant').textContent = `出願人：${owner}`;
     document.getElementById('meta-date').textContent = date;
 
-    document.getElementById('summary-text').textContent = '現在準備中です。近日中に追加予定です。';
-
-    // 活用場面・類似特許・要約はAI生成予定のため準備中
-    document.getElementById('use-cases').innerHTML = PREPARING_HTML;
-    document.getElementById('similar-patents').innerHTML = PREPARING_HTML;
+    document.getElementById('summary-text').textContent = '';
+    document.getElementById('use-cases').innerHTML = LOADING_HTML;
+    document.getElementById('similar-patents').innerHTML = `<div style="font-size:13px;color:#374151;padding:14px 16px;">類似特許機能は近日公開予定です。</div>`;
 
     const ry = patent.created_at ? new Date(patent.created_at).getFullYear() : new Date().getFullYear();
     const ey = ry + 20;
@@ -268,6 +267,29 @@
 
   function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+  async function loadAISummary(id) {
+    try {
+      const res = await fetch(`/api/patents/${id}/ai-summary`);
+      if (!res.ok) throw new Error();
+      const ai = await res.json();
+      // 要約テキスト
+      const summaryEl = document.getElementById('summary-text');
+      if (summaryEl) summaryEl.textContent = ai.summary || '';
+      // 活用提案
+      const useCasesEl = document.getElementById('use-cases');
+      if (useCasesEl && ai.use_cases && ai.use_cases.length) {
+        useCasesEl.innerHTML = ai.use_cases.map(uc =>
+          `<div class="use-card"><h3>${esc(uc.title || '')}</h3><p>${esc(uc.description || '')}</p></div>`
+        ).join('');
+      } else if (useCasesEl) {
+        useCasesEl.innerHTML = '<div style="font-size:13px;color:#374151;padding:14px 16px;">活用提案の生成に失敗しました。</div>';
+      }
+    } catch {
+      const useCasesEl = document.getElementById('use-cases');
+      if (useCasesEl) useCasesEl.innerHTML = '<div style="font-size:13px;color:#374151;padding:14px 16px;">AI機能は一時的に利用できません。</div>';
+    }
+  }
+
   async function load() {
     const id = getPatentId();
     if (!id) {
@@ -280,6 +302,8 @@
       const res = await fetch(`/api/patents/${id}`);
       if (!res.ok) throw new Error();
       render(await res.json());
+      // AI要約を非同期で追加ロード
+      loadAISummary(id);
     } catch {
       document.getElementById('loading').style.display = 'none';
       document.getElementById('error').style.display = '';
