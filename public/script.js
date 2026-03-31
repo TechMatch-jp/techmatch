@@ -1,4 +1,21 @@
-// カテゴリー名のマッピング（DBの値をそのまま使用）
+// カテゴリ別グラデーション背景
+const categoryGradients = {
+  'AI・機械学習':      'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  'IoT・センサー':     'linear-gradient(135deg, #0f6e56 0%, #1D9E75 100%)',
+  'ソフトウェア・アプリ': 'linear-gradient(135deg, #185FA5 0%, #378ADD 100%)',
+  '半導体':           'linear-gradient(135deg, #444441 0%, #888780 100%)',
+  '電子部品・回路':   'linear-gradient(135deg, #533AB7 0%, #7F77DD 100%)',
+  '医療機器':         'linear-gradient(135deg, #993556 0%, #D4537E 100%)',
+  '医薬品・バイオ':   'linear-gradient(135deg, #D85A30 0%, #F0997B 100%)',
+  '機械・ロボット':   'linear-gradient(135deg, #3B6D11 0%, #639922 100%)',
+  'エネルギー':       'linear-gradient(135deg, #854F0B 0%, #EF9F27 100%)',
+  '環境・リサイクル': 'linear-gradient(135deg, #085041 0%, #1D9E75 100%)',
+  '素材・材料':       'linear-gradient(135deg, #5F5E5A 0%, #B4B2A9 100%)',
+  '農業・食品':       'linear-gradient(135deg, #27500A 0%, #97C459 100%)',
+  '建設・土木':       'linear-gradient(135deg, #633806 0%, #BA7517 100%)',
+  '店舗・サービス業': 'linear-gradient(135deg, #993C1D 0%, #D85A30 100%)',
+  '生活・消費財':     'linear-gradient(135deg, #72243E 0%, #ED93B1 100%)',
+};
 const categoryNames = {
  'AI・機械学習': 'AI・機械学習',
  'IoT・センサー': 'IoT・センサー',
@@ -27,6 +44,18 @@ let allPatents = [];
 let currentCategory = '';
 let currentSearchTerm = '';
 
+// 概要文を取得（AI要約があればそれを使い、なければ特許文のマークアップを除去して短縮）
+function getCardDescription(patent) {
+  if (patent.ai_summary) {
+    return patent.ai_summary.slice(0, 80) + (patent.ai_summary.length > 80 ? '...' : '');
+  }
+  const cleaned = (patent.description || '')
+    .replace(/【[^】]+】/g, '')  // 【課題】【解決手段】などを除去
+    .replace(/\s+/g, ' ')
+    .trim();
+  return cleaned.slice(0, 80) + (cleaned.length > 80 ? '...' : '');
+}
+
 // 特許カードを生成する関数
 function createPatentCard(patent) {
  const card = document.createElement('div');
@@ -52,10 +81,10 @@ function createPatentCard(patent) {
  };
  
  card.innerHTML = `
-    <div class="card-header">${categoryEmoji[patent.category] || ''}</div>
     <div class="card-body">
-      <h3 class="card-title">${patent.title}</h3>
-      <p class="card-description">${patent.description}</p>
+      <div class="card-title">${patent.title}</div>
+      <div class="card-description">${getCardDescription(patent)}</div>
+      <div class="card-owner">${patent.owner_name || ''}</div>
       <div class="card-tags">
         <span class="tag">${categoryNames[patent.category] || patent.category}</span>
       </div>
