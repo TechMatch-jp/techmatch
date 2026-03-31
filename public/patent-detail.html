@@ -283,7 +283,7 @@
     });
 
     // 類似特許：同カテゴリを取得（データ不足の場合は空メッセージ）
-    loadSimilarPatents(id, patent.category);
+    loadSimilarPatents(getPatentId(), patent.category);
 
     // 外部リンク：Google Patents はハイフン除去、J-PlatPat は元の番号をそのまま使用
     if (num) {
