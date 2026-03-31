@@ -240,27 +240,44 @@
   }
 
   function render(patent) {
-    const num = patent.patent_number || '番号未登録';
+    // publication_number優先（BigQuery取込データ）、なければpatent_number
+    const num = patent.publication_number || patent.patent_number || '';
     document.getElementById('patent-number').textContent = num;
     document.getElementById('patent-title').textContent = patent.title || '（タイトルなし）';
     document.getElementById('breadcrumb-title').textContent = patent.title || '特許詳細';
     document.title = `${patent.title || '特許詳細'} | TechMatch`;
 
-    const owner = patent.owner_name || patent.organization || '権利者情報なし';
-    const date = patent.created_at
+    const owner = patent.owner_name || '';
+    const date = patent.filing_date
+      ? new Date(patent.filing_date).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' }) + '出願'
+      : patent.created_at
       ? new Date(patent.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' }) + '登録'
       : '';
-    document.getElementById('meta-applicant').textContent = `出願人：${owner}`;
+    document.getElementById('meta-applicant').textContent = owner ? `出願人：${owner}` : '';
     document.getElementById('meta-date').textContent = date;
 
-    document.getElementById('summary-text').textContent = '';
+    // abstractを先に表示、AI要約が来たら上書き
+    document.getElementById('summary-text').textContent = patent.description || '';
     document.getElementById('use-cases').innerHTML = LOADING_HTML;
-    document.getElementById('similar-patents').innerHTML = `<div style="font-size:13px;color:#374151;padding:14px 16px;">類似特許機能は近日公開予定です。</div>`;
 
-    const ry = patent.created_at ? new Date(patent.created_at).getFullYear() : new Date().getFullYear();
+    // 類似特許セクションは非表示
+    const similarSection = document.getElementById('similar-patents');
+    if (similarSection) similarSection.closest('.section').style.display = 'none';
+    document.querySelectorAll('hr.divider')[1]?.style.setProperty('display', 'none');
+
+    const ry = patent.filing_date
+      ? new Date(patent.filing_date).getFullYear()
+      : patent.created_at ? new Date(patent.created_at).getFullYear() : new Date().getFullYear();
     const ey = ry + 20;
+
+    // 権利情報：値があるものだけ表示
     const rowsEl = document.getElementById('rights-rows');
-    [['出願番号', num, 'mono'], ['権利者', owner, ''], ['分類', patent.category || '—', ''], ['存続期間満了', `${ey}年頃`, '']].forEach(([k, v, c]) => {
+    const metaRows = [];
+    if (num)              metaRows.push(['出願番号', num, 'mono']);
+    if (owner)            metaRows.push(['権利者', owner, '']);
+    if (patent.category)  metaRows.push(['分類', patent.category, '']);
+    metaRows.push(['存続期間満了', `${ey}年頃`, '']);
+    metaRows.forEach(([k, v, c]) => {
       const d = document.createElement('div');
       d.className = 'meta-row';
       d.innerHTML = `<span class="meta-key">${esc(k)}</span><span class="meta-val ${c}">${esc(v)}</span>`;
@@ -272,25 +289,19 @@
     document.getElementById('year-end').textContent = ey + '年';
 
     const tagEl = document.getElementById('tag-list');
-    const tags = patent.category ? [patent.category] : [];
-    if (patent.title) ['製造','情報','医療','農業','環境','素材','AI','IoT','バイオ'].forEach(kw => {
-      if (patent.title.includes(kw) || (patent.description||'').includes(kw)) tags.push(kw);
-    });
-    if (!tags.length) tags.push('技術特許');
+    const tags = patent.category ? [patent.category] : ['技術特許'];
     [...new Set(tags)].slice(0, 6).forEach(t => {
       const s = document.createElement('span');
       s.className = 'tag'; s.textContent = t;
       tagEl.appendChild(s);
     });
 
-    // 外部リンク生成
-    const pubNum = patent.publication_number || patent.patent_number || '';
-    if (pubNum) {
-      // Google Patents: "JP2019011314A" → そのまま使用
-      const gpUrl = `https://patents.google.com/patent/${encodeURIComponent(pubNum)}/ja`;
-      // J-PlatPat: "JP2019011314A" → "JP-2019-011314-A" 形式に変換
-      const jpNum = pubNum.replace(/^JP(\d{4})(\d+)([A-Z]\d*)$/, 'JP-$1-$2-$3')
-                          .replace(/^JP(\d{4})(\d+)$/, 'JP-$1-$2');
+    // 外部リンク：ハイフンを除去して正規化 JP-2024505213-A → JP2024505213A
+    if (num) {
+      const gpNum = num.replace(/-/g, '');
+      const gpUrl = `https://patents.google.com/patent/${encodeURIComponent(gpNum)}/ja`;
+      const jpNum = gpNum.replace(/^JP(\d{4})(\d+)([A-Z]\d*)$/, 'JP-$1-$2-$3')
+                         .replace(/^JP(\d{4})(\d+)$/, 'JP-$1-$2');
       const jpUrl = `https://www.j-platpat.inpit.go.jp/c1800/PU/${encodeURIComponent(jpNum)}/ja`;
       document.getElementById('link-google-patents').href = gpUrl;
       document.getElementById('link-jplatpat').href = jpUrl;
@@ -349,3 +360,4 @@
 </script>
 </body>
 </html>
+
