@@ -168,30 +168,27 @@ async function fetchPatentsByKeyword(keyword, category) {
   }
 
   return rows.map(row => {
+    // 日本語名優先、なければ英語名をそのまま使う
     const owner_name = (() => {
       if (row.assignee_raw) {
         const raw = String(row.assignee_raw);
         const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
         const jaLine = lines.find(l => /[\u3000-\u9fff]/.test(l));
-        const name = jaLine || lines[0] || null;
-        return name ? name.split(',')[0].trim() : null;
+        if (jaLine) return jaLine.split(',')[0].trim();
+        // 日本語名がなければ1行目をそのまま使う（英語名）
+        if (lines[0]) return lines[0].split(',')[0].trim();
       }
       return row.assignee_harmonized_name || null;
     })();
 
-    // 英語名：カンマ以降の英語部分を取得（外国企業検索用）
+    // 英語名：harmonized_nameがラテン文字を含む場合のみ使用
+    // ただし owner_name と同じ内容なら非表示
     const owner_name_en = (() => {
-      if (row.assignee_raw) {
-        const raw = String(row.assignee_raw);
-        const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
-        const jaLine = lines.find(l => /[\u3000-\u9fff]/.test(l));
-        if (jaLine && jaLine.includes(',')) {
-          return jaLine.split(',').slice(1).join(',').replace(/<[^>]+>/g, '').trim() || null;
-        }
-        // 日本語行がない場合、harmonized nameを英語名として使う
-        return row.assignee_harmonized_name || null;
-      }
-      return null;
+      const harmonized = (row.assignee_harmonized_name || '').trim();
+      if (!harmonized) return null;
+      if (!/[a-zA-Z]/.test(harmonized)) return null;
+      if (harmonized === owner_name) return null;
+      return harmonized;
     })();
 
     return {
