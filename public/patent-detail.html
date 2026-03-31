@@ -77,7 +77,7 @@
   }
   .summary p { font-size: 14px; line-height: 1.8; color: #2c3e50; white-space: pre-line; }
   .section { margin-bottom: 2rem; }
-  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #374151; text-transform: uppercase; margin-bottom: 12px; }
+  .section-label { font-size: 15px; font-weight: 700; color: #2c3e50; margin-bottom: 12px; }
   hr.divider { border: none; border-top: 1px solid rgba(102,126,234,0.1); margin: 1.75rem 0; }
   .use-card { background: #f8f9fa; border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid rgba(102,126,234,0.08); }
   .use-card h3 { font-size: 13px; font-weight: 700; color: #2c3e50; margin-bottom: 5px; }
@@ -169,6 +169,7 @@
             <span id="meta-date"></span>
           </div>
           <div class="summary"><p id="summary-text"></p></div>
+          <div id="summary-links" style="display:none; margin-bottom:1.75rem;"><a id="summary-link-gp" href="#" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#667eea;text-decoration:none;padding:7px 14px;border:1px solid rgba(102,126,234,0.25);border-radius:8px;background:rgba(102,126,234,0.05);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>u00a0u7279u8a31u672cu6587u3092u898bu308buff08Google Patentsuff09</a></div>
           <hr class="divider">
           <section class="section">
             <div class="section-label">活用が考えられる場面</div>
@@ -186,14 +187,6 @@
         <div class="sidebar-card">
           <div class="section-label">権利情報</div>
           <div id="rights-rows"></div>
-          <div class="year-bar-wrap">
-            <div class="year-bar-header">
-              <span>残存期間</span>
-              <span class="years-left" id="years-left-label"></span>
-            </div>
-            <div class="year-bar"><div class="year-bar-fill" id="year-bar-fill"></div></div>
-            <div class="year-ends"><span id="year-start"></span><span id="year-end"></span></div>
-          </div>
         </div>
         <div class="sidebar-card">
           <div class="section-label">技術分野</div>
@@ -253,11 +246,6 @@
     document.getElementById('summary-text').textContent = patent.description || '';
     document.getElementById('use-cases').innerHTML = LOADING_HTML;
 
-    // 類似特許セクションは非表示
-    const similarSection = document.getElementById('similar-patents');
-    if (similarSection) similarSection.closest('.section').style.display = 'none';
-    document.querySelectorAll('hr.divider')[1]?.style.setProperty('display', 'none');
-
     const ry = patent.filing_date
       ? new Date(patent.filing_date).getFullYear()
       : patent.created_at ? new Date(patent.created_at).getFullYear() : new Date().getFullYear();
@@ -278,28 +266,13 @@
     if (num)             metaRows.push(['出願番号', num, 'mono']);
     if (owner)           metaRows.push(['権利者', owner.split(',')[0].trim(), '']);
     if (patent.category) metaRows.push(['分類', patent.category, '']);
-    metaRows.push(['存続期間満了', `${ey}年`, '']);  // 「頃」なし
+    metaRows.push(['存続期間満了', `${ry + 20}年`, '']);
     metaRows.forEach(([k, v, c]) => {
       const d = document.createElement('div');
       d.className = 'meta-row';
       d.innerHTML = `<span class="meta-key">${esc(k)}</span><span class="meta-val ${c}">${esc(v)}</span>`;
       rowsEl.appendChild(d);
     });
-
-    // 残存期間バー：filing_dateから正確に計算
-    const filingDate = patent.filing_date ? new Date(patent.filing_date) : new Date(ry, 0, 1);
-    const expiryDate = new Date(filingDate);
-    expiryDate.setFullYear(expiryDate.getFullYear() + 20);
-    const now = new Date();
-    const totalMs = expiryDate - filingDate;
-    const remainMs = expiryDate - now;
-    const remainYears = Math.max(0, Math.floor(remainMs / (365.25 * 24 * 60 * 60 * 1000)));
-    const barPct = Math.max(0, Math.min(100, Math.round((remainMs / totalMs) * 100)));
-
-    document.getElementById('years-left-label').textContent = `約${remainYears}年`;
-    document.getElementById('year-bar-fill').style.width = barPct + '%';
-    document.getElementById('year-start').textContent = ry + '年';
-    document.getElementById('year-end').textContent = ey + '年';
 
     const tagEl = document.getElementById('tag-list');
     const tags = patent.category ? [patent.category] : ['技術特許'];
@@ -309,13 +282,18 @@
       tagEl.appendChild(s);
     });
 
-    // 外部リンク：ハイフンを除去して正規化 JP-2024505213-A → JP2024505213A
+    // 類似特許：同カテゴリを取得（データ不足の場合は空メッセージ）
+    loadSimilarPatents(id, patent.category);
+
+    // 外部リンク：Google Patents はハイフン除去、J-PlatPat は元の番号をそのまま使用
     if (num) {
       const gpNum = num.replace(/-/g, '');
       const gpUrl = `https://patents.google.com/patent/${encodeURIComponent(gpNum)}/ja`;
-      const jpNum = gpNum.replace(/^JP(\d{4})(\d+)([A-Z]\d*)$/, 'JP-$1-$2-$3')
-                         .replace(/^JP(\d{4})(\d+)$/, 'JP-$1-$2');
-      const jpUrl = `https://www.j-platpat.inpit.go.jp/c1800/PU/${encodeURIComponent(jpNum)}/ja`;
+      const jpUrl = `https://www.j-platpat.inpit.go.jp/c1800/PU/${encodeURIComponent(num)}/ja`;
+      // 概要直下リンク
+      document.getElementById('summary-link-gp').href = gpUrl;
+      document.getElementById('summary-links').style.display = '';
+      // サイドバーリンク
       document.getElementById('link-google-patents').href = gpUrl;
       document.getElementById('link-jplatpat').href = jpUrl;
       document.getElementById('external-links-card').style.display = '';
@@ -323,6 +301,31 @@
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('content').style.display = '';
+  }
+
+  async function loadSimilarPatents(currentId, category) {
+    const el = document.getElementById('similar-patents');
+    if (!el) return;
+    try {
+      const res = await fetch(`/api/patents?category=${encodeURIComponent(category)}`);
+      if (!res.ok) throw new Error();
+      const patents = await res.json();
+      const similar = patents.filter(p => p.id !== currentId).slice(0, 3);
+      if (!similar.length) {
+        el.innerHTML = '<div style="font-size:13px;color:#374151;padding:14px 16px;">同カテゴリの特許はまだ登録されていません。</div>';
+        return;
+      }
+      el.innerHTML = similar.map(p => `
+        <div class="similar-item" style="cursor:pointer;" onclick="location.href='/patent-detail.html?id=${p.id}'">
+          <div class="similar-header">
+            <span class="similar-title">${esc(p.title)}</span>
+          </div>
+          <div class="similar-applicant">${esc(p.owner_name || '')}</div>
+        </div>
+      `).join('');
+    } catch {
+      el.innerHTML = '<div style="font-size:13px;color:#374151;padding:14px 16px;">類似特許の取得に失敗しました。</div>';
+    }
   }
 
   function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }

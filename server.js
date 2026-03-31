@@ -458,11 +458,11 @@ app.get('/api/patents/:id/ai', async (req, res) => {
 
 以下のJSON形式のみで返答してください（マークダウン不要）:
 {
-  "summary": "この特許の技術内容と価値を3〜4文で説明した平易な日本語の要約",
+  "summary": "この特許の技術内容を2〜3文で説明した簡潔な日本語の要約。文末は体言止め・名詞止めで簡潔に。例:〜を実現する技術。〜への応用が可能。",
   "use_cases": [
-    { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字）" },
-    { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字）" },
-    { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字）" }
+    { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字、体言止め）" },
+    { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字、体言止め）" },
+    { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字、体言止め）" }
   ]
 }`;
 
@@ -501,3 +501,4 @@ app.listen(PORT, () => {
     console.log(`✅ TechMatch server started on http://localhost:${PORT}`);
     console.log(`📊 Database: Supabase PostgreSQL`);
 });
+
