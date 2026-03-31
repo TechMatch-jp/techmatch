@@ -248,6 +248,8 @@
     const metaRows = [];
     if (num)              metaRows.push(['出願番号', num, 'mono']);
     if (owner)            metaRows.push(['出願人', owner.split(',')[0].trim(), '']);
+    const ownerEn = (patent.owner_name_en || '').replace(/<[^>]+>/g, '').trim();
+    if (ownerEn)          metaRows.push(['出願人（英）', ownerEn, '']);
     if (filingDateStr)    metaRows.push(['出願日', filingDateStr.replace('出願','').trim(), '']);
     metaRows.push(['存続期間満了', `${ry + 20}年`, '']);
     metaRows.forEach(([k, v, c]) => {

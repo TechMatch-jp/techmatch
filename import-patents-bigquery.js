@@ -168,23 +168,38 @@ async function fetchPatentsByKeyword(keyword, category) {
   }
 
   return rows.map(row => {
-    // assignee_rawから日本語の出願人名を優先して取得
     const owner_name = (() => {
       if (row.assignee_raw) {
         const raw = String(row.assignee_raw);
         const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
         const jaLine = lines.find(l => /[\u3000-\u9fff]/.test(l));
-        if (jaLine) return jaLine;
-        if (lines[0]) return lines[0];
+        const name = jaLine || lines[0] || null;
+        return name ? name.split(',')[0].trim() : null;
       }
       return row.assignee_harmonized_name || null;
+    })();
+
+    // 英語名：カンマ以降の英語部分を取得（外国企業検索用）
+    const owner_name_en = (() => {
+      if (row.assignee_raw) {
+        const raw = String(row.assignee_raw);
+        const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+        const jaLine = lines.find(l => /[\u3000-\u9fff]/.test(l));
+        if (jaLine && jaLine.includes(',')) {
+          return jaLine.split(',').slice(1).join(',').replace(/<[^>]+>/g, '').trim() || null;
+        }
+        // 日本語行がない場合、harmonized nameを英語名として使う
+        return row.assignee_harmonized_name || null;
+      }
+      return null;
     })();
 
     return {
       publication_number: row.publication_number,
       title: row.title_ja || '（タイトル不明）',
       description: row.abstract_ja || null,
-      owner_name,                  // ← 修正: DBのカラム名 owner_name に統一
+      owner_name,
+      owner_name_en: owner_name_en || null,  // 英語社名（外国企業の検索用）
       filing_date: toDateStr(row.filing_date),
       publication_date: toDateStr(row.publication_date),
       category,

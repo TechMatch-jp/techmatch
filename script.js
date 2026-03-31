@@ -27,6 +27,18 @@ let allPatents = [];
 let currentCategory = '';
 let currentSearchTerm = '';
 
+// 概要文を取得（AI要約があればそれを使い、なければ特許文のマークアップを除去して短縮）
+function getCardDescription(patent) {
+  if (patent.ai_summary) {
+    return patent.ai_summary.slice(0, 80) + (patent.ai_summary.length > 80 ? '...' : '');
+  }
+  const cleaned = (patent.description || '')
+    .replace(/【[^】]+】/g, '')  // 【課題】【解決手段】などを除去
+    .replace(/\s+/g, ' ')
+    .trim();
+  return cleaned.slice(0, 80) + (cleaned.length > 80 ? '...' : '');
+}
+
 // 特許カードを生成する関数
 function createPatentCard(patent) {
  const card = document.createElement('div');
@@ -52,20 +64,15 @@ function createPatentCard(patent) {
  };
  
  card.innerHTML = `
- <div class="card-header">${categoryEmoji[patent.category] || ''}</div>
- <div class="card-body">
- <h3 class="card-title">${patent.title}</h3>
- <p class="card-description">
- ${patent.description}
- </p>
- <div class="card-tags">
- <span class="tag">${categoryNames[patent.category] || patent.category}</span>
- </div>
- <div class="card-footer">
- <span class="status-badge status-${patent.status}">${statusNames[patent.status] || patent.status}</span>
- </div>
- </div>
- `;
+    <div class="card-header">${categoryEmoji[patent.category] || ''}</div>
+    <div class="card-body">
+      <h3 class="card-title">${patent.title}</h3>
+      <p class="card-description">${getCardDescription(patent)}</p>
+      <div class="card-tags">
+        <span class="tag">${categoryNames[patent.category] || patent.category}</span>
+      </div>
+    </div>
+  `;
  
  // クリックで詳細ページに遷移
  card.addEventListener('click', () => {
