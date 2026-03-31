@@ -159,7 +159,7 @@ async function fetchPatentsByKeyword(keyword, category) {
   `;
 
   const [rows] = await bigquery.query({ query });
-  // 整数日付（20240101）を文字列（'2024-01-01'）に変換
+
   function toDateStr(d) {
     if (!d) return null;
     const s = String(d.value ?? d);
@@ -167,12 +167,9 @@ async function fetchPatentsByKeyword(keyword, category) {
     return null;
   }
 
-  return rows.map(row => ({
-    publication_number: row.publication_number,
-    title: row.title_ja || '（タイトル不明）',
-    description: row.abstract_ja || null,
-    assignee: (() => {
-      // assignee_rawから日本語の出願人名を優先して取得
+  return rows.map(row => {
+    // assignee_rawから日本語の出願人名を優先して取得
+    const owner_name = (() => {
       if (row.assignee_raw) {
         const raw = String(row.assignee_raw);
         const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
@@ -181,13 +178,21 @@ async function fetchPatentsByKeyword(keyword, category) {
         if (lines[0]) return lines[0];
       }
       return row.assignee_harmonized_name || null;
-    })(),
-    filing_date: toDateStr(row.filing_date),
-    publication_date: toDateStr(row.publication_date),
-    category: category,
-    source: 'google_patents',
-    status: 'available',
-  }));
+    })();
+
+    return {
+      publication_number: row.publication_number,
+      title: row.title_ja || '（タイトル不明）',
+      description: row.abstract_ja || null,
+      owner_name,                  // ← 修正: DBのカラム名 owner_name に統一
+      filing_date: toDateStr(row.filing_date),
+      publication_date: toDateStr(row.publication_date),
+      category,
+      source: 'google_patents',
+      status: 'available',
+      approval_status: 'approved', // ← 修正: 取込時に自動承認
+    };
+  });
 }
 
 async function saveToSupabase(patents) {
