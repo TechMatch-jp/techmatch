@@ -458,7 +458,7 @@ app.get('/api/patents/:id/ai', async (req, res) => {
 
 以下のJSON形式のみで返答してください（マークダウン不要）:
 {
-  "summary": "この特許の技術内容を2〜3文で説明した簡潔な日本語の要約。文末は体言止め・名詞止めで簡潔に。例:〜を実現する技術。〜への応用が可能。",
+  "summary": "この特許を技術に詳しくない人にもわかるように説明した日本語の要約。以下のルールを守ること：①1文を20〜30字以内の短文にする ②5〜7文で構成する ③専門用語は使わず、身近な言葉に置き換える ④「何ができるのか」「何が便利になるのか」を中心に書く ⑤体言止め・名詞止めで締める。例：AIが顔の表情をリアルタイムで読み取る技術。カメラ映像だけで感情を自動判定。怒り・喜び・不安など複数の感情を同時に認識可能。接客や医療の現場での活用を想定。人の手を介さず、瞬時に感情データを収集・分析。",
   "use_cases": [
     { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字、体言止め）" },
     { "title": "活用場面のタイトル（10字以内）", "description": "具体的な活用方法（40〜60字、体言止め）" },
@@ -493,6 +493,98 @@ app.get('/api/patents/:id/ai', async (req, res) => {
     } catch (e) {
         console.error('AI endpoint error:', e);
         res.status(500).json({ error: 'AI生成に失敗しました: ' + e.message });
+    }
+});
+
+// ============ 類似特許 AI ============
+app.get('/api/patents/:id/similar', async (req, res) => {
+    try {
+        // 対象特許を取得
+        const { data: base, error: be } = await supabase
+            .from('patents')
+            .select('id, title, description, category, ai_similar')
+            .eq('id', req.params.id)
+            .single();
+
+        if (be || !base) return res.status(404).json({ error: '特許が見つかりません' });
+
+        // キャッシュがあれば返す
+        if (base.ai_similar) {
+            return res.json({ similar: base.ai_similar, cached: true });
+        }
+
+        // 同カテゴリの他の特許を最大10件取得
+        const { data: candidates } = await supabase
+            .from('patents')
+            .select('id, title, description, owner_name')
+            .eq('category', base.category)
+            .eq('approval_status', 'approved')
+            .neq('id', req.params.id)
+            .limit(10);
+
+        if (!candidates || candidates.length === 0) {
+            return res.json({ similar: [], cached: false });
+        }
+
+        // Claude APIで関係性を生成
+        const candidateList = candidates.map((p, i) =>
+            `[${i + 1}] タイトル：${p.title}\n    説明：${(p.description || '').slice(0, 100)}`
+        ).join('\n\n');
+
+        const prompt = `以下は「${base.title}」という特許です。
+説明：${(base.description || '').slice(0, 200)}
+
+この特許と、以下の候補特許との技術的な関係を分析してください。
+
+${candidateList}
+
+各候補について、技術的観点からの関連度（高・中・低）と、具体的にどのような技術的共通点や補完関係があるかを1文で説明してください。
+関連度が「低」のものは除外して、「高」「中」のものだけを関連度順に最大3件選んでください。
+
+以下のJSON形式のみで返答してください（マークダウン不要）:
+[
+  { "index": 候補番号(1始まり), "relation": "技術的な関係を具体的に説明した1文（30〜50字）" },
+  ...
+]
+関連度が高いものがなければ空配列 [] を返してください。`;
+
+        const message = await anthropic.messages.create({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 512,
+            messages: [{ role: 'user', content: prompt }],
+        });
+
+        const rawText = message.content[0]?.text || '';
+        let parsed;
+        try {
+            parsed = JSON.parse(rawText.replace(/```json|```/g, '').trim());
+        } catch {
+            console.error('Similar AI parse error:', rawText);
+            return res.json({ similar: [], cached: false });
+        }
+
+        // 結果を整形
+        const result = parsed.map(item => {
+            const candidate = candidates[item.index - 1];
+            if (!candidate) return null;
+            return {
+                id: candidate.id,
+                title: candidate.title,
+                owner_name: candidate.owner_name,
+                relation: item.relation,
+            };
+        }).filter(Boolean);
+
+        // Supabaseにキャッシュ保存
+        await supabase.from('patents').update({
+            ai_similar: result,
+        }).eq('id', req.params.id);
+
+        res.json({ similar: result, cached: false });
+
+    } catch (e) {
+        console.error('Similar endpoint error:', e);
+        res.status(500).json({ error: '類似特許の取得に失敗しました: ' + e.message });
     }
 });
 

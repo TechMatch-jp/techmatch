@@ -164,12 +164,8 @@
         <div class="main-card">
           <div class="patent-number" id="patent-number"></div>
           <h1 id="patent-title"></h1>
-          <div class="meta-line">
-            <span id="meta-applicant"></span>
-            <span id="meta-date"></span>
-          </div>
           <div class="summary"><p id="summary-text"></p></div>
-          <div id="summary-links" style="display:none; margin-bottom:1.75rem;"><a id="summary-link-gp" href="#" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#667eea;text-decoration:none;padding:7px 14px;border:1px solid rgba(102,126,234,0.25);border-radius:8px;background:rgba(102,126,234,0.05);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>u00a0u7279u8a31u672cu6587u3092u898bu308buff08Google Patentsuff09</a></div>
+          <div id="summary-links" style="display:none; margin-bottom:1.75rem;"><a id="summary-link-gp" href="#" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#667eea;color:white;border-radius:8px;font-size:13px;font-weight:500;text-decoration:none;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>Google Patents で詳細を見る</a></div>
           <hr class="divider">
           <section class="section">
             <div class="section-label">活用が考えられる場面</div>
@@ -191,17 +187,6 @@
         <div class="sidebar-card">
           <div class="section-label">技術分野</div>
           <div class="tag-list" id="tag-list"></div>
-        </div>
-        <div class="sidebar-card" id="external-links-card" style="display:none;">
-          <div class="section-label">外部リンク</div>
-          <a id="link-google-patents" href="#" target="_blank" rel="noopener" class="btn-link">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            Google Patents で見る
-          </a>
-          <a id="link-jplatpat" href="#" target="_blank" rel="noopener" class="btn-link">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            J-PlatPat で特許文献を見る
-          </a>
         </div>
       </aside>
     </div>
@@ -257,15 +242,13 @@
       : patent.created_at
       ? new Date(patent.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long' }) + '登録'
       : '';
-    document.getElementById('meta-applicant').textContent = owner ? `出願人：${owner}` : '';
-    document.getElementById('meta-date').textContent = filingDateStr;
-
     // 権利情報：値があるものだけ表示
     const rowsEl = document.getElementById('rights-rows');
     const metaRows = [];
-    if (num)             metaRows.push(['出願番号', num, 'mono']);
-    if (owner)           metaRows.push(['権利者', owner.split(',')[0].trim(), '']);
-    if (patent.category) metaRows.push(['分類', patent.category, '']);
+    if (num)              metaRows.push(['出願番号', num, 'mono']);
+    if (owner)            metaRows.push(['出願人', owner.split(',')[0].trim(), '']);
+    if (filingDateStr)    metaRows.push(['出願日', filingDateStr.replace('出願','').trim(), '']);
+    if (patent.category)  metaRows.push(['分類', patent.category, '']);
     metaRows.push(['存続期間満了', `${ry + 20}年`, '']);
     metaRows.forEach(([k, v, c]) => {
       const d = document.createElement('div');
@@ -289,14 +272,8 @@
     if (num) {
       const gpNum = num.replace(/-/g, '');
       const gpUrl = `https://patents.google.com/patent/${encodeURIComponent(gpNum)}/ja`;
-      const jpUrl = `https://www.j-platpat.inpit.go.jp/c1800/PU/${encodeURIComponent(num)}/ja`;
-      // 概要直下リンク
       document.getElementById('summary-link-gp').href = gpUrl;
       document.getElementById('summary-links').style.display = '';
-      // サイドバーリンク
-      document.getElementById('link-google-patents').href = gpUrl;
-      document.getElementById('link-jplatpat').href = jpUrl;
-      document.getElementById('external-links-card').style.display = '';
     }
 
     document.getElementById('loading').style.display = 'none';
@@ -306,23 +283,27 @@
   async function loadSimilarPatents(currentId, category) {
     const el = document.getElementById('similar-patents');
     if (!el) return;
+    el.innerHTML = LOADING_HTML;
     try {
-      const res = await fetch(`/api/patents?category=${encodeURIComponent(category)}`);
+      const res = await fetch(`/api/patents/${currentId}/similar`);
       if (!res.ok) throw new Error();
-      const patents = await res.json();
-      const similar = patents.filter(p => p.id !== currentId).slice(0, 3);
-      if (!similar.length) {
-        el.innerHTML = '<div style="font-size:13px;color:#374151;padding:14px 16px;">同カテゴリの特許はまだ登録されていません。</div>';
+      const { similar } = await res.json();
+      if (!similar || !similar.length) {
+        el.innerHTML = '<div style="font-size:13px;color:#374151;padding:14px 16px;">関連する特許はまだ見つかりませんでした。</div>';
         return;
       }
-      el.innerHTML = similar.map(p => `
-        <div class="similar-item" style="cursor:pointer;" onclick="location.href='/patent-detail.html?id=${p.id}'">
-          <div class="similar-header">
-            <span class="similar-title">${esc(p.title)}</span>
+      el.innerHTML = similar.map(p => {
+        const owner = (p.owner_name || '').split(',')[0].trim();
+        return `
+          <div class="similar-item" style="cursor:pointer;" onclick="location.href='/patent-detail.html?id=${p.id}'">
+            <div class="similar-header">
+              <span class="similar-title">${esc(p.title)}</span>
+            </div>
+            ${owner ? `<div class="similar-applicant">${esc(owner)}</div>` : ''}
+            <div class="diff-block"><span class="diff-label">関係</span>${esc(p.relation)}</div>
           </div>
-          <div class="similar-applicant">${esc(p.owner_name || '')}</div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     } catch {
       el.innerHTML = '<div style="font-size:13px;color:#374151;padding:14px 16px;">類似特許の取得に失敗しました。</div>';
     }
