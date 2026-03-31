@@ -81,10 +81,10 @@ function createPatentCard(patent) {
  };
  
  card.innerHTML = `
-    <div class="card-header" style="background: ${categoryGradients[patent.category] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};">${categoryEmoji[patent.category] || ''}</div>
     <div class="card-body">
-      <h3 class="card-title">${patent.title}</h3>
-      <p class="card-description">${getCardDescription(patent)}</p>
+      <div class="card-title">${patent.title}</div>
+      <div class="card-description">${getCardDescription(patent)}</div>
+      <div class="card-owner">${patent.owner_name || ''}</div>
       <div class="card-tags">
         <span class="tag">${categoryNames[patent.category] || patent.category}</span>
       </div>
