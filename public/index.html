@@ -335,6 +335,8 @@
  transition: all 0.3s;
  cursor: pointer;
  border: 1px solid rgba(102, 126, 234, 0.08);
+ display: flex;
+ flex-direction: column;
  }
  
  .card:hover {
@@ -344,7 +346,6 @@
  
  .card-header {
             height: 140px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -371,6 +372,9 @@
             
             .card-body {
             padding: 0.9rem 1rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
             }
             
             .card-title {
@@ -394,6 +398,7 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            flex: 1;
             }
             
             .card-tags {
