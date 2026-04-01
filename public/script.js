@@ -156,7 +156,7 @@ function displayPatents(patentsToDisplay) {
         transition: all 0.3s;
       " onmouseover="this.style.background='#667eea';this.style.color='white';"
          onmouseout="this.style.background='white';this.style.color='#667eea';">
-        もっと見る（残り${patentsToDisplay.length - displayedCount}件）
+        もっと見る
       </button>
     `;
     grid.after(loadMoreWrapper);
