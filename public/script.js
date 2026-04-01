@@ -43,6 +43,7 @@ const statusNames = {
 let allPatents = [];
 let currentCategory = '';
 let currentSearchTerm = '';
+let displayedCount = 8;
 
 // 概要文を取得（AI要約があればそれを使い、なければ特許文のマークアップを除去して短縮）
 function getCardDescription(patent) {
@@ -99,22 +100,78 @@ function createPatentCard(patent) {
  return card;
 }
 
-// 特許一覧を表示する関数（最大6件）
+// ローディング表示
+function showLoading() {
+  const grid = document.getElementById('patentGrid');
+  grid.innerHTML = `
+    <div style="grid-column: 1/-1; text-align: center; padding: 3rem 0; color: #667eea;">
+      <div style="display: inline-block; width: 40px; height: 40px; border: 3px solid rgba(102,126,234,0.2); border-top-color: #667eea; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+      <p style="margin-top: 1rem; font-size: 0.95rem; color: #6b7280;">特許データを読み込み中...</p>
+    </div>
+  `;
+  // スピナーのアニメーション
+  if (!document.getElementById('spinner-style')) {
+    const style = document.createElement('style');
+    style.id = 'spinner-style';
+    style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  }
+}
+
+// 特許一覧を表示する関数
 function displayPatents(patentsToDisplay) {
- const grid = document.getElementById('patentGrid');
- grid.innerHTML = '';
- 
- if (patentsToDisplay.length === 0) {
- grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #7f8c8d;">該当する特許が見つかりませんでした。</p>';
- return;
- }
- 
- // 最大6件まで表示
- const limitedPatents = patentsToDisplay.slice(0, 6);
- 
- limitedPatents.forEach(patent => {
- grid.appendChild(createPatentCard(patent));
- });
+  const grid = document.getElementById('patentGrid');
+  grid.innerHTML = '';
+
+  // 既存の「もっと見る」ボタンを削除
+  const existingBtn = document.getElementById('loadMoreBtn');
+  if (existingBtn) existingBtn.remove();
+
+  if (patentsToDisplay.length === 0) {
+    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #7f8c8d;">該当する特許が見つかりませんでした。</p>';
+    return;
+  }
+
+  // 最大8件表示
+  const toShow = patentsToDisplay.slice(0, displayedCount);
+  toShow.forEach(patent => {
+    grid.appendChild(createPatentCard(patent));
+  });
+
+  // まだ残りがあれば「もっと見る」ボタンを表示
+  if (patentsToDisplay.length > displayedCount) {
+    const loadMoreWrapper = document.createElement('div');
+    loadMoreWrapper.id = 'loadMoreBtn';
+    loadMoreWrapper.style.cssText = 'grid-column: 1/-1; text-align: center; padding: 1rem 0 2rem;';
+    loadMoreWrapper.innerHTML = `
+      <button onclick="loadMore()" style="
+        background: white;
+        color: #667eea;
+        border: 2px solid #667eea;
+        padding: 0.8rem 3rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+      " onmouseover="this.style.background='#667eea';this.style.color='white';"
+         onmouseout="this.style.background='white';this.style.color='#667eea';">
+        もっと見る（残り${patentsToDisplay.length - displayedCount}件）
+      </button>
+    `;
+    grid.after(loadMoreWrapper);
+  }
+
+  // フィルター後はカウントリセット用に現在の表示対象を保持
+  grid._currentPatents = patentsToDisplay;
+}
+
+// もっと見るボタン押下
+function loadMore() {
+  const grid = document.getElementById('patentGrid');
+  const patents = grid._currentPatents || allPatents;
+  displayedCount += 8;
+  displayPatents(patents);
 }
 
 // フィルター処理
@@ -135,6 +192,7 @@ function filterPatents() {
  );
  }
  
+ displayedCount = 8; // フィルター変更時はリセット
  displayPatents(filtered);
 }
 
@@ -142,6 +200,7 @@ function filterPatents() {
 async function loadPatents() {
  try {
  console.log('特許データを取得中...');
+ showLoading();
  const response = await fetch('/api/patents');
  console.log('Response status:', response.status);
  
