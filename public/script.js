@@ -187,8 +187,9 @@ function filterPatents() {
  if (currentSearchTerm) {
  const searchLower = currentSearchTerm.toLowerCase();
  filtered = filtered.filter(patent => 
- patent.title.toLowerCase().includes(searchLower) || 
- patent.description.toLowerCase().includes(searchLower)
+   (patent.title || '').toLowerCase().includes(searchLower) || 
+   (patent.description || '').toLowerCase().includes(searchLower) ||
+   (patent.ai_summary || '').toLowerCase().includes(searchLower)
  );
  }
  
