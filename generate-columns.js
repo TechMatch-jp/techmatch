@@ -99,7 +99,11 @@ ${column.instruction}
 - 本文のみを出力し、前置きや説明文は一切不要`
     }]
   });
-  return message.content[0].text;
+  return message.content[0].text
+    .replace(/^```html\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/\s*```$/i, '')
+    .trim();
 }
 
 // ========== メイン処理 ==========

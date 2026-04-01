@@ -467,22 +467,7 @@
                 
                 <h1 class="article-title">${column.title}</h1>
                 
-                <div class="article-meta">
-                    <span> 投稿日: ${new Date(column.createdAt).toLocaleDateString('ja-JP')}</span>
-                    <span> ${column.readTime || '5分'}で読めます</span>
-                </div>
-                
-                <div class="social-share">
-                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(column.title)}&url=${encodeURIComponent(window.location.href)}" 
-                       target="_blank" 
-                       class="share-btn share-twitter">𝕏</a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" 
-                       target="_blank" 
-                       class="share-btn share-facebook">f</a>
-                    <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}" 
-                       target="_blank" 
-                       class="share-btn share-line">L</a>
-                </div>
+
                 
                 ${toc}
                 
@@ -490,17 +475,7 @@
                     ${column.content}
                 </div>
                 
-                <div class="social-share" style="margin-top: 3rem;">
-                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(column.title)}&url=${encodeURIComponent(window.location.href)}" 
-                       target="_blank" 
-                       class="share-btn share-twitter">𝕏</a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" 
-                       target="_blank" 
-                       class="share-btn share-facebook">f</a>
-                    <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}" 
-                       target="_blank" 
-                       class="share-btn share-line">L</a>
-                </div>
+
             `;
         }
         
@@ -539,7 +514,6 @@
                     const relatedHTML = related.map(col => `
                         <div class="related-item">
                             <a href="column-detail.html?id=${col.id}">${col.title}</a>
-                            <div class="related-date">${new Date(col.createdAt).toLocaleDateString('ja-JP')}</div>
                         </div>
                     `).join('');
                     document.getElementById('relatedArticles').innerHTML = relatedHTML || '<div class="related-item">関連記事がありません</div>';
