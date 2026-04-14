@@ -234,6 +234,12 @@ body::before {
     .nav, .main-nav { display: none !important; }
     .hamburger { display: flex; }
     html, body { overflow-x: hidden; }
+    .header-content {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
 }
 
 /* ページヘッダー */
