@@ -365,13 +365,10 @@
                     <a href="contact.html" class="nav-link">お問い合わせ</a>
                     <a href="auth.html" class="btn-primary">ログイン</a>
                 </nav>
-      <button class="hamburger" id="hamburger" aria-label="メニュー">
-        <span></span><span></span><span></span>
-      </button>
+      <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
     </div>
   </div>
 </header>
-
 <div class="mobile-menu" id="mobile-menu">
   <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
   <a href="/index.html">特許一覧</a>
@@ -380,7 +377,6 @@
   <a href="/contact.html">お問い合わせ</a>
   <a href="/auth.html" class="btn-primary">ログイン</a>
 </div>
-
     <div class="breadcrumb">
         <a href="index.html">ホーム</a> &gt; 
         <a href="column.html">技術コラム</a> &gt; 
@@ -558,12 +554,13 @@
         loadColumn();
     </script>
 <script>
-  const hb = document.getElementById('hamburger');
-  const mm = document.getElementById('mobile-menu');
-  const mc = document.getElementById('mobile-menu-close');
-  if (hb) hb.addEventListener('click', () => { hb.classList.toggle('open'); mm.classList.toggle('open'); });
-  if (mc) mc.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); });
-  mm && mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); }));
+(function(){
+  var hb=document.getElementById('hamburger'),mm=document.getElementById('mobile-menu'),mc=document.getElementById('mobile-menu-close');
+  function close(){hb&&hb.classList.remove('open');mm&&mm.classList.remove('open');}
+  if(hb)hb.addEventListener('click',function(){hb.classList.toggle('open');mm.classList.toggle('open');});
+  if(mc)mc.addEventListener('click',close);
+  mm&&mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',close);});
+})();
 </script>
 </body>
 </html>

@@ -133,9 +133,18 @@
                     <a href="contact.html" class="nav-link">お問い合わせ</a>
                     <a href="auth.html" class="btn-primary">ログイン</a>
                 </nav>
+      <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
             </div>
         </div>
     </header>
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
+  <a href="/index.html">特許一覧</a>
+  <a href="/column.html">技術コラム</a>
+  <a href="/interview.html">研究者インタビュー</a>
+  <a href="/contact.html">お問い合わせ</a>
+  <a href="/auth.html" class="btn-primary">ログイン</a>
+</div>
 
     <main class="main-content">
         <div class="container">
@@ -196,13 +205,7 @@
 
     <footer class="main-footer">
         <div class="container">
-            <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:1rem;flex-wrap:wrap;">
-                <a href="about.html" style="color:#374151;text-decoration:none;font-size:0.9rem;">会社概要</a>
-                <a href="terms.html" style="color:#374151;text-decoration:none;font-size:0.9rem;">利用規約</a>
-                <a href="privacy.html" style="color:#374151;text-decoration:none;font-size:0.9rem;">プライバシーポリシー</a>
-                <a href="contact.html" style="color:#374151;text-decoration:none;font-size:0.9rem;">お問い合わせ</a>
-            </div>
-            <p style="text-align:center;">&copy; 2026 TechMatch All Rights Reserved.</p>
+            <p>&copy; 2026 テックマッチ All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -316,5 +319,14 @@
             }
         });
     </script>
+<script>
+(function(){
+  var hb=document.getElementById('hamburger'),mm=document.getElementById('mobile-menu'),mc=document.getElementById('mobile-menu-close');
+  function close(){hb&&hb.classList.remove('open');mm&&mm.classList.remove('open');}
+  if(hb)hb.addEventListener('click',function(){hb.classList.toggle('open');mm.classList.toggle('open');});
+  if(mc)mc.addEventListener('click',close);
+  mm&&mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',close);});
+})();
+</script>
 </body>
 </html>
