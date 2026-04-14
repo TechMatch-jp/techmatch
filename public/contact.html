@@ -126,9 +126,21 @@
                     <a href="contact.html" class="nav-link">お問い合わせ</a>
                     <a href="auth.html" class="btn-primary">ログイン</a>
                 </nav>
-            </div>
-        </div>
-    </header>
+      <button class="hamburger" id="hamburger" aria-label="メニュー">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
+  <a href="/index.html">特許一覧</a>
+  <a href="/column.html">技術コラム</a>
+  <a href="/interview.html">研究者インタビュー</a>
+  <a href="/contact.html">お問い合わせ</a>
+  <a href="/auth.html" class="btn-primary">ログイン</a>
+</div>
 
     <main class="main-content">
         <div class="contact-wrap">
@@ -244,5 +256,13 @@
             }
         });
     </script>
+<script>
+  const hb = document.getElementById('hamburger');
+  const mm = document.getElementById('mobile-menu');
+  const mc = document.getElementById('mobile-menu-close');
+  if (hb) hb.addEventListener('click', () => { hb.classList.toggle('open'); mm.classList.toggle('open'); });
+  if (mc) mc.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); });
+  mm && mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); }));
+</script>
 </body>
 </html>

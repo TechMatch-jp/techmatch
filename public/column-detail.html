@@ -365,9 +365,21 @@
                     <a href="contact.html" class="nav-link">お問い合わせ</a>
                     <a href="auth.html" class="btn-primary">ログイン</a>
                 </nav>
-            </div>
-        </div>
-    </header>
+      <button class="hamburger" id="hamburger" aria-label="メニュー">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
+  <a href="/index.html">特許一覧</a>
+  <a href="/column.html">技術コラム</a>
+  <a href="/interview.html">研究者インタビュー</a>
+  <a href="/contact.html">お問い合わせ</a>
+  <a href="/auth.html" class="btn-primary">ログイン</a>
+</div>
 
     <div class="breadcrumb">
         <a href="index.html">ホーム</a> &gt; 
@@ -410,13 +422,7 @@
 
     <footer class="main-footer">
         <div class="container">
-            <div style="display:flex;justify-content:center;gap:2rem;margin-bottom:1rem;flex-wrap:wrap;">
-                <a href="about.html" style="color:#374151;text-decoration:none;font-size:0.9rem;">会社概要</a>
-                <a href="terms.html" style="color:#374151;text-decoration:none;font-size:0.9rem;">利用規約</a>
-                <a href="privacy.html" style="color:#374151;text-decoration:none;font-size:0.9rem;">プライバシーポリシー</a>
-                <a href="contact.html" style="color:#374151;text-decoration:none;font-size:0.9rem;">お問い合わせ</a>
-            </div>
-            <p style="text-align:center;">&copy; 2026 TechMatch All Rights Reserved.</p>
+            <p>&copy; 2026 TechMatch All Rights Reserved.</p>
         </div>
     </footer>
 
@@ -467,7 +473,22 @@
                 
                 <h1 class="article-title">${column.title}</h1>
                 
-
+                <div class="article-meta">
+                    <span> 投稿日: ${new Date(column.createdAt).toLocaleDateString('ja-JP')}</span>
+                    <span> ${column.readTime || '5分'}で読めます</span>
+                </div>
+                
+                <div class="social-share">
+                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(column.title)}&url=${encodeURIComponent(window.location.href)}" 
+                       target="_blank" 
+                       class="share-btn share-twitter">𝕏</a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" 
+                       target="_blank" 
+                       class="share-btn share-facebook">f</a>
+                    <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}" 
+                       target="_blank" 
+                       class="share-btn share-line">L</a>
+                </div>
                 
                 ${toc}
                 
@@ -475,7 +496,17 @@
                     ${column.content}
                 </div>
                 
-
+                <div class="social-share" style="margin-top: 3rem;">
+                    <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(column.title)}&url=${encodeURIComponent(window.location.href)}" 
+                       target="_blank" 
+                       class="share-btn share-twitter">𝕏</a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" 
+                       target="_blank" 
+                       class="share-btn share-facebook">f</a>
+                    <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}" 
+                       target="_blank" 
+                       class="share-btn share-line">L</a>
+                </div>
             `;
         }
         
@@ -514,6 +545,7 @@
                     const relatedHTML = related.map(col => `
                         <div class="related-item">
                             <a href="column-detail.html?id=${col.id}">${col.title}</a>
+                            <div class="related-date">${new Date(col.createdAt).toLocaleDateString('ja-JP')}</div>
                         </div>
                     `).join('');
                     document.getElementById('relatedArticles').innerHTML = relatedHTML || '<div class="related-item">関連記事がありません</div>';
@@ -525,5 +557,13 @@
         
         loadColumn();
     </script>
+<script>
+  const hb = document.getElementById('hamburger');
+  const mm = document.getElementById('mobile-menu');
+  const mc = document.getElementById('mobile-menu-close');
+  if (hb) hb.addEventListener('click', () => { hb.classList.toggle('open'); mm.classList.toggle('open'); });
+  if (mc) mc.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); });
+  mm && mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); }));
+</script>
 </body>
 </html>
