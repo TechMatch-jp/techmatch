@@ -31,7 +31,8 @@ function createColumnCard(column) {
     `;
 
     card.addEventListener('click', () => {
-        window.location.href = `column-detail.html?id=${column.id}`;
+        const slug = column.slug || column.id;
+        window.location.href = `/column/${slug}`;
     });
 
     return card;
