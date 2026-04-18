@@ -269,7 +269,7 @@ app.put('/api/messages/:id/read', authenticateToken, async (req, res) => {
 
 // ============ コラム・インタビュー API（公開用） ============
 function articleToColumn(a) {
-    return { id: a.id, title: a.title, description: a.excerpt || '', content: a.content || '', category: a.category || 'patent-basics', author: a.author || '編集部', createdAt: a.created_at, readTime: estimateReadTime(a.content), featuredImage: a.featured_image || null };
+    return { id: a.id, slug: a.slug || null, title: a.title, description: a.excerpt || '', content: a.content || '', category: a.category || 'patent-basics', author: a.author || '編集部', createdAt: a.created_at, readTime: estimateReadTime(a.content), featuredImage: a.featured_image || null };
 }
 function articleToInterview(a) {
     return { id: a.id, title: a.title, description: a.excerpt || '', content: a.content || '', category: a.category || '', categorySlug: a.category || '', interviewer: a.author || '編集部', researcher: a.researcher || '', affiliation: a.affiliation || '', createdAt: a.created_at, readTime: estimateReadTime(a.content), featuredImage: a.featured_image || null };
