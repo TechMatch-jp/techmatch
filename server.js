@@ -659,8 +659,9 @@ ${col.featuredImage ? `<meta property="og:image" content="https://techmatch.jp${
 <link rel="canonical" href="https://techmatch.jp/column/${escaped(canonicalSlug)}">
 <link rel="stylesheet" href="/stylish-common.css">
 <style>
-body{background:#f8f9fa}
-.article-wrapper{max-width:860px;margin:0 auto;padding:2rem 1rem}
+.breadcrumb{max-width:1200px;margin:1rem auto;padding:0 1rem;font-size:.85rem;color:#1f2937}
+.breadcrumb a{color:#667eea;text-decoration:none}
+.article-wrapper{max-width:1200px;margin:0 auto;padding:2rem 1rem}
 .article-main{background:#fff;padding:3rem 2.5rem;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
 .article-category{display:inline-block;background:#667eea;color:#fff;padding:.4rem .9rem;border-radius:4px;font-size:.85rem;font-weight:600;margin-bottom:1rem}
 .article-title{font-size:1.8rem;color:#2c3e50;margin-bottom:1rem;line-height:1.5;font-weight:700}
@@ -670,8 +671,6 @@ body{background:#f8f9fa}
 .article-content h2{font-size:1.4rem;color:#2c3e50;margin:2rem 0 1rem;padding-bottom:.5rem;border-bottom:2px solid #667eea}
 .article-content h3{font-size:1.2rem;color:#374151;margin:1.5rem 0 .75rem}
 .article-content p{margin-bottom:1.2rem}
-.back-link{display:inline-block;margin-bottom:1.5rem;color:#667eea;text-decoration:none;font-size:.9rem}
-.back-link:hover{text-decoration:underline}
 @media(max-width:768px){.article-main{padding:1.5rem 1rem}.article-title{font-size:1.4rem}}
 </style>
 <!-- Google tag (gtag.js) -->
@@ -679,20 +678,37 @@ body{background:#f8f9fa}
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-47LCYNSVRP');</script>
 </head>
 <body>
-<header class="site-header">
-  <div class="header-inner">
-    <a href="/" class="logo">TechMatch</a>
-    <nav class="main-nav">
-      <a href="/index.html">特許一覧</a>
-      <a href="/column.html">技術コラム</a>
-      <a href="/interview.html">研究者インタビュー</a>
-      <a href="/contact.html">お問い合わせ</a>
-    </nav>
+<div class="bg-decoration"></div>
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <a href="/index.html" class="logo">TechMatch</a>
+      <nav class="nav">
+        <a href="/index.html" class="nav-link">特許一覧</a>
+        <a href="/column.html" class="nav-link">技術コラム</a>
+        <a href="/interview.html" class="nav-link">研究者インタビュー</a>
+        <a href="/contact.html" class="nav-link">お問い合わせ</a>
+        <a href="/auth.html" class="btn-primary">ログイン</a>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
+    </div>
   </div>
 </header>
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
+  <a href="/index.html">特許一覧</a>
+  <a href="/column.html">技術コラム</a>
+  <a href="/interview.html">研究者インタビュー</a>
+  <a href="/contact.html">お問い合わせ</a>
+  <a href="/auth.html" class="btn-primary">ログイン</a>
+</div>
+<div class="breadcrumb">
+  <a href="/index.html">ホーム</a> &gt;
+  <a href="/column.html">技術コラム</a> &gt;
+  <span>${escaped(col.title)}</span>
+</div>
 <main>
 <div class="article-wrapper">
-  <a href="/column.html" class="back-link">← コラム一覧に戻る</a>
   <article class="article-main">
     <div><span class="article-category">${escaped(catLabel)}</span></div>
     <h1 class="article-title">${escaped(col.title)}</h1>
@@ -704,11 +720,18 @@ body{background:#f8f9fa}
   </article>
 </div>
 </main>
-<footer class="site-footer">
-  <div class="footer-inner">
+<footer class="main-footer">
+  <div class="container">
     <p>&copy; 2026 TechMatch All Rights Reserved.</p>
   </div>
 </footer>
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const closeBtn = document.getElementById('mobile-menu-close');
+  if(hamburger) hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  if(closeBtn) closeBtn.addEventListener('click', () => mobileMenu.classList.remove('open'));
+</script>
 </body>
 </html>`;
 
