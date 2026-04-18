@@ -364,12 +364,23 @@ app.post('/api/admin/articles', authenticateToken, async (req, res) => {
     try {
         const { type, title, excerpt, content, category, author, researcher, affiliation, featured_image, status } = req.body;
         if (!type || !title) return res.status(400).json({ error: 'type と title は必須です' });
-        const { data, error } = await supabase.from('articles').insert([{
+        // カテゴリ内の連番を取得してスラグを自動生成
+        const cat = category || 'uncategorized';
+        const { count: catCount } = await supabase
+            .from('articles')
+            .select('id', { count: 'exact', head: true })
+            .eq('type', type || 'column')
+            .eq('category', cat);
+        const autoSlug = `${cat}-${(catCount || 0) + 1}`;
+
+        const insertData = {
             type, title, excerpt: excerpt || '', content: content || '',
-            category: category || '', author: author || '編集部',
+            category: cat, author: author || '編集部',
             researcher: researcher || '', affiliation: affiliation || '',
-            featured_image: featured_image || null, status: status || 'published'
-        }]).select().single();
+            featured_image: featured_image || null, status: status || 'published',
+            slug: autoSlug
+        };
+        const { data, error } = await supabase.from('articles').insert([insertData]).select().single();
         if (error) return res.status(500).json({ error: '記事の作成に失敗しました: ' + error.message });
         res.json({ message: '記事を投稿しました', article: data });
     } catch (e) { res.status(500).json({ error: '記事の作成に失敗しました' }); }
@@ -378,13 +389,29 @@ app.post('/api/admin/articles', authenticateToken, async (req, res) => {
 app.put('/api/admin/articles/:id', authenticateToken, async (req, res) => {
     try {
         const { type, title, excerpt, content, category, author, researcher, affiliation, featured_image, status } = req.body;
-        const { data, error } = await supabase.from('articles').update({
+        // 編集時はslugを変更しない（カテゴリ変更時のみ再採番）
+        const { data: existing } = await supabase.from('articles').select('slug, category').eq('id', req.params.id).single();
+        const cat = category || existing?.category || 'uncategorized';
+        let newSlug = existing?.slug;
+        if (!newSlug || (category && category !== existing?.category)) {
+            // カテゴリが変わった場合は新カテゴリ内で採番
+            const { count: catCount } = await supabase
+                .from('articles')
+                .select('id', { count: 'exact', head: true })
+                .eq('type', type)
+                .eq('category', cat)
+                .neq('id', req.params.id);
+            newSlug = `${cat}-${(catCount || 0) + 1}`;
+        }
+        const updateData = {
             type, title, excerpt: excerpt || '', content: content || '',
-            category: category || '', author: author || '編集部',
+            category: cat, author: author || '編集部',
             researcher: researcher || '', affiliation: affiliation || '',
             featured_image: featured_image || null, status: status || 'published',
-            updated_at: new Date().toISOString()
-        }).eq('id', req.params.id).select().single();
+            updated_at: new Date().toISOString(),
+            slug: newSlug
+        };
+        const { data, error } = await supabase.from('articles').update(updateData).eq('id', req.params.id).select().single();
         if (error) return res.status(500).json({ error: '記事の更新に失敗しました: ' + error.message });
         res.json({ message: '記事を更新しました', article: data });
     } catch (e) { res.status(500).json({ error: '記事の更新に失敗しました' }); }
@@ -590,6 +617,151 @@ ${candidateList}
     } catch (e) {
         console.error('Similar endpoint error:', e);
         res.status(500).json({ error: '類似特許の取得に失敗しました: ' + e.message });
+    }
+});
+
+// ============ SSR コラム詳細（SEO対応） ============
+app.get('/column/:slug', async (req, res) => {
+    try {
+        const param = req.params.slug;
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(param);
+        let q = supabase.from('articles').select('*').eq('type', 'column');
+        q = isUUID ? q.eq('id', param) : q.eq('slug', param);
+        const { data, error } = await q.single();
+
+        if (error || !data) return res.status(404).sendFile(path.join(__dirname, 'public', '404.html'), () => res.status(404).send('<h1>404 - コラムが見つかりません</h1>'));
+
+        const col = articleToColumn(data);
+        const canonicalSlug = data.slug || data.id;
+        const categoryNames = {
+            'patent-basics': '特許の基礎知識',
+            'tech-transfer': '技術移転',
+            'licensing': 'ライセンス',
+            'startup': 'スタートアップ',
+            'legal': '法律・制度'
+        };
+        const catLabel = categoryNames[col.category] || col.category;
+        const dateStr = new Date(col.createdAt).toLocaleDateString('ja-JP');
+        const escaped = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+        const html = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escaped(col.title)} - TechMatch 技術コラム</title>
+<meta name="description" content="${escaped((col.description || col.content || '').slice(0, 120))}">
+<meta property="og:title" content="${escaped(col.title)}">
+<meta property="og:description" content="${escaped((col.description || '').slice(0, 120))}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://techmatch.jp/column/${escaped(canonicalSlug)}">
+${col.featuredImage ? `<meta property="og:image" content="https://techmatch.jp${escaped(col.featuredImage)}">` : ''}
+<link rel="canonical" href="https://techmatch.jp/column/${escaped(canonicalSlug)}">
+<link rel="stylesheet" href="/stylish-common.css">
+<style>
+body{background:#f8f9fa}
+.article-wrapper{max-width:860px;margin:0 auto;padding:2rem 1rem}
+.article-main{background:#fff;padding:3rem 2.5rem;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.article-category{display:inline-block;background:#667eea;color:#fff;padding:.4rem .9rem;border-radius:4px;font-size:.85rem;font-weight:600;margin-bottom:1rem}
+.article-title{font-size:1.8rem;color:#2c3e50;margin-bottom:1rem;line-height:1.5;font-weight:700}
+.article-meta{color:#888;font-size:.9rem;margin-bottom:2rem}
+.article-meta span{margin-right:1rem}
+.article-content{line-height:1.9;color:#374151;font-size:1rem}
+.article-content h2{font-size:1.4rem;color:#2c3e50;margin:2rem 0 1rem;padding-bottom:.5rem;border-bottom:2px solid #667eea}
+.article-content h3{font-size:1.2rem;color:#374151;margin:1.5rem 0 .75rem}
+.article-content p{margin-bottom:1.2rem}
+.back-link{display:inline-block;margin-bottom:1.5rem;color:#667eea;text-decoration:none;font-size:.9rem}
+.back-link:hover{text-decoration:underline}
+@media(max-width:768px){.article-main{padding:1.5rem 1rem}.article-title{font-size:1.4rem}}
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-47LCYNSVRP"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-47LCYNSVRP');</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo">TechMatch</a>
+    <nav class="main-nav">
+      <a href="/index.html">特許一覧</a>
+      <a href="/column.html">技術コラム</a>
+      <a href="/interview.html">研究者インタビュー</a>
+      <a href="/contact.html">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+<main>
+<div class="article-wrapper">
+  <a href="/column.html" class="back-link">← コラム一覧に戻る</a>
+  <article class="article-main">
+    <div><span class="article-category">${escaped(catLabel)}</span></div>
+    <h1 class="article-title">${escaped(col.title)}</h1>
+    <div class="article-meta">
+      <span>投稿日: ${dateStr}</span>
+      <span>${col.readTime || '5分'}で読めます</span>
+    </div>
+    <div class="article-content">${col.content || ''}</div>
+  </article>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>&copy; 2026 TechMatch All Rights Reserved.</p>
+  </div>
+</footer>
+</body>
+</html>`;
+
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.send(html);
+    } catch (e) {
+        console.error('SSR column error:', e);
+        res.status(500).send('<h1>エラーが発生しました</h1>');
+    }
+});
+
+// ============ ダイナミック sitemap.xml ============
+app.get('/sitemap.xml', async (req, res) => {
+    try {
+        const { data: columns } = await supabase
+            .from('articles')
+            .select('id, slug, updated_at, created_at')
+            .eq('type', 'column')
+            .eq('status', 'published');
+
+        const { data: interviews } = await supabase
+            .from('articles')
+            .select('id, slug, updated_at, created_at')
+            .eq('type', 'interview')
+            .eq('status', 'published');
+
+        const staticUrls = [
+            { loc: 'https://techmatch.jp/', changefreq: 'daily', priority: '1.0' },
+            { loc: 'https://techmatch.jp/column.html', changefreq: 'weekly', priority: '0.8' },
+            { loc: 'https://techmatch.jp/interview.html', changefreq: 'weekly', priority: '0.8' },
+            { loc: 'https://techmatch.jp/contact.html', changefreq: 'monthly', priority: '0.5' },
+        ];
+
+        const urlEntries = [
+            ...staticUrls.map(u => `  <url>\n    <loc>${u.loc}</loc>\n    <changefreq>${u.changefreq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`),
+            ...(columns || []).map(a => {
+                const lastmod = (a.updated_at || a.created_at || '').slice(0, 10);
+                const slug = a.slug || a.id;
+                return `  <url>\n    <loc>https://techmatch.jp/column/${slug}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}\n  </url>`;
+            }),
+            ...(interviews || []).map(a => {
+                const lastmod = (a.updated_at || a.created_at || '').slice(0, 10);
+                const slug = a.slug || a.id;
+                return `  <url>\n    <loc>https://techmatch.jp/interview/${slug}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ''}\n  </url>`;
+            }),
+        ];
+
+        const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntries.join('\n')}\n</urlset>`;
+        res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+        res.send(xml);
+    } catch (e) {
+        console.error('Sitemap error:', e);
+        res.status(500).send('<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
     }
 });
 
