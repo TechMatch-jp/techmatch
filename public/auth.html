@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-47LCYNSVRP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -9,324 +8,351 @@
   gtag('js', new Date());
   gtag('config', 'G-47LCYNSVRP');
 </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ログイン / 新規登録 - TechMatch</title>
+<link rel="stylesheet" href="stylish-common.css">
+<style>
+.auth-page {
+  min-height: calc(100vh - 68px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.25rem;
+}
 
+.auth-card {
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1), 0 4px 20px rgba(99,102,241,0.08);
+  border: 1px solid rgba(99,102,241,0.08);
+}
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ログイン - テックマッチ</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .auth-container {
-            max-width: 500px;
-            margin: 3rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .auth-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        
-        .auth-tab {
-            flex: 1;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-size: 1rem;
-            color: #1f2937;
-            transition: all 0.3s;
-        }
-        
-        .auth-tab.active {
-            color: #3498db;
-            border-bottom: 2px solid #3498db;
-            margin-bottom: -2px;
-        }
-        
-        .auth-form {
-            display: none;
-        }
-        
-        .auth-form.active {
-            display: block;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-        
-        .submit-btn {
-            width: 100%;
-            padding: 1rem;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .submit-btn:hover {
-            background-color: #2980b9;
-        }
-        
-        .error-message {
-            background-color: #fee;
-            color: #c33;
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-        
-        .success-message {
-            background-color: #efe;
-            color: #3c3;
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            display: none;
-        }
-    </style>
-    <link rel="stylesheet" href="stylish-common.css">
+.auth-logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-logo .logo {
+  font-size: 1.8rem;
+  display: inline-block;
+}
+
+.auth-logo p {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+  margin-top: 0.375rem;
+}
+
+.auth-tabs {
+  display: flex;
+  background: var(--gray-100);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 2rem;
+  gap: 4px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.625rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  transition: all 0.2s ease;
+  border-radius: 9px;
+  font-family: inherit;
+}
+
+.auth-tab.active {
+  background: white;
+  color: var(--primary-600);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.auth-form { display: none; }
+.auth-form.active { display: block; }
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--gray-700);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--gray-800);
+  background: var(--gray-50);
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-400);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+}
+
+.form-group input::placeholder {
+  color: var(--gray-400);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  background: var(--grad-brand);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-brand);
+  margin-top: 0.5rem;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand-lg);
+  filter: brightness(1.08);
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: none;
+  border: 1px solid #fecaca;
+}
+
+.success-message {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: none;
+  border: 1px solid #a7f3d0;
+}
+
+.auth-divider {
+  text-align: center;
+  color: var(--gray-400);
+  font-size: 0.8rem;
+  margin: 1.25rem 0;
+  position: relative;
+}
+
+.auth-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gray-200);
+}
+
+.auth-divider span {
+  background: white;
+  padding: 0 0.75rem;
+  position: relative;
+}
+</style>
 </head>
 <body>
-    <div class="bg-decoration"></div>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="index.html" class="logo">TechMatch</a>
-                <nav class="nav">
-                    <a href="index.html" class="nav-link">特許一覧</a>
-                    <a href="column.html" class="nav-link">技術コラム</a>
-                    <a href="interview.html" class="nav-link">研究者インタビュー</a>
-                    <a href="contact.html" class="nav-link">お問い合わせ</a>
-                    <a href="auth.html" class="btn-primary">ログイン</a>
-                </nav>
+<div class="bg-decoration"></div>
+
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <a href="index.html" class="logo">TechMatch</a>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">特許一覧</a>
+        <a href="column.html" class="nav-link">技術コラム</a>
+        <a href="interview.html" class="nav-link">研究者インタビュー</a>
+        <a href="contact.html" class="nav-link">お問い合わせ</a>
+      </nav>
       <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
-            </div>
-        </div>
-    </header>
+    </div>
+  </div>
+</header>
+
 <div class="mobile-menu" id="mobile-menu">
   <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
-  <a href="/index.html">特許一覧</a>
-  <a href="/column.html">技術コラム</a>
-  <a href="/interview.html">研究者インタビュー</a>
-  <a href="/contact.html">お問い合わせ</a>
-  <a href="/auth.html" class="btn-primary">ログイン</a>
+  <a href="index.html">特許一覧</a>
+  <a href="column.html">技術コラム</a>
+  <a href="interview.html">研究者インタビュー</a>
+  <a href="contact.html">お問い合わせ</a>
 </div>
 
-    <main class="main-content">
-        <div class="container">
-            <div class="auth-container">
-                <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="login">ログイン</button>
-                    <button class="auth-tab" data-tab="register">新規登録</button>
-                </div>
-                
-                <div id="errorMessage" class="error-message"></div>
-                <div id="successMessage" class="success-message"></div>
-                
-                <!-- ログインフォーム -->
-                <form id="loginForm" class="auth-form active">
-                    <div class="form-group">
-                        <label for="loginEmail">メールアドレス</label>
-                        <input type="email" id="loginEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPassword">パスワード</label>
-                        <input type="password" id="loginPassword" required>
-                    </div>
-                    <button type="submit" class="submit-btn">ログイン</button>
-                </form>
-                
-                <!-- 登録フォーム -->
-                <form id="registerForm" class="auth-form">
-                    <div class="form-group">
-                        <label for="registerName">お名前</label>
-                        <input type="text" id="registerName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerEmail">メールアドレス</label>
-                        <input type="email" id="registerEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerPassword">パスワード</label>
-                        <input type="password" id="registerPassword" required minlength="6">
-                    </div>
-                    <div class="form-group">
-                        <label for="registerUserType">ユーザータイプ</label>
-                        <select id="registerUserType" required>
-                            <option value="">選択してください</option>
-                            <option value="seller">ライセンサー（売り手）</option>
-                            <option value="buyer">ライセンシー（買い手）</option>
-                            <option value="admin">管理者</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerOrganization">所属組織</label>
-                        <input type="text" id="registerOrganization" placeholder="大学名、企業名など">
-                    </div>
-                    <button type="submit" class="submit-btn">登録</button>
-                </form>
-            </div>
-        </div>
-    </main>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <a href="index.html" class="logo">TechMatch</a>
+      <p>特許マッチングプラットフォーム</p>
+    </div>
 
-    <footer class="main-footer">
-        <div class="container">
-            <p>&copy; 2026 テックマッチ All Rights Reserved.</p>
-        </div>
-    </footer>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="loginTab" onclick="switchTab('login')">ログイン</button>
+      <button class="auth-tab" id="registerTab" onclick="switchTab('register')">新規登録</button>
+    </div>
 
-    <script>
-        // タブ切り替え
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                
-                this.classList.add('active');
-                const formId = this.dataset.tab + 'Form';
-                document.getElementById(formId).classList.add('active');
-                
-                // エラーメッセージをクリア
-                hideMessages();
-            });
-        });
-        
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            document.getElementById('successMessage').style.display = 'none';
-        }
-        
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
-            document.getElementById('errorMessage').style.display = 'none';
-        }
-        
-        function hideMessages() {
-            document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
-        }
-        
-        // ログイン処理
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            hideMessages();
-            
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    const user = data.user;
-                    showSuccess('ログインしました。移動します...');
-                    setTimeout(() => {
-                        if (user && user.userType === 'admin') {
-                            window.location.href = 'admin.html';
-                        } else {
-                            window.location.href = 'mypage.html';
-                        }
-                    }, 1000);
-                } else {
-                    showError(data.error || 'ログインに失敗しました');
-                }
-            } catch (error) {
-                showError('通信エラーが発生しました');
-            }
-        });
-        
-        // 登録処理
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            hideMessages();
-            
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const userType = document.getElementById('registerUserType').value;
-            const organization = document.getElementById('registerOrganization').value;
-            
-            if (password.length < 6) {
-                showError('パスワードは6文字以上で入力してください');
-                return;
-            }
-            
-            try {
-                const response = await fetch('/api/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password, userType, organization })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    showSuccess('登録が完了しました。ログインしてください。');
-                    setTimeout(() => {
-                        // ログインタブに切り替え
-                        document.querySelector('[data-tab="login"]').click();
-                        document.getElementById('loginEmail').value = email;
-                    }, 1500);
-                } else {
-                    showError(data.error || '登録に失敗しました');
-                }
-            } catch (error) {
-                showError('通信エラーが発生しました');
-            }
-        });
-    </script>
+    <!-- Login Form -->
+    <div class="auth-form active" id="loginForm">
+      <div class="error-message" id="loginError"></div>
+      <div class="success-message" id="loginSuccess"></div>
+      <div class="form-group">
+        <label for="loginEmail">メールアドレス</label>
+        <input type="email" id="loginEmail" placeholder="example@company.com">
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">パスワード</label>
+        <input type="password" id="loginPassword" placeholder="パスワードを入力">
+      </div>
+      <button class="submit-btn" onclick="handleLogin()">ログイン</button>
+    </div>
+
+    <!-- Register Form -->
+    <div class="auth-form" id="registerForm">
+      <div class="error-message" id="registerError"></div>
+      <div class="success-message" id="registerSuccess"></div>
+      <div class="form-group">
+        <label for="registerName">お名前</label>
+        <input type="text" id="registerName" placeholder="山田 太郎">
+      </div>
+      <div class="form-group">
+        <label for="registerEmail">メールアドレス</label>
+        <input type="email" id="registerEmail" placeholder="example@company.com">
+      </div>
+      <div class="form-group">
+        <label for="registerPassword">パスワード</label>
+        <input type="password" id="registerPassword" placeholder="8文字以上">
+      </div>
+      <div class="form-group">
+        <label for="registerRole">利用目的</label>
+        <select id="registerRole">
+          <option value="">選択してください</option>
+          <option value="buyer">特許を探している（買い手）</option>
+          <option value="seller">特許を持っている（売り手）</option>
+        </select>
+      </div>
+      <button class="submit-btn" onclick="handleRegister()">アカウントを作成</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="about.html" class="footer-link">会社概要</a>
+      <a href="terms.html" class="footer-link">利用規約</a>
+      <a href="privacy.html" class="footer-link">プライバシーポリシー</a>
+      <a href="contact.html" class="footer-link">お問い合わせ</a>
+    </div>
+    <p>&copy; 2026 TechMatch All Rights Reserved.</p>
+  </div>
+</footer>
+
 <script>
-(function(){
-  var hb=document.getElementById('hamburger'),mm=document.getElementById('mobile-menu'),mc=document.getElementById('mobile-menu-close');
-  function close(){hb&&hb.classList.remove('open');mm&&mm.classList.remove('open');}
-  if(hb)hb.addEventListener('click',function(){hb.classList.toggle('open');mm.classList.toggle('open');});
-  if(mc)mc.addEventListener('click',close);
-  mm&&mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',close);});
-})();
+function switchTab(tab) {
+  document.getElementById('loginTab').classList.toggle('active', tab === 'login');
+  document.getElementById('registerTab').classList.toggle('active', tab === 'register');
+  document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+  document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+}
+
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const errorEl = document.getElementById('loginError');
+  errorEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    if (res.ok) {
+      window.location.href = data.role === 'admin' ? 'admin.html' : 'mypage.html';
+    } else {
+      errorEl.textContent = data.error || 'ログインに失敗しました';
+      errorEl.style.display = 'block';
+    }
+  } catch(e) {
+    errorEl.textContent = 'エラーが発生しました。再度お試しください。';
+    errorEl.style.display = 'block';
+  }
+}
+
+async function handleRegister() {
+  const name = document.getElementById('registerName').value;
+  const email = document.getElementById('registerEmail').value;
+  const password = document.getElementById('registerPassword').value;
+  const role = document.getElementById('registerRole').value;
+  const errorEl = document.getElementById('registerError');
+  const successEl = document.getElementById('registerSuccess');
+  errorEl.style.display = 'none';
+  successEl.style.display = 'none';
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, email, password, role})
+    });
+    const data = await res.json();
+    if (res.ok) {
+      successEl.textContent = '登録が完了しました！ログインしてください。';
+      successEl.style.display = 'block';
+      setTimeout(() => switchTab('login'), 1500);
+    } else {
+      errorEl.textContent = data.error || '登録に失敗しました';
+      errorEl.style.display = 'block';
+    }
+  } catch(e) {
+    errorEl.textContent = 'エラーが発生しました。再度お試しください。';
+    errorEl.style.display = 'block';
+  }
+}
+
+// URL hash routing
+if (location.hash === '#register') switchTab('register');
+
+const hb = document.getElementById('hamburger');
+const mm = document.getElementById('mobile-menu');
+const mc = document.getElementById('mobile-menu-close');
+if (hb) hb.addEventListener('click', () => { hb.classList.toggle('open'); mm.classList.toggle('open'); });
+if (mc) mc.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); });
+mm && mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); }));
 </script>
 </body>
 </html>

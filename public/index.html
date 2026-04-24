@@ -1,620 +1,454 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3754543145420659"
-     crossorigin="anonymous"></script>
-
-<!-- Google tag (gtag.js) -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3754543145420659" crossorigin="anonymous"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-47LCYNSVRP"></script>
 <script>
- window.dataLayer = window.dataLayer || [];
- function gtag(){dataLayer.push(arguments);}
- gtag('js', new Date());
- gtag('config', 'G-47LCYNSVRP');
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-47LCYNSVRP');
 </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>テックマッチ｜特許マッチングプラットフォーム</title>
+<meta name="description" content="テックマッチは「眠っている特許」と「技術を求める企業」をつなぐプラットフォームです。特許の売買・ライセンス活用を通じて、企業のビジネス成果を最大化します。">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://techmatch.jp/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://techmatch.jp/">
+<meta property="og:title" content="テックマッチ｜特許マッチングプラットフォーム">
+<meta property="og:description" content="テックマッチは「眠っている特許」と「技術を求める企業」をつなぐプラットフォームです。">
+<meta property="og:image" content="https://techmatch.jp/ogp.png">
+<meta property="og:site_name" content="テックマッチ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="テックマッチ - 特許マッチングプラットフォーム">
+<meta name="twitter:description" content="特許保有者と企業をつなぐ知財マッチングプラットフォーム。">
+<meta name="twitter:image" content="https://techmatch.jp/ogp.png">
+<link rel="stylesheet" href="stylish-common.css">
+<style>
+/* ── Hero ──────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  padding: 4rem 0 3rem; /* 余白を狭く調整 */
+  text-align: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #4c1d95 100%);
+  z-index: -1;
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(129,140,248,0.25) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(167,139,250,0.2) 0%, transparent 50%);
+}
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
 
+.hero h1 {
+  font-size: clamp(1.9rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: white;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.25rem; /* 少し詰める */
+}
+.hero h1 .highlight {
+  background: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-desc {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.75);
+  max-width: 540px;
+  margin: 0 auto 2rem; /* 少し詰める */
+  line-height: 1.75;
+}
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem; /* 余白を狭く調整 */
+}
+.hero-btn-primary {
+  background: white;
+  color: #4f46e5 !important;
+  -webkit-text-fill-color: #4f46e5 !important;
+  padding: 0.875rem 2.25rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hero-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.hero-btn-secondary {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  padding: 0.875rem 2.25rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hero-btn-secondary:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.4);
+  transform: translateY(-3px);
+}
 
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>テックマッチ｜特許マッチングプラットフォーム</title>
+/* ── Search ────────────────────────────────────────────────── */
+.search-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.search-section {
+  background: white;
+  border-radius: 24px;
+  padding: 2rem 2.5rem;
+  margin: -1.5rem auto 2.5rem; /* ヒーローとの重なりを調整 */
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 4px 20px rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.08);
+  position: relative;
+  z-index: 10;
+  scroll-margin-top: 2rem;
+}
+.search-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.search-box {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.search-input {
+  flex: 1;
+  padding: 0.875rem 1.25rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background: var(--gray-50);
+  color: var(--gray-800);
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-400);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+}
+.search-input::placeholder { color: var(--gray-400); }
+.search-btn {
+  background: var(--grad-brand);
+  color: white;
+  padding: 0.875rem 1.75rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-brand);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.search-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand-lg);
+  filter: brightness(1.08);
+}
+.filter-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.filter-chips {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.chip {
+  padding: 0.35rem 0.875rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 9999px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  font-family: inherit;
+}
+.chip:hover {
+  border-color: var(--primary-300);
+  color: var(--primary-600);
+  background: var(--primary-50);
+}
+.chip.active {
+  background: var(--grad-brand);
+  color: white;
+  border-color: transparent;
+  box-shadow: var(--shadow-brand);
+}
 
- <!-- SEO -->
- <meta name="description" content="テックマッチは「眠っている特許」と「技術を求める企業」をつなぐプラットフォームです。特許の売買・ライセンス活用を通じて、企業のビジネス成果を最大化します。">
- <meta name="robots" content="index, follow">
- <link rel="canonical" href="https://techmatch.jp/">
+/* ── Patent Grid ───────────────────────────────────────────── */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.25rem;
+}
+.section-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  letter-spacing: -0.02em;
+}
+.section-count {
+  font-size: 0.82rem;
+  color: var(--gray-400);
+  font-weight: 500;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  padding-bottom: 4rem;
+}
+.card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 1px solid var(--gray-100);
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--grad-brand);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 16px 16px 0 0;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-100);
+}
+.card:hover::before { opacity: 1; }
+.card-header { display: none; }
+.card-body { display: flex; flex-direction: column; flex: 1; }
+.card-title {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: var(--gray-900);
+  font-weight: 700;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  letter-spacing: -0.01em;
+}
+.card-description {
+  color: var(--gray-500);
+  font-size: 0.8rem;
+  line-height: 1.7;
+  margin-bottom: 0.875rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+.card-owner {
+  font-size: 0.72rem;
+  color: var(--gray-400);
+  margin-bottom: 0.625rem;
+}
+.card-tags { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+.tag {
+  padding: 0.2rem 0.625rem;
+  background: var(--primary-50);
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  color: var(--primary-600);
+  font-weight: 700;
+  border: 1px solid var(--primary-100);
+}
+.card-footer { display: none; }
 
- <!-- OGP -->
- <meta property="og:type" content="website">
- <meta property="og:url" content="https://techmatch.jp/">
- <meta property="og:title" content="テックマッチ｜特許マッチングプラットフォーム">
- <meta property="og:description" content="テックマッチは「眠っている特許」と「技術を求める企業」をつなぐプラットフォームです。特許の売買・ライセンス活用を通じて、企業のビジネス成果を最大化します。">
- <meta property="og:image" content="https://techmatch.jp/ogp.png">
- <meta property="og:site_name" content="テックマッチ">
- <meta property="og:locale" content="ja_JP">
-
- <!-- Twitter Card -->
- <meta name="twitter:card" content="summary_large_image">
- <meta name="twitter:title" content="テックマッチ - 特許マッチングプラットフォーム">
- <meta name="twitter:description" content="特許保有者と企業をつなぐ知財マッチングプラットフォーム。大学・研究機関の技術を事業に活用しませんか。">
- <meta name="twitter:image" content="https://techmatch.jp/ogp.png">
- <style>
- * {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
- }
- 
- html {
- scroll-behavior: smooth;
- overflow-x: hidden;
- max-width: 100%;
- }
- 
- body {
- font-family: 'Segoe UI', 'Yu Gothic', 'Hiragino Sans', sans-serif;
- background: #f5f7fa;
- position: relative;
- overflow-x: hidden;
- }
- 
- /* 背景パターン */
- body::before {
- content: '';
- position: fixed;
- top: 0;
- left: 0;
- width: 100%;
- height: 100%;
- background-image: 
- radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
- radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.05) 0%, transparent 50%);
- z-index: -1;
- }
- 
- .bg-decoration {
- position: fixed;
- top: 0;
- left: 0;
- width: 100%;
- height: 100%;
- background-image: 
- radial-gradient(circle, rgba(102, 126, 234, 0.05) 1px, transparent 1px);
- background-size: 30px 30px;
- z-index: -1;
- opacity: 0.5;
- }
- 
- /* ヘッダー */
- .header {
- background: rgba(255, 255, 255, 0.98);
- backdrop-filter: blur(20px);
- padding: 1.5rem 0;
- position: sticky;
- top: 0;
- z-index: 1000;
- box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
- border-bottom: 1px solid rgba(102, 126, 234, 0.1);
- }
- 
- .container {
- max-width: 1200px;
- margin: 0 auto;
- padding: 0 2rem;
- }
- 
- .header-content {
- display: flex;
- justify-content: space-between;
- align-items: center;
- }
- 
- .logo {
- font-size: 1.8rem;
- font-weight: 800;
- background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
- -webkit-background-clip: text;
- -webkit-text-fill-color: transparent;
- background-clip: text;
- text-decoration: none;
- cursor: pointer;
- }
- 
- .logo:hover {
- opacity: 0.8;
- }
- 
- .nav {
- display: flex;
- gap: 2rem;
- align-items: center;
- }
- 
- .nav-link {
- color: #2c3e50;
- text-decoration: none;
- font-weight: 500;
- transition: all 0.3s;
- position: relative;
- }
- 
- .nav-link::after {
- content: '';
- position: absolute;
- bottom: -5px;
- left: 0;
- width: 0;
- height: 2px;
- background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
- transition: width 0.3s;
- }
- 
- .nav-link:hover {
- color: #667eea;
- }
- 
- .nav-link:hover::after {
- width: 100%;
- }
- 
- .btn-primary {
- background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
- color: white;
- padding: 0.75rem 1.5rem;
- border-radius: 50px;
- text-decoration: none;
- font-weight: 600;
- transition: all 0.3s;
- border: none;
- cursor: pointer;
- box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
- }
- 
- .btn-primary:hover {
- transform: translateY(-2px);
- box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
- }
- 
- /* ヒーローセクション */
- .hero {
- text-align: center;
- padding: 6rem 0 4rem 0;
- position: relative;
- }
- 
- .hero::before {
- content: '';
- position: absolute;
- top: 0;
- left: 50%;
- transform: translateX(-50%);
- width: min(800px, 100vw);
- height: min(800px, 100vw);
- background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
- border-radius: 50%;
- z-index: -1;
- overflow: hidden;
- }
- 
- .hero h1 {
- font-size: 3.5rem;
- margin-bottom: 1.5rem;
- font-weight: 800;
- background: linear-gradient(135deg, #2c3e50 0%, #667eea 100%);
- -webkit-background-clip: text;
- -webkit-text-fill-color: transparent;
- background-clip: text;
- }
- 
- .hero p {
- font-size: 1.3rem;
- margin-bottom: 2rem;
- color: #1f2937;
- }
- 
- .hero-buttons {
- display: flex;
- gap: 1.5rem;
- justify-content: center;
- }
- 
- .hero-buttons .btn-primary,
- .hero-buttons .btn-secondary {
- padding: 1rem 2.5rem;
- border-radius: 50px;
- text-decoration: none;
- font-weight: 600;
- transition: all 0.3s;
- font-size: 1.1rem;
- color: white;
- }
- 
- .hero-buttons .btn-primary {
- background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
- box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
- }
- 
- .hero-buttons .btn-primary:hover {
- transform: translateY(-2px);
- box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
- }
- 
- .hero-buttons .btn-secondary {
- background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
- box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
- }
- 
- .hero-buttons .btn-secondary:hover {
- transform: translateY(-2px);
- box-shadow: 0 6px 20px rgba(46, 204, 113, 0.6);
- }
- 
- /* 検索セクション */
- .search-section {
- background: white;
- border-radius: 20px;
- padding: 2.5rem;
- margin: 0 auto 3rem auto;
- max-width: 900px;
- box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
- border: 1px solid rgba(102, 126, 234, 0.1);
- scroll-margin-top: 2rem;
- }
- 
- .search-box {
- display: flex;
- gap: 1rem;
- margin-bottom: 1.5rem;
- }
- 
- .search-input {
- flex: 1;
- padding: 1rem 1.5rem;
- border: 2px solid #e8ecef;
- border-radius: 50px;
- font-size: 1rem;
- transition: all 0.3s;
- }
- 
- .search-input:focus {
- outline: none;
- border-color: #667eea;
- box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
- }
- 
- .search-btn {
- background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
- color: white;
- padding: 1rem 2.5rem;
- border: none;
- border-radius: 50px;
- font-size: 1rem;
- font-weight: 600;
- cursor: pointer;
- transition: all 0.3s;
- box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
- }
- 
- .search-btn:hover {
- transform: translateY(-2px);
- box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
- }
- 
- .filter-chips {
- display: flex;
- gap: 1rem;
- flex-wrap: wrap;
- }
- 
- .chip {
- padding: 0.5rem 1.5rem;
- border: 2px solid #e8ecef;
- border-radius: 50px;
- background: white;
- cursor: pointer;
- transition: all 0.3s;
- font-size: 0.9rem;
- }
- 
- .chip:hover {
- border-color: #667eea;
- background: #f8f9ff;
- }
- 
- .chip.active {
- background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
- color: white;
- border-color: transparent;
- }
- 
- /* カードグリッド */
- .card-grid {
- display: grid;
- grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
- gap: 2rem;
- padding-bottom: 4rem;
- }
- 
- .card {
- background: white;
- border-radius: 16px;
- overflow: hidden;
- box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
- transition: all 0.2s;
- cursor: pointer;
- border: 0.5px solid rgba(102, 126, 234, 0.12);
- display: flex;
- flex-direction: column;
- padding: 20px;
- }
- 
- .card:hover {
- transform: translateY(-4px);
- box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
- }
- 
- .card-header { display: none; }
-            
-            .card-body {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            }
-            
-            .card-title {
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-weight: 700;
-            line-height: 1.45;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            }
-            
-            .card-description {
-            color: #374151;
-            font-size: 0.82rem;
-            line-height: 1.65;
-            margin-bottom: 14px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            flex: 1;
-            }
-            
-            .card-owner {
-            font-size: 0.75rem;
-            color: #6b7280;
-            margin-bottom: 10px;
-            }
-
-            .card-tags {
-            display: flex;
-            gap: 0.5rem;
-            }
-            
-            .tag {
-            padding: 0.2rem 0.6rem;
-            background: rgba(102,126,234,0.08);
-            border-radius: 50px;
-            font-size: 0.72rem;
-            color: #534AB7;
-            font-weight: 600;
-            border: 1px solid #e8ecef;
-            }
-            
-            .card-footer { display: none; /* removed */ } .card-footer-x {
- display: flex;
- justify-content: space-between;
- align-items: center;
- padding-top: 1rem;
- border-top: 1px solid #f0f0f0;
- }
- 
- .status-badge {
- padding: 0.4rem 1rem;
- border-radius: 50px;
- font-size: 0.85rem;
- font-weight: 600;
- }
- 
- .status-available {
- background: #d4edda;
- color: #155724;
- }
- 
- .status-negotiation {
- background: #fff3cd;
- color: #856404;
- }
- 
- .price {
- font-size: 1.2rem;
- font-weight: 700;
- color: #667eea;
- }
- 
- /* フッター */
- .footer {
- background: white;
- color: #2c3e50;
- padding: 3rem 0 1rem 0;
- margin-top: 4rem;
- border-top: 1px solid rgba(102, 126, 234, 0.1);
- }
- 
- .footer-links {
- display: flex;
- justify-content: center;
- gap: 2rem;
- margin-bottom: 2rem;
- }
- 
- .footer-link {
- color: #1f2937;
- text-decoration: none;
- transition: all 0.3s;
- }
- 
- .footer-link:hover {
- color: #667eea;
- }
- 
- .footer p {
- text-align: center;
- color: #374151;
- }
- 
- /* レスポンシブ */
- @media (max-width: 768px) {
- .hero h1 {
- font-size: 1.8rem;
- }
-
- .hero p {
- font-size: 0.95rem;
- }
-
- .container {
- padding: 0 1rem;
- }
-
- .card-grid {
- grid-template-columns: 1fr;
- gap: 1rem;
- }
-
- .nav {
- display: none;
- }
-
- .filter-chips {
- flex-wrap: wrap;
- gap: 0.5rem;
- overflow-x: visible;
- }
-
- .chip {
- font-size: 0.8rem;
- padding: 0.4rem 0.8rem;
- white-space: nowrap;
- }
-
- .search-box {
- flex-direction: column;
- }
-
- .search-input {
- width: 100%;
- }
-
- .search-btn {
- width: 100%;
- }
-
- .hero-buttons {
- flex-direction: column;
- gap: 0.75rem;
- align-items: center;
- }
- }
- </style>
- <link rel="stylesheet" href="stylish-common.css">
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero { padding: 3rem 0 2.5rem; }
+  .search-section { margin: -1rem 0 2rem; padding: 1.5rem; border-radius: 16px; }
+  .search-box { flex-direction: column; }
+  .search-btn { width: 100%; justify-content: center; }
+  .card-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .hero-buttons { flex-direction: column; align-items: center; }
+  .hero-btn-primary, .hero-btn-secondary { width: 100%; max-width: 300px; justify-content: center; }
+}
+</style>
 </head>
 <body>
- <div class="bg-decoration"></div>
+<div class="bg-decoration"></div>
 
- <!-- ヘッダー（文字だけ） -->
- <header class="header">
- <div class="container">
- <div class="header-content">
- <a href="index.html" class="logo">TechMatch</a>
- <nav class="nav">
- <a href="index.html" class="nav-link">特許一覧</a>
- <a href="column.html" class="nav-link">技術コラム</a>
- <a href="interview.html" class="nav-link">研究者インタビュー</a>
- <a href="contact.html" class="nav-link">お問い合わせ</a>
- <a href="auth.html" class="btn-primary">ログイン</a>
- </nav>
- <button class="hamburger" id="hamburger" aria-label="メニュー">
-   <span></span><span></span><span></span>
- </button>
- </div>
- </div>
- </header>
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <a href="index.html" class="logo">TechMatch</a>
+      <nav class="nav">
+        <a href="index.html" class="nav-link">特許一覧</a>
+        <a href="column.html" class="nav-link">技術コラム</a>
+        <a href="interview.html" class="nav-link">研究者インタビュー</a>
+        <a href="contact.html" class="nav-link">お問い合わせ</a>
+        <a href="auth.html" class="btn-primary">ログイン</a>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="メニュー">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
 
- <div class="mobile-menu" id="mobile-menu">
-   <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
-   <a href="index.html">特許一覧</a>
-   <a href="column.html">技術コラム</a>
-   <a href="interview.html">研究者インタビュー</a>
-   <a href="contact.html">お問い合わせ</a>
-   <a href="auth.html" class="btn-primary">ログイン</a>
- </div>
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" id="mobile-menu-close">✕</button>
+  <a href="index.html">特許一覧</a>
+  <a href="column.html">技術コラム</a>
+  <a href="interview.html">研究者インタビュー</a>
+  <a href="contact.html">お問い合わせ</a>
+  <a href="auth.html" class="btn-primary">ログイン</a>
+</div>
 
- <!-- ヒーローセクション -->
- <section class="hero">
- <div class="container">
- <h1>特許を活用して、ビジネスの成果を最大化</h1>
- <p>テックマッチは、「眠っている特許」と「技術を求める企業」をつなぐプラットフォームです</p>
- <div class="hero-buttons">
- <a href="#search" class="btn-primary">特許を探す</a>
- <a href="auth.html#register" class="btn-secondary">特許を登録</a>
- </div>
- </div>
- </section>
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="container">
+    <h1>特許を活用して、<br><span class="highlight">ビジネスの成果を最大化</span></h1>
+    <p class="hero-desc">テックマッチは、「眠っている特許」と「技術を求める企業」をつなぐプラットフォームです。大学・研究機関の技術革新を、あなたのビジネスに。</p>
+    <div class="hero-buttons">
+      <a href="#search" class="hero-btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        特許を探す
+      </a>
+      <a href="auth.html#register" class="hero-btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        特許を登録する
+      </a>
+    </div>
+  </div>
+</section>
 
- <!-- 検索セクション -->
- <div class="container">
- <div class="search-section" id="search">
- <div class="search-box">
- <input type="text" id="searchInput" class="search-input" placeholder="AI、医療機器、IoT で検索...">
- <button class="search-btn" id="searchBtn">検索</button>
- </div>
- <div style="font-size: 0.85rem; font-weight: 700; color: #6b7280; margin-bottom: 0.75rem; letter-spacing: 0.05em;">カテゴリで探す</div>
- <div class="filter-chips">
- <div class="chip active" data-category="">すべて</div>
- <div class="chip" data-category="AI・機械学習">AI・機械学習</div>
- <div class="chip" data-category="IoT・センサー">IoT・センサー</div>
- <div class="chip" data-category="ソフトウェア・アプリ">ソフトウェア・アプリ</div>
- <div class="chip" data-category="半導体">半導体</div>
- <div class="chip" data-category="電子部品・回路">電子部品・回路</div>
- <div class="chip" data-category="医療機器">医療機器</div>
- <div class="chip" data-category="医薬品・バイオ">医薬品・バイオ</div>
- <div class="chip" data-category="機械・ロボット">機械・ロボット</div>
- <div class="chip" data-category="エネルギー">エネルギー</div>
- <div class="chip" data-category="環境・リサイクル">環境・リサイクル</div>
- <div class="chip" data-category="素材・材料">素材・材料</div>
- <div class="chip" data-category="農業・食品">農業・食品</div>
- <div class="chip" data-category="建設・土木">建設・土木</div>
- <div class="chip" data-category="店舗・サービス業">店舗・サービス業</div>
- <div class="chip" data-category="生活・消費財">生活・消費財</div>
- </div>
- </div>
+<!-- Search + Cards -->
+<div class="container">
+  <div class="search-section" id="search">
+    <div class="search-label">特許を検索</div>
+    <div class="search-box">
+      <input type="text" id="searchInput" class="search-input" placeholder="AI、医療機器、IoT などで検索...">
+      <button class="search-btn" id="searchBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        検索
+      </button>
+    </div>
+    <div class="filter-label">カテゴリで絞り込む</div>
+    <div class="filter-chips">
+      <div class="chip active" data-category="">すべて</div>
+      <div class="chip" data-category="AI・機械学習">AI・機械学習</div>
+      <div class="chip" data-category="IoT・センサー">IoT・センサー</div>
+      <div class="chip" data-category="ソフトウェア・アプリ">ソフトウェア・アプリ</div>
+      <div class="chip" data-category="半導体">半導体</div>
+      <div class="chip" data-category="電子部品・回路">電子部品・回路</div>
+      <div class="chip" data-category="医療機器">医療機器</div>
+      <div class="chip" data-category="医薬品・バイオ">医薬品・バイオ</div>
+      <div class="chip" data-category="機械・ロボット">機械・ロボット</div>
+      <div class="chip" data-category="エネルギー">エネルギー</div>
+      <div class="chip" data-category="環境・リサイクル">環境・リサイクル</div>
+      <div class="chip" data-category="素材・材料">素材・材料</div>
+      <div class="chip" data-category="農業・食品">農業・食品</div>
+      <div class="chip" data-category="建設・土木">建設・土木</div>
+      <div class="chip" data-category="店舗・サービス業">店舗・サービス業</div>
+      <div class="chip" data-category="生活・消費財">生活・消費財</div>
+    </div>
+  </div>
 
- <!-- カードグリッド -->
- <div class="card-grid" id="patentGrid">
- <!-- 特許カードはJavaScriptで動的に生成されます -->
- </div>
- </div>
+  <div class="section-header">
+    <div class="section-title">特許一覧</div>
+    <div class="section-count" id="patentCount"></div>
+  </div>
+  <div class="card-grid" id="patentGrid">
+    <div style="grid-column:1/-1; text-align:center; padding:4rem 2rem;">
+      <div class="spinner"></div>
+      <p style="color:var(--gray-400); font-size:0.9rem;">特許データを読み込み中...</p>
+    </div>
+  </div>
+</div>
 
- <!-- フッター -->
- <footer class="footer">
- <div class="container">
- <div class="footer-links">
- <a href="about.html" class="footer-link">会社概要</a>
- <a href="terms.html" class="footer-link">利用規約</a>
- <a href="privacy.html" class="footer-link">プライバシーポリシー</a>
- <a href="contact.html" class="footer-link">お問い合わせ</a>
- </div>
- <p>&copy; 2026 TechMatch All Rights Reserved.</p>
- </div>
- </footer>
- 
- <script src="check-auth.js"></script>
- <script src="script.js"></script>
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-links">
+      <a href="about.html" class="footer-link">会社概要</a>
+      <a href="terms.html" class="footer-link">利用規約</a>
+      <a href="privacy.html" class="footer-link">プライバシーポリシー</a>
+      <a href="contact.html" class="footer-link">お問い合わせ</a>
+    </div>
+    <p>&copy; 2026 TechMatch All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script src="check-auth.js"></script>
+<script src="script.js"></script>
 <script>
   const hb = document.getElementById('hamburger');
   const mm = document.getElementById('mobile-menu');
@@ -622,6 +456,12 @@
   if (hb) hb.addEventListener('click', () => { hb.classList.toggle('open'); mm.classList.toggle('open'); });
   if (mc) mc.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); });
   mm && mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { hb.classList.remove('open'); mm.classList.remove('open'); }));
+
+  new MutationObserver(() => {
+    const cards = document.querySelectorAll('#patentGrid .card');
+    const el = document.getElementById('patentCount');
+    if (el && cards.length > 0) el.textContent = cards.length + ' 件';
+  }).observe(document.getElementById('patentGrid'), { childList: true });
 </script>
 </body>
 </html>
